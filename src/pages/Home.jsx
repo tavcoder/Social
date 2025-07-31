@@ -4,6 +4,7 @@ import UserProfileSidebar from "../components/UserProfileSidebar";
 
 function Home() {
     return (
+        
         <div className="home-container" style={{ display: "flex", gap: "2rem" }}>
             {/* Columna izquierda: publicaciones */}
             <section style={{ flex: 2 }}>
