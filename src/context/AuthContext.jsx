@@ -1,3 +1,5 @@
+//Almacena el estado global de autenticación 
+
 import { createContext, useState } from "react";
 
 export const AuthContext = createContext(null);
@@ -59,5 +61,5 @@ export function AuthProvider(props) {
         <AuthContext value={{ user, token, login, register, logout }}>
             {props.children}
         </AuthContext>
-    );
-}
+    );}
+    
