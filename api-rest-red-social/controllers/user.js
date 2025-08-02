@@ -28,23 +28,24 @@ const register = (req, res) => {
     let params = req.body;
 
     // Comprobar que me llegan bien (+ validacion)
-    if (!params.name || !params.email || !params.password || !params.nick) {
+    if (!params.name || !params.surName || !params.email || !params.password || !params.nick) {
         return res.status(400).json({
             status: "error",
             message: "Faltan datos por enviar",
         });
     }
 
+
     // Validación avanzada
-    try{
+    try {
         validate(params);
-    }catch(error){
+    } catch (error) {
         return res.status(400).json({
             status: "error",
-            message: "Valición no superada",
+            message: error.message || error,
         });
     }
-    
+
     // Control usuarios duplicados
     User.find({
         $or: [
@@ -244,7 +245,7 @@ const update = (req, res) => {
             userToUpdate.password = pwd;
 
             //añadido
-        }else{
+        } else {
             delete userToUpdate.password;
         }
 

@@ -1,9 +1,10 @@
+/* eslint-disable react-refresh/only-export-components */
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
 import App from './App.jsx'
-import {AuthProvider} from './context/AuthContext.jsx'
+import {AuthProvider} from './context/AuthContext.jsx';
 
 function Fallback({ error }) {
   return (

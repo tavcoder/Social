@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import Layout from "./components/Layout";
+import PrivateRoute from "./components/PrivateRoute"; // 👈 nuevo
 import AuthPage from "./pages/AuthPage";
 import Home from "./pages/Home";
 import Timeline from "./pages/Timeline";
@@ -20,12 +21,16 @@ function App() {
         {/* Página inicial sin navbar */}
         <Route path="/" element={<AuthPage />} />
 
-        {/* Rutas con layout (Navbar incluido) */}
+        {/* Rutas con layout protegidas */}
         {routesWithLayout.map(({ path, element }) => (
           <Route
             key={path}
             path={path}
-            element={<Layout>{element}</Layout>}
+            element={
+              <PrivateRoute>
+                <Layout>{element}</Layout>
+              </PrivateRoute>
+            }
           />
         ))}
       </Routes>
