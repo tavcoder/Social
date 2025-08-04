@@ -1,6 +1,3 @@
-//Maneja la lógica  y el envío del formulario
-//Controla el estado de los inputs
-//Captura los cambios del usuario
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../context/AuthContext.jsx";
@@ -15,11 +12,11 @@ export function useAuthForm(mode = "login") {
         password: "",
     });
     const [error, setError] = useState("");
-
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const updateField = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+        console.log(formData);//imprime el contenido cada vez q se escribe en el input
     };
 
     const handleSubmit = async (e) => {
@@ -28,11 +25,17 @@ export function useAuthForm(mode = "login") {
 
         try {
             if (mode === "login") {
-                await login(formData);
+                const loginData = {
+                    email: formData.email,
+                    password: formData.password,
+                };
+                await login(loginData);
             } else {
                 await register(formData);
             }
-            navigate("/home"); // redirige si todo fue bien
+
+            // ✅ Redirigir al home tras éxito
+            navigate("/");
         } catch (err) {
             setError(err.message || "Error inesperado");
         }

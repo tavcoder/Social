@@ -1,6 +1,5 @@
-//Almacena el estado global de autenticación 
-
 import { createContext, useState } from "react";
+import { callApi } from "../services/fetcher"; 
 
 export const AuthContext = createContext(null);
 
@@ -12,21 +11,22 @@ export function AuthProvider(props) {
 
     const [token, setToken] = useState(() => localStorage.getItem("token"));
 
-    const login = (credentials) => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
+    const login = async (credentials) => {
+        console.log(credentials);
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const data = await callApi("POST", "user/login", credentials);
 
-        const foundUser = users.find(
-            (u) => u.email === credentials.email && u.password === credentials.password
-        );
-
-        if (foundUser) {
-            const fakeToken = "token_fake_" + Date.now();
-            localStorage.setItem("user", JSON.stringify(foundUser));
-            localStorage.setItem("token", fakeToken);
-            setUser(foundUser);
-            setToken(fakeToken);
-        } else {
-            throw new Error("Credenciales incorrectas");
+            if (data.token && data.user) {
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("user", JSON.stringify(data.user));
+                setToken(data.token);
+                setUser(data.user);
+            } else {
+                throw new Error(data.message || "Error en el login");
+            }
+        } catch (error) {
+            throw error;
         }
     };
 
@@ -61,5 +61,5 @@ export function AuthProvider(props) {
         <AuthContext value={{ user, token, login, register, logout }}>
             {props.children}
         </AuthContext>
-    );}
-    
+    );
+}
