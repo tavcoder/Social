@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
-import { callApi } from "../services/fetcher"; 
+import { useMutation } from "@tanstack/react-query";
+import { callApi } from "../services/fetcher";
 
 export const AuthContext = createContext(null);
 
@@ -10,45 +11,30 @@ export function AuthProvider(props) {
     });
 
     const [token, setToken] = useState(() => localStorage.getItem("token"));
+    const isAuthenticated = !!token;
 
-    const login = async (credentials) => {
-        console.log(credentials);
-        // eslint-disable-next-line no-useless-catch
-        try {
-            const data = await callApi("POST", "user/login", credentials);
+    const loginMutation = useMutation({
+        mutationFn: (credentials) => callApi("POST", "user/login", credentials),
+        onSuccess: (data) => {
+            const { user, token } = data;
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token", token);
+            setUser(user);
+            setToken(token);
+        },
+    });
 
-            if (data.token && data.user) {
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setToken(data.token);
-                setUser(data.user);
-            } else {
-                throw new Error(data.message || "Error en el login");
-            }
-        } catch (error) {
-            throw error;
-        }
-    };
+    const registerMutation = useMutation({
+        mutationFn: (userData) => callApi("POST", "user/register", userData),
+        onSuccess: (data) => {
+            const { user, token } = data;
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token", token);
+            setUser(user);
+            setToken(token);
+        },
+    });
 
-    const register = (userData) => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-
-        const emailExists = users.some((u) => u.email === userData.email);
-
-        if (emailExists) {
-            throw new Error("El email ya está registrado");
-        }
-
-        const updatedUsers = [...users, userData];
-        const fakeToken = "token_fake_" + Date.now();
-
-        localStorage.setItem("users", JSON.stringify(updatedUsers));
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("token", fakeToken);
-
-        setUser(userData);
-        setToken(fakeToken);
-    };
 
     const logout = () => {
         localStorage.removeItem("user");
@@ -57,8 +43,28 @@ export function AuthProvider(props) {
         setToken(null);
     };
 
+
     return (
-        <AuthContext value={{ user, token, login, register, logout }}>
+        <AuthContext value={{
+            user,
+            setUser,
+            token,
+            setToken,
+            isAuthenticated,
+            login: loginMutation.mutateAsync,
+            register: registerMutation.mutateAsync,
+            logout,
+            loginStatus: {
+                isLoading: loginMutation.isLoading,
+                isError: loginMutation.isError,
+                error: loginMutation.error,
+            },
+            registerStatus: {
+                isLoading: registerMutation.isLoading,
+                isError: registerMutation.isError,
+                error: registerMutation.error,
+            }
+        }}>
             {props.children}
         </AuthContext>
     );

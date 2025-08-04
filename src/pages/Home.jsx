@@ -1,10 +1,13 @@
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import PostList from "../components/PostList";
 import NewPostForm from "../components/NewPostForm";
 import UserProfileSidebar from "../components/UserProfileSidebar";
 
 function Home() {
+    const { user } = useContext(AuthContext);
     return (
-        
+
         <div className="home-container" style={{ display: "flex", gap: "2rem" }}>
             {/* Columna izquierda: publicaciones */}
             <section style={{ flex: 2 }}>
@@ -15,7 +18,7 @@ function Home() {
 
             {/* Columna derecha: perfil + nuevo post */}
             <aside style={{ flex: 1 }}>
-                <h2>Hola, Víctor</h2>
+                <h2>Hola, {user?.name}</h2>
                 <UserProfileSidebar />
                 <NewPostForm />
             </aside>

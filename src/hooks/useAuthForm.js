@@ -3,7 +3,13 @@ import { useNavigate } from "react-router";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 export function useAuthForm(mode = "login") {
-    const { login, register } = useContext(AuthContext);
+    const {
+        login,
+        register,
+        loginStatus,
+        registerStatus,
+    } = useContext(AuthContext);
+
     const [formData, setFormData] = useState({
         name: "",
         surName: "",
@@ -11,17 +17,15 @@ export function useAuthForm(mode = "login") {
         email: "",
         password: "",
     });
-    const [error, setError] = useState("");
+
     const navigate = useNavigate();
 
     const updateField = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-        console.log(formData);//imprime el contenido cada vez q se escribe en el input
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
 
         try {
             if (mode === "login") {
@@ -34,17 +38,22 @@ export function useAuthForm(mode = "login") {
                 await register(formData);
             }
 
-            // ✅ Redirigir al home tras éxito
-            navigate("/");
+            navigate("/home");
         } catch (err) {
-            setError(err.message || "Error inesperado");
+            // No hace falta setError porque ya lo tienes desde `loginStatus.error`
         }
     };
 
+    const isLoading = mode === "login" ? loginStatus.isLoading : registerStatus.isLoading;
+    const isError = mode === "login" ? loginStatus.isError : registerStatus.isError;
+    const error = mode === "login" ? loginStatus.error : registerStatus.error;
+
     return {
         formData,
-        error,
         updateField,
         handleSubmit,
+        isLoading,
+        isError,
+        error,
     };
 }
