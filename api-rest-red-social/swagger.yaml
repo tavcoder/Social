@@ -1,0 +1,656 @@
+openapi: 3.0.3
+info:
+  title: API Red Social
+  version: 1.0.0
+  description: API para gestión de usuarios, seguidores y publicaciones.
+
+servers:
+  - url: http://localhost:3900/api
+    description: Servidor local
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "650f4e3ac3b4f456789abcd1"
+        name:
+          type: string
+          example: "Tania"
+        surname:
+          type: string
+          example: "Arteaga"
+        nick:
+          type: string
+          example: "taniaa"
+        email:
+          type: string
+          format: email
+          example: "tania@example.com"
+        role:
+          type: string
+          example: "ROLE_USER"
+        image:
+          type: string
+          nullable: true
+          example: "avatar.jpg"
+
+    UserRegisterRequest:
+      type: object
+      required:
+        - name
+        - surname
+        - nick
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        nick:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    UserLoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        token:
+          type: string
+          example: "jwt.token.here"
+        user:
+          $ref: '#/components/schemas/User'
+
+    Follow:
+      type: object
+      properties:
+        user:
+          type: string
+          example: "650f4e3ac3b4f456789abcd1"
+        followed:
+          $ref: '#/components/schemas/User'
+
+    Publication:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "6512abcd3456ef7890abcde1"
+        text:
+          type: string
+          example: "Mi primera publicación"
+        file:
+          type: string
+          nullable: true
+          example: "imagen.jpg"
+        user:
+          $ref: '#/components/schemas/User'
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-08-04T12:34:56Z"
+
+security:
+  - BearerAuth: []
+
+paths:
+
+  /user/register:
+    post:
+      summary: Registrar usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+      responses:
+        '200':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Usuario registrado
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Datos inválidos
+
+  /user/login:
+    post:
+      summary: Login usuario
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+      responses:
+        '200':
+          description: Usuario autenticado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Email o contraseña incorrectos
+
+  /user/profile/{id}:
+    get:
+      summary: Obtener perfil de usuario
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Perfil de usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  user:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+
+  /user/update:
+    put:
+      summary: Actualizar datos de usuario
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                nick:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Datos inválidos
+
+  /user/upload-avatar:
+    post:
+      summary: Subir avatar
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file0:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Avatar subido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  user:
+                    type: object
+                    properties:
+                      image:
+                        type: string
+                        example: avatar.jpg
+        '400':
+          description: Extensión inválida
+        '500':
+          description: Error del servidor
+
+  /follow/save:
+    post:
+      summary: Seguir a un usuario
+      tags:
+        - Follows
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                followed:
+                  type: string
+                  description: ID del usuario a seguir
+      responses:
+        '200':
+          description: Follow guardado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  follow:
+                    $ref: '#/components/schemas/Follow'
+        '400':
+          description: Datos inválidos
+
+  /follow/unfollow/{id}:
+    delete:
+      summary: Dejar de seguir a un usuario
+      tags:
+        - Follows
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID del follow a eliminar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Follow eliminado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Follow eliminado
+
+  /follow/following/{id}/{page}:
+    get:
+      summary: Listar usuarios que sigue un usuario
+      tags:
+        - Follows
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: path
+          description: Número de página (opcional)
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Lista de usuarios seguidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  follows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Follow'
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+
+  /follow/followers/{id}/{page}:
+    get:
+      summary: Listar usuarios que siguen a un usuario
+      tags:
+        - Follows
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: path
+          description: Número de página (opcional)
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Lista de seguidores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  follows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Follow'
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+
+  /publication/prueba-publication:
+    get:
+      summary: Endpoint de prueba de publication
+      tags:
+        - Publications
+      responses:
+        '200':
+          description: Mensaje de prueba
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Mensaje enviado desde: controllers/publication.js
+
+  /publication/save:
+    post:
+      summary: Crear publicación
+      tags:
+        - Publications
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+      responses:
+        '200':
+          description: Publicación guardada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Publicación guardada
+                  publicationStored:
+                    $ref: '#/components/schemas/Publication'
+        '400':
+          description: Texto faltante o inválido
+
+  /publication/detail/{id}:
+    get:
+      summary: Obtener detalle de publicación
+      tags:
+        - Publications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID de la publicación
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalle de publicación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Mostrar publicacion
+                  publication:
+                    $ref: '#/components/schemas/Publication'
+        '404':
+          description: Publicación no encontrada
+
+  /publication/remove/{id}:
+    delete:
+      summary: Eliminar publicación
+      tags:
+        - Publications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID de la publicación a eliminar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Publicación eliminada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Eliminar publicacion
+                  publication:
+                    type: string
+                    example: "id_publicacion"
+
+  /publication/user/{id}/{page}:
+    get:
+      summary: Listar publicaciones de un usuario
+      tags:
+        - Publications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID del usuario
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: path
+          description: Número de página (opcional)
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Publicaciones paginadas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Publicaciones
+                  publications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Publication'
+                  total:
+                    type: integer
+                  pages:
+                    type: integer
+
+  /publication/upload/{id}:
+    post:
+      summary: Subir archivo para publicación
+      tags:
+        - Publications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: ID de la publicación
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file0:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Archivo subido correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  publication:
+                    $ref: '#/components/schemas/Publication'
+        '400':
+          description: Extensión inválida
+        '500':
+          description: Error del servidor
+
+  /publication/media/{file}:
+    get:
+      summary: Obtener archivo multimedia de publicación
+      tags:
+        - Publications
+      parameters:
+        - name: file
+          in: path
+          description: Nombre del archivo
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Archivo multimedia
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Archivo no encontrado
