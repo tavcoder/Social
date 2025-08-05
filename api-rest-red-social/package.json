@@ -10,6 +10,7 @@
   "author": "Victor Robles WEB",
   "license": "MIT",
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
