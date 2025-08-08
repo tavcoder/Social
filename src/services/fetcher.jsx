@@ -13,7 +13,7 @@ export function get(endpoint) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
+            ...(token && { Authorization: token  }),
         },
     }).then((res) => res.json());
 }
@@ -26,8 +26,25 @@ export function callApi(method, endpoint, data) {
         method,
         headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
+            ...(token && { Authorization: token  }),
         },
         body: JSON.stringify(data),
+    }).then((res) => res.json());
+}
+
+// Función para subir archivo a publicación
+export function uploadPublicationFile(publicationId, file) {
+    const token = getToken();
+    const formData = new FormData();
+
+    // Campo exacto que espera tu API
+    formData.append("file0", file);
+
+    return fetch(`${API_BASE_URL}/publication/upload/${publicationId}`, {
+        method: "POST",
+        headers: {
+            ...(token && { Authorization: token }), // OJO: Bearer
+        },
+        body: formData,
     }).then((res) => res.json());
 }

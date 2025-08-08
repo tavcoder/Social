@@ -1,24 +1,15 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext"; // Ejemplo de tu contexto
 import PostList from "../components/PostList";
 
 function Timeline() {
-    const [posts, setPosts] = useState([]);
-    const currentUser = "Victor Robles"; // Simulado por ahora
-
-    useEffect(() => {
-        const storedPosts = JSON.parse(localStorage.getItem("posts")) || [];
-        const userPosts = storedPosts.filter(post => post.user === currentUser);
-        setPosts(userPosts);
-    }, []);
+    const { user } = useContext(AuthContext);
+    console.log("usuario:", user.id);
 
     return (
         <div className="timeline-page">
             <h2>Mi Timeline</h2>
-            {posts.length > 0 ? (
-                <PostList posts={posts} />
-            ) : (
-                <p>Aún no has publicado nada.</p>
-            )}
+            <PostList userId={user.id} />
         </div>
     );
 }

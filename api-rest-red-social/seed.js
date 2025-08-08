@@ -42,12 +42,23 @@ async function createFakeUsers(count = 10) {
 }
 
 async function createFakePublications(users, countPerUser = 3) {
+    // Set de imágenes directas de Unsplash (categoría tecnología)
+    const techImages = [
+        "https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?w=800&h=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1581091215367-59ab6a6c6c5f?w=800&h=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=600&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&h=600&auto=format&fit=crop&q=80"
+    ];
+
     for (const user of users) {
         for (let i = 0; i < countPerUser; i++) {
+            const randomImage = techImages[Math.floor(Math.random() * techImages.length)];
+
             const publication = new Publication({
                 text: faker.lorem.paragraph(),
                 user: user._id,
-                file: '', // Si quieres simular imagen, usa faker.image.url()
+                file: randomImage, // URL directa de imagen
                 created_at: new Date()
             });
 
@@ -55,6 +66,8 @@ async function createFakePublications(users, countPerUser = 3) {
         }
     }
 }
+
+
 
 async function createFakeFollows(users, followsPerUser = 3) {
     for (const user of users) {

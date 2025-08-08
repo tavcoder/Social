@@ -1,16 +1,30 @@
+import { useQuery } from "@tanstack/react-query";
+import { get } from "../services/fetcher";
 import PostItem from "./PostItem";
 
-function PostList() {
-    const posts = [
-        { id: 1, user: "Victor Robles", time: "Hace 1 hora", text: "Hola, buenos días." },
-        { id: 2, user: "Victor Robles", time: "Hace 1 hora", text: "Hola, buenos días." },
-        { id: 3, user: "Victor Robles", time: "Hace 1 hora", text: "Hola, buenos días." },
-    ];
+function PostList({ userId }) {
+    const page = 1;
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ["posts", userId, page],
+        queryFn: async () => {
+            if (userId) {
+                const res = await get(`publication/user/${userId}/${page}`);
+                return res.publications;
+            } else {
+                const res = await get(`publication/feed/${page}`);
+                return res.publications;
+            }
+        },
+        enabled: !!userId || userId === undefined, // evita ejecutar si userId es null
+    });
+    if (isLoading) return <p>Cargando posts...</p>;
+    if (isError) return <p>Error al cargar los posts.</p>;
 
     return (
         <div className="post-list">
-            {posts.map((post) => (
-                <PostItem key={post.id} post={post} />
+            {data && data.map((post) => (
+                <PostItem key={post._id} post={post} />
             ))}
         </div>
     );
