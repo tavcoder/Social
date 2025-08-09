@@ -1,52 +1,43 @@
+// services/followService.js
 const Follow = require("../models/follow");
 
-const followUserIds = async (identityUserId) => {
+const followUserIds = async (userId) => {
     try {
-        // Sacar info seguimiento
-        let following = await Follow.find({ "user": identityUserId })
-            .select({ "followed": 1, "_id": 0 })
-            .exec();
+        // Limpiar registros huérfanos antes de hacer consultas
+        await Follow.deleteMany({ $or: [{ followed: null }, { user: null }] });
 
-        let followers = await Follow.find({ "followed": identityUserId })
-            .select({ "user": 1, "_id": 0 })
-            .exec();
+        // Obtener documentos donde el usuario sigue a otros
+        let followingDocs = await Follow.find({ user: userId })
+            .select({ followed: 1, _id: 0 })
+            .lean();
 
-        // Procesar array de identificadores
-        let followingClean = [];
+        // Obtener documentos donde el usuario es seguido por otros
+        let followersDocs = await Follow.find({ followed: userId })
+            .select({ user: 1, _id: 0 })
+            .lean();
 
-        following.forEach(follow => {
-            followingClean.push(follow.followed);
-        });
+        // Extraer IDs y filtrar valores vacíos
+        let following = followingDocs
+            .map(f => f.followed)
+            .filter(Boolean) // Elimina null, undefined, ""
+            .map(f => f.toString());
 
-        let followersClean = [];
-
-        followers.forEach(follow => {
-            followersClean.push(follow.user);
-        });
+        let followers = followersDocs
+            .map(f => f.user)
+            .filter(Boolean)
+            .map(f => f.toString());
 
         return {
-            following: followingClean,
-            followers: followersClean
-        }
+            following,
+            followers
+        };
 
-    } catch (error) {
-        return {};
+    } catch (err) {
+        console.error("Error en followUserIds:", err);
+        return { following: [], followers: [] };
     }
-}
-
-const followThisUser = async (identityUserId, profileUserId) => {
-    // Sacar info seguimiento
-    let following = await Follow.findOne({ "user": identityUserId, "followed": profileUserId });
-
-    let follower = await Follow.findOne({ "user": profileUserId, "followed": identityUserId });
-
-    return {
-        following,
-        follower
-    };
-}
+};
 
 module.exports = {
-    followUserIds,
-    followThisUser
-}
+    followUserIds
+};

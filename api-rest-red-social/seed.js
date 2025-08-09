@@ -71,7 +71,11 @@ async function createFakePublications(users, countPerUser = 3) {
 
 async function createFakeFollows(users, followsPerUser = 3) {
     for (const user of users) {
+        // Filtra a los usuarios que no sean el mismo
         const others = users.filter(u => u._id.toString() !== user._id.toString());
+
+        // Si no hay usuarios disponibles para seguir, no se crea ninguna relación
+        if (others.length === 0) continue;
 
         // Escoge aleatoriamente a quién seguir (sin repetir)
         const followedSet = new Set();
@@ -80,15 +84,24 @@ async function createFakeFollows(users, followsPerUser = 3) {
             followedSet.add(randomUser._id.toString());
         }
 
+        // Guardar las relaciones de seguimiento
         for (const followedId of followedSet) {
-            const follow = new Follow({
-                user: user._id,
-                followed: followedId
-            });
-            await follow.save();
+            if (followedId && followedId !== 'null') { // Verifica que el ID sea válido
+                const follow = new Follow({
+                    user: user._id,
+                    followed: followedId
+                });
+
+                // Asegúrate de que no se creen relaciones con valores nulos o inválidos
+                if (followedId !== null && followedId !== undefined && followedId !== "") {
+                    await follow.save();
+                }
+            }
         }
     }
 }
+
+
 
 
 async function seed() {

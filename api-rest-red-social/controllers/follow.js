@@ -21,36 +21,73 @@ const pruebaFollow = (req, res) => {
 }
 
 // Accion de guardar un follow (accion seguir)
-const save = (req, res) => {
-    // Conseguir datos por body
-    const params = req.body;
+// Accion de guardar un follow (accion seguir)
+const save = async (req, res) => {
+    try {
+        const params = req.body;
+        const identity = req.user;
 
-    // Sacar id del usuario identificado
-    const identity = req.user;
-
-    // Crear objeto con modelo follow
-    let userToFollow = new Follow({
-        user: identity.id,
-        followed: params.followed
-    });
-
-    // Guardar objeto en bbdd
-    userToFollow.save((error, followStored) => {
-
-        if (error || !followStored) {
-            return res.status(500).send({
+        // Validar que venga el campo "followed"
+        if (!params.followed) {
+            return res.status(400).send({
                 status: "error",
-                message: "No se ha podido seguir al usuario"
+                message: "Debes indicar el ID del usuario a seguir"
             });
         }
+
+        // Verificar que el usuario seguido exista
+        const userExists = await User.findById(params.followed).select("_id").lean();
+        if (!userExists) {
+            return res.status(404).send({
+                status: "error",
+                message: "El usuario que intentas seguir no existe"
+            });
+        }
+
+        // Evitar seguirse a uno mismo
+        if (params.followed.toString() === identity.id.toString()) {
+            return res.status(400).send({
+                status: "error",
+                message: "No puedes seguirte a ti mismo"
+            });
+        }
+
+        // Evitar duplicados (ya seguir a ese usuario)
+        const alreadyFollowing = await Follow.findOne({
+            user: identity.id,
+            followed: params.followed
+        }).lean();
+
+        if (alreadyFollowing) {
+            return res.status(400).send({
+                status: "error",
+                message: "Ya estás siguiendo a este usuario"
+            });
+        }
+
+        // Crear el follow
+        let userToFollow = new Follow({
+            user: identity.id,
+            followed: params.followed
+        });
+
+        const followStored = await userToFollow.save();
 
         return res.status(200).send({
             status: "success",
             identity: req.user,
             follow: followStored
         });
-    });
-}
+
+    } catch (error) {
+        console.error("Error en save follow:", error);
+        return res.status(500).send({
+            status: "error",
+            message: "Error interno del servidor"
+        });
+    }
+};
+
 
 // Accion de borrar un follow (accion dejar de seguir)
 const unfollow = (req, res) => {
@@ -99,7 +136,7 @@ const following = (req, res) => {
     const itemsPerPage = 5;
 
     // Find a follow, popular datos de los usuario y paginar con mongoose paginate
-    Follow.find({user: userId})
+    Follow.find({ user: userId })
         .populate("user followed", "-password -role -__v -email")
         .paginate(page, itemsPerPage, async (error, follows, total) => {
 
@@ -137,7 +174,7 @@ const followers = (req, res) => {
     // Usuarios por pagina quiero mostrar
     const itemsPerPage = 5;
 
-    Follow.find({followed: userId})
+    Follow.find({ followed: userId })
         .populate("user", "-password -role -__v -email")
         .paginate(page, itemsPerPage, async (error, follows, total) => {
 

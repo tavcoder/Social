@@ -1,30 +1,112 @@
-import { useState, useEffect } from "react";
+import { useContext, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { get, callApi } from "../services/fetcher";
+import { AuthContext } from "../context/AuthContext";
 
 function People() {
-    const [users, setUsers] = useState([]);
+    const { user: authUser } = useContext(AuthContext);
     const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        // Simula usuarios "registrados"
-        setUsers([
-            { id: 1, name: "Victor Robles", username: "@VictorWeb", avatar: "/avatar.png", following: false },
-            { id: 2, name: "Ana López", username: "@anaDev", avatar: "/avatar.png", following: true },
-            { id: 3, name: "Carlos Pérez", username: "@carlosUI", avatar: "/avatar.png", following: false },
-        ]);
-    }, []);
+    const myUserId = authUser?.id;
 
-    const handleToggleFollow = (id) => {
-        setUsers(prev =>
-            prev.map(user =>
-                user.id === id ? { ...user, following: !user.following } : user
-            )
-        );
+    // Obtener todos los usuarios y filtrar el usuario logueado aquí
+    const { data: allUsersDataRaw = [], isLoading: allUsersLoading, isError: allUsersError } = useQuery({
+        queryKey: ["allUsersData", page],
+        queryFn: async () => {
+            const res = await get(`user/list/${page}`);
+            return res.users || [];
+        }
+    });
+
+    // Filtramos para eliminar el usuario logueado
+    const allUsersData = allUsersDataRaw.filter(user => user._id !== myUserId);
+    // Obtener usuarios que sigo
+    const { data: followingData, isLoading, isError } = useQuery({
+        queryKey: ['following', myUserId],
+        queryFn: () => get(`follow/following/${myUserId}/1`),
+        enabled: !!myUserId,
+    });
+
+    const isUserFollowing = (userId) => {
+        const followingList = followingData?.user_following || [];
+        return followingList.includes(userId);
     };
 
-    const filteredUsers = users.filter(
-        (user) =>
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.username.toLowerCase().includes(search.toLowerCase())
+    // Mutaciones con optimistic updates
+    const followMutation = useMutation({
+        mutationFn: async (userId) => {
+            return await callApi("POST", `follow/save`, { followed: userId });
+        },
+        onMutate: async (userId) => {
+            await queryClient.cancelQueries(['following', myUserId]);
+
+            const previousFollowing = queryClient.getQueryData(['following', myUserId]);
+
+            queryClient.setQueryData(['following', myUserId], oldData => {
+                if (!oldData) return oldData;
+                return {
+                    ...oldData,
+                    user_following: [...oldData.user_following, userId]
+                };
+            });
+
+            return { previousFollowing };
+        },
+        onError: (err, userId, context) => {
+            queryClient.setQueryData(['following', myUserId], context.previousFollowing);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries(['following', myUserId]);
+        }
+    });
+
+    const unfollowMutation = useMutation({
+        mutationFn: async (userId) => {
+            return await callApi("DELETE", `follow/unfollow/${userId}`);
+        },
+        onMutate: async (userId) => {
+            await queryClient.cancelQueries(['following', myUserId]);
+
+            const previousFollowing = queryClient.getQueryData(['following', myUserId]);
+
+            queryClient.setQueryData(['following', myUserId], oldData => {
+                if (!oldData) return oldData;
+                return {
+                    ...oldData,
+                    user_following: oldData.user_following.filter(id => id !== userId)
+                };
+            });
+
+            return { previousFollowing };
+        },
+        onError: (err, userId, context) => {
+            queryClient.setQueryData(['following', myUserId], context.previousFollowing);
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries(['following', myUserId]);
+        }
+    });
+
+
+    const handleFollowToggle = (targetUserId) => {
+        if (isUserFollowing(targetUserId)) {
+            unfollowMutation.mutate(targetUserId);
+        } else {
+            followMutation.mutate(targetUserId);
+        }
+    };
+
+    // Loading y errores
+    if (isLoading || allUsersLoading) return <p>Cargando usuarios...</p>;
+    if (isError || allUsersError) return <p>Error al cargar usuarios.</p>;
+
+    // Filtrar usuarios
+    const filteredUsers = allUsersData.filter(
+        (u) =>
+            u.name.toLowerCase().includes(search.toLowerCase()) ||
+            u.nick.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
@@ -39,23 +121,41 @@ function People() {
                 style={{ marginBottom: "1rem", width: "100%", padding: "0.5rem" }}
             />
 
-            {filteredUsers.map((user) => (
-                <div key={user.id} style={{ borderBottom: "1px solid #ccc", padding: "1rem 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <img src={user.avatar} width="50" alt={user.name} />
-                        <div>
-                            <strong>{user.name}</strong>
-                            <p>{user.username}</p>
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => handleToggleFollow(user.id)}
-                        style={{ padding: "0.5rem 1rem", backgroundColor: user.following ? "#ccc" : "#4CAF50", color: "#fff", border: "none" }}
+            {filteredUsers.map((u) => {
+                const isFollowing = isUserFollowing(u._id);
+                return (
+                    <div
+                        key={u._id}
+                        style={{
+                            borderBottom: "1px solid #ccc",
+                            padding: "1rem 0",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
                     >
-                        {user.following ? "Siguiendo" : "Seguir"}
-                    </button>
-                </div>
-            ))}
+                        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                            <img src={u.image || '/avatar.png'} width="50" alt={u.name} />
+                            <div>
+                                <strong>{u.name}</strong>
+                                <p>{u.nick}</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => handleFollowToggle(u._id)}
+                            style={{
+                                backgroundColor: isFollowing ? 'red' : 'green',
+                                color: 'white',
+                                padding: '0.5rem 1rem',
+                                border: 'none',
+                                borderRadius: '5px',
+                            }}
+                        >
+                            {isFollowing ? "Dejar de seguir" : "Seguir"}
+                        </button>
+                    </div>
+                );
+            })}
         </div>
     );
 }
