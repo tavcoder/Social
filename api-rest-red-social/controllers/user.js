@@ -378,6 +378,37 @@ const counters = async (req, res) => {
     }
 }
 
+//Obtener la lista de todos los usuarios
+
+const getUsers = async (req, res) => {
+  const page = parseInt(req.params.page) || 1;
+  const itemsPerPage = 5;
+
+  try {
+    const users = await User.find()
+      .select('-password') // Excluir contraseña
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
+
+    const total = await User.countDocuments();
+
+    return res.status(200).json({
+      status: "success",
+      users,
+      page,
+      total,
+      pages: Math.ceil(total / itemsPerPage),
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error al obtener usuarios",
+    });
+  }
+};
+
+
+
 // Exportar acciones
 module.exports = {
     pruebaUser,
@@ -388,5 +419,6 @@ module.exports = {
     update,
     upload,
     avatar,
-    counters
+    counters,
+    getUsers
 }

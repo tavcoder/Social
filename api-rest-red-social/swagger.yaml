@@ -708,3 +708,47 @@ paths:
                 format: binary
         '404':
           description: Archivo no encontrado
+/user/list/{page}:
+  get:
+    summary: Listar todos los usuarios
+    description: Devuelve una lista paginada de usuarios registrados (excluyendo la contraseña).
+    tags:
+      - Users
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: page
+        in: path
+        description: Número de página (opcional, por defecto 1)
+        required: false
+        schema:
+          type: integer
+          default: 1
+    responses:
+      '200':
+        description: Lista de usuarios obtenida correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: success
+                users:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/User'
+                page:
+                  type: integer
+                  example: 1
+                total:
+                  type: integer
+                  example: 25
+                pages:
+                  type: integer
+                  example: 5
+      '401':
+        description: No autorizado (token inválido o no proporcionado)
+      '500':
+        description: Error interno del servidor
