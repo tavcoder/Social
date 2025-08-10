@@ -6,7 +6,7 @@ const { faker } = require('@faker-js/faker');
 // Asegúrate de usar tus modelos
 const User = require('./models/user');
 const Publication = require('./models/publication');
-const Follow = require('./models/follow'); // asegúrate de importar el modelo
+const Follow = require('./models/follow');
 
 mongoose.connect('mongodb+srv://admin:!123Friends@cluster0.hpqftkg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
@@ -42,7 +42,6 @@ async function createFakeUsers(count = 10) {
 }
 
 async function createFakePublications(users, countPerUser = 3) {
-    // Set de imágenes directas de Unsplash (categoría tecnología)
     const techImages = [
         "https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?w=800&h=600&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&auto=format&fit=crop&q=80",
@@ -52,21 +51,49 @@ async function createFakePublications(users, countPerUser = 3) {
     ];
 
     for (const user of users) {
+        // Obtener seguidores del usuario actual
+        const followersData = await Follow.find({ followed: user._id }).lean();
+        const followersIds = followersData.map(f => f.user.toString());
+
         for (let i = 0; i < countPerUser; i++) {
             const randomImage = techImages[Math.floor(Math.random() * techImages.length)];
 
+            // Crear publicación básica
             const publication = new Publication({
                 text: faker.lorem.paragraph(),
                 user: user._id,
-                file: randomImage, // URL directa de imagen
-                created_at: new Date()
+                file: randomImage,
+                created_at: new Date(),
+                likes: [],
+                comments: []
             });
+
+            // Likes aleatorios de seguidores
+            const maxLikes = Math.min(5, followersIds.length);
+            const likeCount = Math.floor(Math.random() * (maxLikes + 1));
+            const usedLikes = new Set();
+            while (usedLikes.size < likeCount) {
+                const randomFollowerId = followersIds[Math.floor(Math.random() * followersIds.length)];
+                usedLikes.add(randomFollowerId);
+            }
+            publication.likes = Array.from(usedLikes);
+
+            // Comentarios aleatorios de seguidores
+            const maxComments = Math.min(3, followersIds.length);
+            const commentCount = Math.floor(Math.random() * (maxComments + 1));
+            for (let j = 0; j < commentCount; j++) {
+                const commenterId = followersIds[Math.floor(Math.random() * followersIds.length)];
+                publication.comments.push({
+                    user: commenterId,
+                    text: faker.lorem.sentence(),
+                    created_at: new Date()
+                });
+            }
 
             await publication.save();
         }
     }
 }
-
 
 
 async function createFakeFollows(users, followsPerUser = 3) {
@@ -86,23 +113,17 @@ async function createFakeFollows(users, followsPerUser = 3) {
 
         // Guardar las relaciones de seguimiento
         for (const followedId of followedSet) {
-            if (followedId && followedId !== 'null') { // Verifica que el ID sea válido
+            if (followedId) {
                 const follow = new Follow({
                     user: user._id,
                     followed: followedId
                 });
 
-                // Asegúrate de que no se creen relaciones con valores nulos o inválidos
-                if (followedId !== null && followedId !== undefined && followedId !== "") {
-                    await follow.save();
-                }
+                await follow.save();
             }
         }
     }
 }
-
-
-
 
 async function seed() {
     console.log('🔄 Limpiando base de datos...');
@@ -113,16 +134,15 @@ async function seed() {
     console.log('👥 Creando usuarios falsos...');
     const users = await createFakeUsers(10);
 
-    console.log('📝 Creando publicaciones...');
-    await createFakePublications(users, 5);
-
     console.log('🔗 Creando relaciones de seguimiento...');
     await createFakeFollows(users, 3);
+
+    console.log('📝 Creando publicaciones...');
+    await createFakePublications(users, 5);
 
     console.log('✅ ¡Todo listo!');
     mongoose.disconnect();
 }
-
 
 seed().catch((err) => {
     console.error('❌ Error al generar datos:', err);

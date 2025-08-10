@@ -11,11 +11,11 @@ const storage = multer.diskStorage({
         cb(null, "./uploads/publications/")
     },
     filename: (req, file, cb) => {
-        cb(null, "pub-"+Date.now()+"-"+file.originalname);
+        cb(null, "pub-" + Date.now() + "-" + file.originalname);
     }
 });
 
-const uploads = multer({storage});
+const uploads = multer({ storage });
 
 // Definir rutas
 router.get("/prueba-publication", PublicationContoller.pruebaPublication);
@@ -26,6 +26,12 @@ router.get("/user/:id/:page?", check.auth, PublicationContoller.user);
 router.post("/upload/:id", [check.auth, uploads.single("file0")], PublicationContoller.upload);
 router.get("/media/:file", PublicationContoller.media); //cambio
 router.get("/feed/:page?", check.auth, PublicationContoller.feed);
+// Likes
+router.post("/:id/like", check.auth, PublicationContoller.toggleLike);
+
+// Comentarios
+router.post("/:id/comment", check.auth, PublicationContoller.addComment);
+router.get("/:id/comments", check.auth, PublicationContoller.listComments);
 
 // Exportar router
 module.exports = router;
