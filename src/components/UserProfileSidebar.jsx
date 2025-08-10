@@ -22,7 +22,6 @@ function UserProfileSidebar() {
         enabled: !!userId,
         queryFn: async () => {
             const res = await get(`follow/following/${userId}`);
-            console.log("following response:", res);
             return res.total; // Ajusta según la estructura de tu respuesta
         }
     });
@@ -32,7 +31,6 @@ function UserProfileSidebar() {
         enabled: !!userId,
         queryFn: async () => {
             const res = await get(`follow/followers/${userId}`);
-            console.log("followers response:", res);
             return res.total;
         }
     });
