@@ -153,7 +153,7 @@ const profile = (req, res) => {
             }
 
             // Info de seguimiento
-            const followInfo = await followService.followThisUser(req.user.id, id);
+            const followInfo = await followService.followUserIds(req.user.id);
 
             // Devolver el resultado 
             return res.status(200).send({
@@ -381,30 +381,30 @@ const counters = async (req, res) => {
 //Obtener la lista de todos los usuarios
 
 const getUsers = async (req, res) => {
-  const page = parseInt(req.params.page) || 1;
-  const itemsPerPage = 5;
+    const page = parseInt(req.params.page) || 1;
+    const itemsPerPage = 5;
 
-  try {
-    const users = await User.find()
-      .select('-password') // Excluir contraseña
-      .skip((page - 1) * itemsPerPage)
-      .limit(itemsPerPage);
+    try {
+        const users = await User.find()
+            .select('-password') // Excluir contraseña
+            .skip((page - 1) * itemsPerPage)
+            .limit(itemsPerPage);
 
-    const total = await User.countDocuments();
+        const total = await User.countDocuments();
 
-    return res.status(200).json({
-      status: "success",
-      users,
-      page,
-      total,
-      pages: Math.ceil(total / itemsPerPage),
-    });
-  } catch (err) {
-    return res.status(500).json({
-      status: "error",
-      message: "Error al obtener usuarios",
-    });
-  }
+        return res.status(200).json({
+            status: "success",
+            users,
+            page,
+            total,
+            pages: Math.ceil(total / itemsPerPage),
+        });
+    } catch (err) {
+        return res.status(500).json({
+            status: "error",
+            message: "Error al obtener usuarios",
+        });
+    }
 };
 
 
