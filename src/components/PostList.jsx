@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { get } from "../services/fetcher";
+import { get } from "../api/apiHelper";
 import PostItem from "./PostItem";
 
 function PostList({ userId }) {

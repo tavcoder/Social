@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { callApi } from "../services/fetcher";
+import { callApi } from "../api/apiHelper";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 function NewPostForm() {

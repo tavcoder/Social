@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { callApi } from "../services/fetcher"; 
+import { callApi } from "../api/apiHelper"; 
 
 export default function AddComment({ postId }) {
   const [text, setText] = useState("");

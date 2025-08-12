@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { get, callApi } from "../services/fetcher";
+import { get, callApi } from "../api/apiHelper";
+import { useApiQuery } from "../api/useApiQuery";
 import { AuthContext } from "../context/AuthContext";
 
 function People() {
@@ -12,22 +13,14 @@ function People() {
     const myUserId = authUser?.id;
 
     // Obtener todos los usuarios y filtrar el usuario logueado aquí
-    const { data: allUsersDataRaw = [], isLoading: allUsersLoading, isError: allUsersError } = useQuery({
-        queryKey: ["allUsersData", page],
-        queryFn: async () => {
-            const res = await get(`user/list/${page}`);
-            return res.users || [];
-        }
-    });
+    const { data: allUsersDataRaw = [], isLoading: allUsersLoading, isError: allUsersError } = useApiQuery('allUsersData', page);
+
 
     // Filtramos para eliminar el usuario logueado
     const allUsersData = allUsersDataRaw.filter(user => user._id !== myUserId);
     // Obtener usuarios que sigo
-    const { data: followingData, isLoading, isError } = useQuery({
-        queryKey: ['following', myUserId],
-        queryFn: () => get(`follow/following/${myUserId}/1`),
-        enabled: !!myUserId,
-    });
+    const { data: followingData, isLoading, isError } = useApiQuery('followingPage', { userId: myUserId, page: 1 }, { enabled: !!myUserId });
+
 
     const isUserFollowing = (userId) => {
         const followingList = followingData?.user_following || [];
