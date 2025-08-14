@@ -2,63 +2,40 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useApiQuery } from "../api/useApiQuery";
 
-function Metric({ label, value }) {
-    return (
-        <div>
-            {label} <br />
-            <strong>{value}</strong>
-        </div>
-    );
-}
-
-function UserProfileSidebar() {
+export default function UserProfileSidebar() {
     const { user } = useContext(AuthContext);
     const userId = user?.id;
+    const { data: profile, isLoading: loadingProfile } = useApiQuery('profile', userId);
+    const { data: counters, isLoading: loadingCounters } = useApiQuery('counters', userId);
 
-    // Carga todos los datos necesarios en paralelo con useApiQuery
-    const profileQuery = useApiQuery("profile", userId);
-    const followingQuery = useApiQuery("following", userId);
-    const followersQuery = useApiQuery("followers", userId);
-    const postsQuery = useApiQuery("posts", userId);
-
-    const isLoading =
-        profileQuery.isLoading ||
-        followingQuery.isLoading ||
-        followersQuery.isLoading ||
-        postsQuery.isLoading;
-
-    const isError = !profileQuery.data;
-
-    if (isLoading) return <div>Cargando perfil...</div>;
-    if (isError) return <div>Error al cargar el perfil.</div>;
-
-    const { data: profile } = profileQuery;
-    const { data: following } = followingQuery;
-    const { data: followers } = followersQuery;
-    const { data: posts } = postsQuery;
+    if (loadingProfile || loadingCounters) return <div>Cargando perfil...</div>;
+    if (!profile) return <div>Error al cargar el perfil.</div>;
 
     return (
-        <div
-            className="profile-box"
-            style={{ border: "1px solid #ddd", padding: "1rem", marginBottom: "1rem" }}
-        >
+        <div className="profile-box" style={{ border: "1px solid #ddd", padding: "1rem", marginBottom: "1rem" }}>
+
             <img
-                src={profile.image || "/avatar.png"}
+                src={profile.user.image || "/avatar.png"}
                 alt="avatar"
-                width={80}
+                width="80"
                 style={{ borderRadius: "50%", objectFit: "cover" }}
             />
-            <h4>{profile.name}</h4>
-            <p>@{profile.nick}</p>
-            <div
-                style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}
-            >
-                <Metric label="Siguiendo" value={following} />
-                <Metric label="Seguidores" value={followers} />
-                <Metric label="Publicaciones" value={posts} />
+
+            <h4>{profile.user.name}</h4>
+            <p>{profile.user.nick}</p>
+            <p>@{profile.user.email}</p>
+            <p>{profile.user.bio}</p>
+
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
+                <div>Siguiendo <br /><strong>{counters.following}</strong></div>
+                <div>Seguidores <br /><strong>{counters.followed}</strong></div>
+                <div>Publicaciones <br /><strong>{counters.publications}</strong></div>
             </div>
+
         </div>
+
     );
+
 }
 
-export default UserProfileSidebar;
+
