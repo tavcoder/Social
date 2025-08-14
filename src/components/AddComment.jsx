@@ -1,35 +1,20 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { callApi } from "../api/apiHelper"; 
+import { useApiMutation } from "../api/useApiMutation"; // tu hook genérico
 
 export default function AddComment({ postId }) {
   const [text, setText] = useState("");
-  const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: async (newCommentText) => {
-      return await callApi("POST", `publication/${postId}/comment`, {
-        text: newCommentText,
-      });
-    },
-    onSuccess: (newComment) => {
-      // Actualizamos la cache de los comentarios de este post
-      queryClient.setQueryData(["comments", postId], (old = []) => [
-        ...old,
-        newComment,
-      ]);
-      setText("");
-    },
-    onError: (err) => {
-      console.error("Error posting comment:", err);
-      alert("No se pudo enviar el comentario");
-    },
-  });
+  // Usamos el hook genérico pasando el key "addComment"
+  const { mutate, isLoading } = useApiMutation("addComment");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    mutate(text.trim());
+
+    // Importante: pasamos { id: postId, text: ... } porque el hook espera "variables.id"
+    mutate({ id: postId, text: text.trim() });
+
+    setText(""); // reset input después de mutar
   };
 
   return (

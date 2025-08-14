@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { callApi } from "../api/apiHelper";
+import { useApiMutation } from "../api/useApiMutation";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 function NewPostForm() {
@@ -10,10 +9,8 @@ function NewPostForm() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    // Mutation para crear publicación (solo texto)
-    const createPublicationMutation = useMutation({
-        mutationFn: (newPost) => callApi("POST", "publication/save", newPost),
-    });
+    // Usamos el hook genérico para crear publicación
+    const createPublicationMutation = useApiMutation("addPost"); // o "publication" si defines la key
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -26,33 +23,30 @@ function NewPostForm() {
         }
 
         try {
-            // 1. Crear publicación con texto (el API requiere solo texto)
+            // 1. Crear publicación con texto usando el hook genérico
             const response = await createPublicationMutation.mutateAsync({ text });
 
-            if (response.status !== "success") {
-                throw new Error(response.message || "Error creando la publicación");
+            if (!response?.publicationStored?._id) {
+                throw new Error("Error creando la publicación");
             }
 
-            // 2. Si hay archivo, subirlo con fetch y FormData directamente
+            // 2. Si hay archivo, subirlo con fetch y FormData
             if (file) {
                 const formData = new FormData();
                 formData.append("file0", file);
 
-                // Suponiendo que el endpoint para subir archivo es algo como:
-                // /publication/upload-file/:id
                 const uploadRes = await fetch(
                     `http://localhost:3900/api/publication/upload/${response.publicationStored._id}`,
                     {
                         method: "POST",
                         headers: {
-                            ...(token && { Authorization: token }), // OJO: Bearer
+                            ...(token && { Authorization: token }),
                         },
                         body: formData,
                     }
                 );
 
                 const uploadData = await uploadRes.json();
-
                 if (uploadData.status !== "success") {
                     throw new Error(uploadData.message || "Error subiendo archivo");
                 }
@@ -69,11 +63,7 @@ function NewPostForm() {
     const loading = createPublicationMutation.isLoading;
 
     return (
-        <form
-            className="new-post-form"
-            style={{ border: "1px solid #ddd", padding: "1rem" }}
-            onSubmit={handleSubmit}
-        >
+        <form className="new-post-form" style={{ border: "1px solid #ddd", padding: "1rem" }} onSubmit={handleSubmit}>
             <label htmlFor="text">¿Qué estás pensando hoy?</label>
             <textarea
                 id="text"
@@ -90,21 +80,12 @@ function NewPostForm() {
                 type="file"
                 id="file"
                 accept="image/*"
-                onChange={(e) => {
-                    const selectedFile = e.target.files[0];
-                    setFile(selectedFile);
-                    console.log("file content:", selectedFile);
-                }}
+                onChange={(e) => setFile(e.target.files[0])}
             />
 
             <button
                 type="submit"
-                style={{
-                    marginTop: "1rem",
-                    backgroundColor: "green",
-                    color: "white",
-                    padding: "0.5rem 1rem",
-                }}
+                style={{ marginTop: "1rem", backgroundColor: "green", color: "white", padding: "0.5rem 1rem" }}
                 disabled={loading}
             >
                 {loading ? "Enviando..." : "Enviar"}

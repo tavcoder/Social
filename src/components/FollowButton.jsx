@@ -1,58 +1,22 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { callApi } from "../api/apiHelper";
+import { useApiMutation } from "../api/useApiMutation";
 
-export default function FollowButton({ targetUserId, myUserId, followingData }) {
-    const queryClient = useQueryClient();
-
+export default function FollowButton({ targetUserId, followingData }) {
     const isFollowing = followingData?.user_following?.includes(targetUserId);
 
-    const followMutation = useMutation({
-        mutationFn: () => callApi("POST", `follow/save`, { followed: targetUserId }),
-        onMutate: async () => {
-            await queryClient.cancelQueries(['following', myUserId]);
-            const previousFollowing = queryClient.getQueryData(['following', myUserId]);
+    // Mutación para seguir
+    const followMutation = useApiMutation("follow");
 
-            queryClient.setQueryData(['following', myUserId], oldData => ({
-                ...oldData,
-                user_following: [...(oldData?.user_following || []), targetUserId]
-            }));
-
-            return { previousFollowing };
-        },
-        onError: (_err, _vars, context) => {
-            queryClient.setQueryData(['following', myUserId], context.previousFollowing);
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries(['following', myUserId]);
-        }
-    });
-
-    const unfollowMutation = useMutation({
-        mutationFn: () => callApi("DELETE", `follow/unfollow/${targetUserId}`),
-        onMutate: async () => {
-            await queryClient.cancelQueries(['following', myUserId]);
-            const previousFollowing = queryClient.getQueryData(['following', myUserId]);
-
-            queryClient.setQueryData(['following', myUserId], oldData => ({
-                ...oldData,
-                user_following: (oldData?.user_following || []).filter(id => id !== targetUserId)
-            }));
-
-            return { previousFollowing };
-        },
-        onError: (_err, _vars, context) => {
-            queryClient.setQueryData(['following', myUserId], context.previousFollowing);
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries(['following', myUserId]);
-        }
-    });
+    // Mutación para dejar de seguir
+    const unfollowMutation = useApiMutation("unfollow");
 
     const handleClick = () => {
         if (isFollowing) {
-            unfollowMutation.mutate();
+            // Mutación DELETE
+            unfollowMutation.mutate({ id: targetUserId, method: "DELETE" });
+            console.log(targetUserId);
         } else {
-            followMutation.mutate();
+            // Mutación POST
+            followMutation.mutate({ followed: targetUserId });
         }
     };
 
