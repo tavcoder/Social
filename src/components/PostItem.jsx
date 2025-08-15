@@ -2,15 +2,16 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import CommentsItem from "./CommentsItem";
 import AddComment from "./AddComment";
+import RemovePostButton from "./RemovePostButton";
 import { useToggleLike } from "../hooks/useToggleLike";
 
-function PostItem({ post }) {
+function PostItem({ post,queryKeyToUpdate }) {
     const { user: authUser } = useContext(AuthContext);
     const [showComments, setShowComments] = useState(false);
     const myUserName = authUser?.name;
 
     const { isUserLiked, handleLikeToggle, isLoading } = useToggleLike();
-
+console.log(post._id);
     return (
         <div style={styles.container}>
             {/* Header */}
@@ -24,6 +25,7 @@ function PostItem({ post }) {
                     <strong>{post.user?.name || "User"}</strong>
                     <div style={styles.time}>{post.time}</div>
                 </div>
+                <RemovePostButton postId={post._id} queryKeyToUpdate={queryKeyToUpdate}/>
             </div>
 
             {/* Texto del post */}

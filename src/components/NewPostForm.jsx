@@ -10,7 +10,7 @@ function NewPostForm() {
     const [success, setSuccess] = useState(null);
 
     // Usamos el hook genérico para crear publicación
-    const createPublicationMutation = useApiMutation("addPost"); // o "publication" si defines la key
+    const createPublicationMutation = useApiMutation("addPost");
 
     async function handleSubmit(e) {
         e.preventDefault();

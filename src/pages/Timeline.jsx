@@ -4,7 +4,6 @@ import PostList from "../components/PostList";
 
 function Timeline() {
     const { user } = useContext(AuthContext);
-    console.log("usuario:", user.id);
 
     return (
         <div className="timeline-page">

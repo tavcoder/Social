@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { callApi } from "../api/apiHelper";
+import { useApiMutation } from "../api/useApiMutation";
 
 export const AuthContext = createContext(null);
 
@@ -13,28 +12,27 @@ export function AuthProvider(props) {
     const [token, setToken] = useState(() => localStorage.getItem("token"));
     const isAuthenticated = !!token;
 
-    const loginMutation = useMutation({
-        mutationFn: (credentials) => callApi("POST", "user/login", credentials),
-        onSuccess: (data) => {
-            const { user, token } = data;
-            localStorage.setItem("user", JSON.stringify(user));
-            localStorage.setItem("token", token);
-            setUser(user);
-            setToken(token);
-        },
-    });
+    const loginMutation = useApiMutation("login", null); // null porque no necesitamos cache invalidation
+    const registerMutation = useApiMutation("register", null);
 
-    const registerMutation = useMutation({
-        mutationFn: (userData) => callApi("POST", "user/register", userData),
-        onSuccess: (data) => {
-            const { user, token } = data;
-            localStorage.setItem("user", JSON.stringify(user));
-            localStorage.setItem("token", token);
-            setUser(user);
-            setToken(token);
-        },
-    });
+    // Wrap para agregar side effects específicos de login/register
+    const login = async (credentials) => {
+        const data = await loginMutation.mutateAsync({ ...credentials, method: "POST" });
+        const { user, token } = data;
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        setUser(user);
+        setToken(token);
+    };
 
+    const register = async (userData) => {
+        const data = await registerMutation.mutateAsync({ ...userData, method: "POST" });
+        const { user, token } = data;
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", token);
+        setUser(user);
+        setToken(token);
+    };
 
     const logout = () => {
         localStorage.removeItem("user");
@@ -43,7 +41,6 @@ export function AuthProvider(props) {
         setToken(null);
     };
 
-
     return (
         <AuthContext value={{
             user,
@@ -51,8 +48,8 @@ export function AuthProvider(props) {
             token,
             setToken,
             isAuthenticated,
-            login: loginMutation.mutateAsync,
-            register: registerMutation.mutateAsync,
+            login,
+            register,
             logout,
             loginStatus: {
                 isLoading: loginMutation.isLoading,
@@ -63,8 +60,9 @@ export function AuthProvider(props) {
                 isLoading: registerMutation.isLoading,
                 isError: registerMutation.isError,
                 error: registerMutation.error,
-            }
-        }}>
+            },
+        }}
+        >
             {props.children}
         </AuthContext>
     );

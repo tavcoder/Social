@@ -13,7 +13,6 @@ export default function FollowButton({ targetUserId, followingData }) {
         if (isFollowing) {
             // Mutación DELETE
             unfollowMutation.mutate({ id: targetUserId, method: "DELETE" });
-            console.log(targetUserId);
         } else {
             // Mutación POST
             followMutation.mutate({ followed: targetUserId });
