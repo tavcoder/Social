@@ -2,21 +2,18 @@ import { NavLink, useNavigate } from "react-router";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useApiQuery } from "../api/useApiQuery";
-import { FaHome, FaBell, FaUsers, FaComments } from "react-icons/fa";
+import { HouseSimple, ChatCircleDots, BellSimple, Users } from "phosphor-react";
 import "../styles/Navbar.css";
 
 function Navbar() {
   const { logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { data: profile } = useApiQuery('profile', user.id);
-
-
+  const { data: profile } = useApiQuery("profile", user.id);
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-  console.log("user:", user);
   return (
     <nav className="navbar">
       {/* Logo */}
@@ -27,23 +24,23 @@ function Navbar() {
       {/* Iconos de navegación */}
       <ul className="navbar__icons">
         <li>
-          <NavLink to="/home">
-            <FaHome />
+          <NavLink to="/feed">
+            <HouseSimple size={24} weight="regular" />
           </NavLink>
         </li>
         <li>
           <NavLink to="/messages">
-            <FaComments />
+            <ChatCircleDots size={24} weight="regular" />
           </NavLink>
         </li>
         <li>
           <NavLink to="/timeline">
-            <FaBell />
+            <BellSimple size={24} weight="regular" />
           </NavLink>
         </li>
         <li>
           <NavLink to="/people">
-            <FaUsers />
+            <Users size={24} weight="regular" />
           </NavLink>
         </li>
       </ul>
@@ -52,7 +49,9 @@ function Navbar() {
       <div className="navbar__user">
         <img src={profile?.user?.image} alt="avatar" />
         <span>{user?.name || "Usuario"}</span>
-        <button className="switch-button">Switch</button>
+        <button className="switch-button" onClick={handleLogout}>
+          Cerrar Sesión
+        </button>
       </div>
     </nav>
   );

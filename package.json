@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.56.2",
+    "phosphor-react": "^1.4.1",
     "react": "^19.0.0",
     "react-compiler-runtime": "^19.0.0-beta-df7b47d-20241124",
     "react-cookie-consent": "^9.0.0",

@@ -1,0 +1,177 @@
+.chat-container-column {
+    display: flex;
+    flex-direction: column;
+    /* Cambia de fila a columna */
+    max-width: 600px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 80vh;
+    /* O la altura que desees */
+}
+
+.chat-users-section {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}
+
+.chat-user {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.chat-user:hover {
+    background-color: #eef;
+}
+
+.chat-user.active {
+    background-color: #dce;
+    font-weight: bold;
+}
+
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.chat-user-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dot.online {
+    background-color: #4caf50;
+}
+
+.status-text {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.chat-main-section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #fff;
+    position: relative;
+}
+
+.chat-conversation-title {
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+}
+
+.chat-bubble {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 18px;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+}
+
+.chat-bubble.sent {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.chat-bubble.received {
+    background-color: #f1f1f1;
+    color: #333;
+    align-self: flex-start;
+}
+
+/* Contenedor principal para alinear el avatar y la entrada de texto */
+.chat-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Estilo del avatar (imagen o placeholder) */
+.chat-input-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-input-avatar.placeholder {
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #888;
+}
+
+/* Contenedor para el input y el botón */
+.chat-input-wrapper {
+    display: flex;
+    flex-grow: 1;
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    overflow: hidden;
+    /* Oculta cualquier contenido que se desborde del contenedor */
+    padding-right: 40px;
+    /* Deja espacio para el botón */
+}
+
+/* Estilo del input */
+.chat-input-wrapper input {
+    flex-grow: 1;
+    border: none;
+    padding: 8px 15px;
+    outline: none;
+}
+
+/* Estilo del botón de envío */
+.send-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    background-color: transparent;
+    border: none;
+    color: #007bff;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+}
+
+.send-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}

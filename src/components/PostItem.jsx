@@ -1,17 +1,18 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import CommentsItem from "./CommentsItem";
-import AddComment from "./AddComment";
 import RemovePostButton from "./RemovePostButton";
 import { useToggleLike } from "../hooks/useToggleLike";
+import { ChatCircle, Heart, Repeat, BookmarkSimple } from "phosphor-react";
 
-function PostItem({ post,queryKeyToUpdate }) {
+function PostItem({ post, queryKeyToUpdate }) {
     const { user: authUser } = useContext(AuthContext);
     const [showComments, setShowComments] = useState(false);
     const myUserName = authUser?.name;
 
     const { isUserLiked, handleLikeToggle, isLoading } = useToggleLike();
-console.log(post._id);
+    console.log(post._id);
+
     return (
         <div style={styles.container}>
             {/* Header */}
@@ -25,7 +26,7 @@ console.log(post._id);
                     <strong>{post.user?.name || "User"}</strong>
                     <div style={styles.time}>{post.time}</div>
                 </div>
-                <RemovePostButton postId={post._id} queryKeyToUpdate={queryKeyToUpdate}/>
+                <RemovePostButton postId={post._id} queryKeyToUpdate={queryKeyToUpdate} />
             </div>
 
             {/* Texto del post */}
@@ -52,16 +53,27 @@ console.log(post._id);
                     onClick={() => setShowComments((prev) => !prev)}
                     style={styles.button}
                 >
-                    💬 {post.comments?.length || 0} Comments
+                    <ChatCircle size={20} weight="regular" style={{ marginRight: "4px" }} />
+                    {post.comments?.length || 0}
                 </button>
                 <button
                     onClick={() => handleLikeToggle(post._id)}
                     disabled={isLoading}
+                    style={styles.button}
                 >
-                    {isUserLiked(post) ? "💙" : "🤍"} Like ({post.likes?.length || 0})
+                    {isUserLiked(post) ? (
+                        <Heart size={20} weight="fill" color="red" style={{ marginRight: "4px" }} />
+                    ) : (
+                        <Heart size={20} weight="regular" style={{ marginRight: "4px" }} />
+                    )}
+                    {post.likes?.length || 0}
                 </button>
-                <div>🔁 231 Share</div>
-                <div>💾 12 Saved</div>
+                <button style={styles.button}>
+                    <Repeat size={20} weight="regular" style={{ marginRight: "4px" }} /> 231
+                </button>
+                <button style={styles.button}>
+                    <BookmarkSimple size={20} weight="regular" style={{ marginRight: "4px" }} /> 12
+                </button>
             </div>
 
             {showComments && post.comments && (
@@ -69,17 +81,9 @@ console.log(post._id);
                     comments={post.comments}
                     avatar={post.user?.image}
                     user={myUserName}
+                    postId={post._id}
                 />
             )}
-
-            <div style={styles.commentBox}>
-                <img
-                    src="/avatar.png"
-                    alt="avatar"
-                    style={styles.smallAvatar}
-                />
-                <AddComment postId={post._id} />
-            </div>
         </div>
     );
 }
@@ -99,8 +103,23 @@ const styles = {
     time: { fontSize: "0.8rem", color: "#777" },
     text: { marginBottom: "1rem", fontSize: "0.95rem", lineHeight: "1.4" },
     image: { width: "100%", borderRadius: "8px", objectFit: "cover" },
-    actions: { display: "flex", justifyContent: "space-between", color: "#555", fontSize: "0.85rem", marginBottom: "1rem" },
-    button: { cursor: "pointer", background: "none", border: "none", color: "#555" },
+    actions: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        color: "#555",
+        fontSize: "0.85rem",
+        marginBottom: "1rem",
+    },
+    button: {
+        cursor: "pointer",
+        background: "none",
+        border: "none",
+        color: "#555",
+        display: "flex",
+        alignItems: "center",
+        padding: "0.5rem",
+    },
     commentBox: { display: "flex", alignItems: "center", borderTop: "1px solid #eee", paddingTop: "0.5rem" },
     smallAvatar: { width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", marginRight: "0.5rem" },
 };

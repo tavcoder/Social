@@ -1,6 +1,7 @@
+import AddComment from "./AddComment";
 
-export default function CommentsItem({ comments, avatar, user}) {
-   
+export default function CommentsItem({ comments, avatar, user,  postId  }) {
+
 
     return (
         <div style={{ marginTop: "1rem" }}>
@@ -44,7 +45,8 @@ export default function CommentsItem({ comments, avatar, user}) {
                     </div>
                 ))
             )}
-         
+
+            <AddComment postId={postId} />
         </div>
     );
 }

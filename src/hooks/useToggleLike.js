@@ -57,5 +57,9 @@ export function useToggleLike() {
         toggleLikeMutation.mutate(publicationId);
     };
 
-    return { isUserLiked, handleLikeToggle, isLoading: toggleLikeMutation.isLoading };
+    return {
+        isUserLiked,
+        handleLikeToggle,
+        isLoading: toggleLikeMutation.isLoading,
+    };
 }

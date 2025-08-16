@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { useApiMutation } from "../api/useApiMutation";
 import { AuthContext } from "../context/AuthContext.jsx";
+import ChatInput from "./ChatInput"; // Asegúrate de que la ruta sea correcta
 
 function NewPostForm() {
     const { token } = useContext(AuthContext);
@@ -9,11 +10,10 @@ function NewPostForm() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    // Usamos el hook genérico para crear publicación
     const createPublicationMutation = useApiMutation("addPost");
+    const loading = createPublicationMutation.isLoading;
 
-    async function handleSubmit(e) {
-        e.preventDefault();
+    const handleSend = async () => {
         setError(null);
         setSuccess(null);
 
@@ -23,14 +23,14 @@ function NewPostForm() {
         }
 
         try {
-            // 1. Crear publicación con texto usando el hook genérico
+            // 1. Crear publicación con texto
             const response = await createPublicationMutation.mutateAsync({ text });
 
             if (!response?.publicationStored?._id) {
                 throw new Error("Error creando la publicación");
             }
 
-            // 2. Si hay archivo, subirlo con fetch y FormData
+            // 2. Si hay archivo, subirlo con fetch
             if (file) {
                 const formData = new FormData();
                 formData.append("file0", file);
@@ -58,20 +58,19 @@ function NewPostForm() {
         } catch (err) {
             setError(err.message || "Error desconocido");
         }
-    }
-
-    const loading = createPublicationMutation.isLoading;
+    };
 
     return (
-        <form className="new-post-form" style={{ border: "1px solid #ddd", padding: "1rem" }} onSubmit={handleSubmit}>
+        <div className="new-post-form" style={{ border: "1px solid #ddd", padding: "1rem" }}>
             <label htmlFor="text">¿Qué estás pensando hoy?</label>
-            <textarea
-                id="text"
-                rows="3"
-                style={{ width: "100%", marginTop: "0.5rem" }}
+
+            <ChatInput
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-            ></textarea>
+                onSend={handleSend}
+                placeholder="Escribe tu publicación..."
+                disabled={loading}
+            />
 
             <label htmlFor="file" style={{ marginTop: "1rem", display: "block" }}>
                 Sube tu foto
@@ -81,19 +80,12 @@ function NewPostForm() {
                 id="file"
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files[0])}
-            />
-
-            <button
-                type="submit"
-                style={{ marginTop: "1rem", backgroundColor: "green", color: "white", padding: "0.5rem 1rem" }}
                 disabled={loading}
-            >
-                {loading ? "Enviando..." : "Enviar"}
-            </button>
+            />
 
             {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
             {success && <p style={{ color: "green", marginTop: "1rem" }}>{success}</p>}
-        </form>
+        </div>
     );
 }
 

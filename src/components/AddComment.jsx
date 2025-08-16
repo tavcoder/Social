@@ -1,39 +1,28 @@
 import { useState } from "react";
+import ChatInput from "./ChatInput"; // Asegúrate de que la ruta sea correcta
 import { useApiMutation } from "../api/useApiMutation"; // tu hook genérico
 
 export default function AddComment({ postId }) {
   const [text, setText] = useState("");
 
-  // Usamos el hook genérico pasando el key "addComment"
   const { mutate, isLoading } = useApiMutation("addComment");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSend = () => {
     if (!text.trim()) return;
 
-    // Importante: pasamos { id: postId, text: ... } porque el hook espera "variables.id"
     mutate({ id: postId, text: text.trim() });
-
-    setText(""); // reset input después de mutar
+    setText(""); // Restablece la entrada después de enviar
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
-      <textarea
-        placeholder="Add a comment..."
+    <div className="comments">
+      <ChatInput
         value={text}
         onChange={(e) => setText(e.target.value)}
-        rows={3}
-        style={{ width: "100%", padding: "0.5rem" }}
-        disabled={isLoading}
+        onSend={handleSend}
+        placeholder="Añade un comentario..."
+        disabled={isLoading} // Puedes pasar esta prop al input dentro de ChatInput
       />
-      <button
-        type="submit"
-        disabled={isLoading || !text.trim()}
-        style={{ marginTop: "0.5rem" }}
-      >
-        {isLoading ? "Posting..." : "Post Comment"}
-      </button>
-    </form>
+    </div>
   );
 }
