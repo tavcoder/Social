@@ -38,7 +38,7 @@ export function useAuthForm(mode = "login") {
                 await register(formData);
             }
 
-            navigate("/home");
+            navigate("/feed");
         } catch (err) {
             // No hace falta setError porque ya lo tienes desde `loginStatus.error`
         }

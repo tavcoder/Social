@@ -29,17 +29,17 @@ function Navbar() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/messages">
+          <NavLink to="messages">
             <ChatCircleDots size={24} weight="regular" />
           </NavLink>
         </li>
         <li>
-          <NavLink to="/timeline">
+          <NavLink to="timeline">
             <BellSimple size={24} weight="regular" />
           </NavLink>
         </li>
         <li>
-          <NavLink to="/people">
+          <NavLink to="people">
             <Users size={24} weight="regular" />
           </NavLink>
         </li>
