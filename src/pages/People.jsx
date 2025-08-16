@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useApiQuery } from "../api/useApiQuery";
-import FollowButton from "../components/FollowButton";
+import FollowButton from "../components/common/FollowButton";
+import UserRow from "../components/common/UserRow";
 
 function People() {
     const { user: authUser } = useContext(AuthContext);
@@ -50,13 +51,7 @@ function People() {
                         alignItems: "center",
                     }}
                 >
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <img src={u.image || '/avatar.png'} width="50" alt={u.name} />
-                        <div>
-                            <strong>{u.name}</strong>
-                            <p>{u.nick}</p>
-                        </div>
-                    </div>
+                    <UserRow avatar={u.image} name={u.name} subText={u.nick}/>
                     <FollowButton
                         targetUserId={u._id}
                         myUserId={myUserId}

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import MainLayout from "./pages/MainLayout";
-import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from "./components/navigation/PrivateRoute";
 import AuthPage from "./pages/AuthPage";
+import MainLayout from "./pages/MainLayout";
 import Home from "./pages/Home";
 import Timeline from "./pages/Timeline";
 import People from "./pages/People";

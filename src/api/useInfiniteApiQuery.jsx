@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { get } from "./apiHelper";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/common/Spinner";
 import { queryEndpointsMap, querySelectMap } from "./queryMaps";
 
 export function useInfiniteApiQuery(key, params, options = {}) {

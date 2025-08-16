@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import CommentsItem from "./CommentsItem";
-import RemovePostButton from "./RemovePostButton";
-import { useToggleLike } from "../hooks/useToggleLike";
+import RemovePostButton from "../post/RemovePostButton";
+import { useToggleLike } from "../../hooks/useToggleLike";
 import { ChatCircle, Heart, Repeat, BookmarkSimple } from "phosphor-react";
 
 function PostItem({ post, queryKeyToUpdate }) {

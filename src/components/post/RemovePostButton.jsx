@@ -1,5 +1,5 @@
 // RemovePostButton.jsx
-import { useApiMutation } from "../api/useApiMutation";
+import { useApiMutation } from "../../api/useApiMutation";
 
 // El componente padre (PostList) debe pasar la clave sin el número de página.
 // Por ejemplo, si la clave completa es ["userPosts", "123", 1],

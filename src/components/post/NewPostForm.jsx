@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
-import { useApiMutation } from "../api/useApiMutation";
-import { AuthContext } from "../context/AuthContext.jsx";
-import ChatInput from "./ChatInput"; // Asegúrate de que la ruta sea correcta
+import { useApiMutation } from "../../api/useApiMutation.js";
+import { AuthContext } from "../../context/AuthContext.jsx";
+import ChatInput from "../chat/ChatInput.jsx"; // Asegúrate de que la ruta sea correcta
 
 function NewPostForm() {
     const { token } = useContext(AuthContext);

@@ -1,8 +1,8 @@
 import { Outlet } from "react-router";
-import UserProfileSidebar from "../components/UserProfileSidebar";
-import UserSuggestions from "../components/UserSuggestions";
-import Navbar from "../components/Navbar";
-import Messages from "../components/Messages";
+import UserProfileSidebar from "../components/user/UserProfileSidebar";
+import UserSuggestions from "../components/user/UserSuggestions";
+import Navbar from "../components/navigation/Navbar";
+import Messages from "../components/chat/Messages";
 import "../styles/MainLayout.css";
 
 function MainLayout() {

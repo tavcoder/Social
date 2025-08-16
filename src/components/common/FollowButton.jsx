@@ -1,4 +1,4 @@
-import { useApiMutation } from "../api/useApiMutation";
+import { useApiMutation } from "../../api/useApiMutation";
 
 export default function FollowButton({ targetUserId, followingData }) {
     const isFollowing = followingData?.user_following?.includes(targetUserId);

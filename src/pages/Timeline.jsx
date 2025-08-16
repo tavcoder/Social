@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Ejemplo de tu contexto
-import PostList from "../components/PostList";
+import PostList from "../components/post/PostList";
 
 function Timeline() {
     const { user } = useContext(AuthContext);

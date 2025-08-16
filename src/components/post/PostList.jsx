@@ -1,6 +1,6 @@
 // PostList.jsx
-import PostItem from "./PostItem";
-import { useInfiniteApiQuery } from "../api/useInfiniteApiQuery"; // Importa el hook correcto
+import PostItem from "../post/PostItem";
+import { useInfiniteApiQuery } from "../../api/useInfiniteApiQuery"; // Importa el hook correcto
 
 function PostList({ userId }) {
     const page = 1;

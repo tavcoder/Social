@@ -1,7 +1,7 @@
 import { useState } from "react";
-import ChatInput from "./ChatInput";
-import UserList from "./UserList"; // Importa el nuevo componente
-import "../styles/Messages.css";
+import ChatInput from "../chat/ChatInput";
+import UserList from "../user/UserList"; // Importa el nuevo componente
+import "../../styles/Messages.css";
 
 const fakeUsers = [
     { id: 1, name: "Ana López", nick: "anita", avatar: "/avatar.png", online: true },
@@ -18,6 +18,8 @@ const initialConversations = {
         { from: "Tú", text: "Sí, ahí estaré." },
     ],
 };
+
+const lastSeen = "2:00 am";
 
 function Messages() {
     const [selectedUserId, setSelectedUserId] = useState(null);
@@ -36,13 +38,19 @@ function Messages() {
 
     return (
         <div className="chat-container-column">
-            <h2 className="chat-title">Quick Chat</h2>
+            <h2 className="chat-title">Messages</h2>
             <UserList
                 users={fakeUsers}
                 onUserClick={setSelectedUserId}
                 selectedUserId={selectedUserId}
-                showStatus={true}
+                getSubText={(user) => {
+                    const msgs = conversations[user.id] || [];
+                    if (msgs.length === 0) return user.online ? "Online" : user.lastSeen || "";
+                    return msgs[msgs.length - 1].text; // último mensaje
+                }}
+                lastSeen={lastSeen}
             />
+
 
             <section className="chat-main-section">
                 {selectedUser ? (

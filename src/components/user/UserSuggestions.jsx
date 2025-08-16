@@ -1,9 +1,9 @@
 // src/components/UserSuggestions.jsx
 import UserList from "./UserList";
-import FollowButton from "./FollowButton"; // Asume que este componente existe
-import { useApiQuery } from "../api/useApiQuery";
+import FollowButton from "../common/FollowButton"; // Asume que este componente existe
+import { useApiQuery } from "../../api/useApiQuery";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 function UserSuggestions() {
     const { user: authUser } = useContext(AuthContext);

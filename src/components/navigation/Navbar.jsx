@@ -1,9 +1,10 @@
 import { NavLink, useNavigate } from "react-router";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useApiQuery } from "../api/useApiQuery";
+import { AuthContext } from "../../context/AuthContext";
+import { useApiQuery } from "../../api/useApiQuery";
 import { HouseSimple, ChatCircleDots, BellSimple, Users } from "phosphor-react";
-import "../styles/Navbar.css";
+import Avatar from "../common/Avatar"; // Ajusta la ruta según tu estructura
+import "../../styles/Navbar.css";
 
 function Navbar() {
   const { logout, user } = useContext(AuthContext);
@@ -14,6 +15,7 @@ function Navbar() {
     logout();
     navigate("/");
   };
+
   return (
     <nav className="navbar">
       {/* Logo */}
@@ -47,7 +49,7 @@ function Navbar() {
 
       {/* Usuario */}
       <div className="navbar__user">
-        <img src={profile?.user?.image} alt="avatar" />
+        <Avatar src={profile?.user?.image} alt={user?.name} size={40} />
         <span>{user?.name || "Usuario"}</span>
         <button className="switch-button" onClick={handleLogout}>
           Cerrar Sesión

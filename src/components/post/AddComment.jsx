@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ChatInput from "./ChatInput"; // Asegúrate de que la ruta sea correcta
-import { useApiMutation } from "../api/useApiMutation"; // tu hook genérico
+import ChatInput from "../chat/ChatInput"; // Asegúrate de que la ruta sea correcta
+import { useApiMutation } from "../../api/useApiMutation"; // tu hook genérico
 
 export default function AddComment({ postId }) {
   const [text, setText] = useState("");

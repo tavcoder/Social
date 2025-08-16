@@ -1,4 +1,4 @@
-import '../styles/Messages.css';
+import '../../styles/Messages.css';
 
 function ChatInput({ value, onChange, onSend, placeholder, disabled, avatarUrl }) {
     const handleKeyPress = (e) => {

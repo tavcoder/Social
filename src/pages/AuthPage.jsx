@@ -2,7 +2,7 @@
 // en dependencia de la prop que s ele pase.
 
 import { useState } from "react";
-import AuthForm from "../components/AuthForm";
+import AuthForm from "../components/auth/AuthForm";
 
 function AuthPage() {
     const [mode, setMode] = useState("login");

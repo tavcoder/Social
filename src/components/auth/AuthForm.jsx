@@ -1,6 +1,6 @@
 //Interfaz visual que muetsra el formulario de autenticación
 //usa la lógica del useAuthForm
-import { useAuthForm } from "../hooks/useAuthForm";
+import { useAuthForm } from "../../hooks/useAuthForm";
 
 function AuthForm({ mode = "login" }) {
     const {
