@@ -7,11 +7,11 @@ import "../styles/MainLayout.css";
 
 function MainLayout() {
     return (
-        <div className="app-container">
+        <div className="app__container">
             {/* Navbar arriba */}
             <Navbar />
 
-            <div className="content-container">
+            <div className="content__container">
                 {/* Columna izquierda: perfil + actividad */}
                 <aside className="sidebar-left">
                     <UserProfileSidebar />

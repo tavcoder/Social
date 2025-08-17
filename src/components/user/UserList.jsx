@@ -1,26 +1,19 @@
 // src/components/UserList.jsx
 import UserRow from "../common/UserRow";
-import OnlineStatus from "../common/OnlineStatus";
-import "../../styles/Messages.css";
 
-function UserList({ users, onUserClick, selectedUserId, getSubText, actionComponent, lastSeen }) {
+function UserList({ users, onUserClick, selectedUserId, getSubText, actionComponent }) {
     return (
-        <div className="chat-users-section">
+        <div className="user__list">
             {users.map((user) => (
-                <div
-                    key={user.id}
-                    className={`chat-user ${selectedUserId === user.id ? "active" : ""}`}
-                    onClick={() => onUserClick && onUserClick(user.id)}
-                >
-                    <UserRow
-                        name={user.name}
-                        subText={getSubText ? getSubText(user) : ""}
-                        isOnline={user.online}
-                        ActionComponent={actionComponent}
-                        user={user}
-                    />
-                    <OnlineStatus isOnline={user.online} lastSeen={lastSeen} />
-                </div>
+                <UserRow
+                    key={user._id}
+                    name={user.name}
+                    subText={getSubText ? getSubText(user) : ""}
+                    ActionComponent={actionComponent}
+                    user={user}
+                    className={`user__list__item ${selectedUserId === user._id ? "user__list__item--active" : ""}`}
+                    onClick={() => onUserClick && onUserClick(user._id)}
+                />
             ))}
         </div>
     );

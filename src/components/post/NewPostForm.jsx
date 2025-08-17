@@ -1,10 +1,11 @@
 import { useState, useContext } from "react";
+import { Image } from "phosphor-react";
 import { useApiMutation } from "../../api/useApiMutation.js";
 import { AuthContext } from "../../context/AuthContext.jsx";
-import ChatInput from "../chat/ChatInput.jsx"; // Asegúrate de que la ruta sea correcta
+import TextInput from "../common/TextInput.jsx";
 
 function NewPostForm() {
-    const { token } = useContext(AuthContext);
+    const { token } = useContext(AuthContext); // ✅ dentro del componente
     const [text, setText] = useState("");
     const [file, setFile] = useState(null);
     const [error, setError] = useState(null);
@@ -30,7 +31,7 @@ function NewPostForm() {
                 throw new Error("Error creando la publicación");
             }
 
-            // 2. Si hay archivo, subirlo con fetch
+            // 2. Si hay archivo, subirlo
             if (file) {
                 const formData = new FormData();
                 formData.append("file0", file);
@@ -61,19 +62,18 @@ function NewPostForm() {
     };
 
     return (
-        <div className="new-post-form" style={{ border: "1px solid #ddd", padding: "1rem" }}>
-            <label htmlFor="text">¿Qué estás pensando hoy?</label>
-
-            <ChatInput
+        <div className="new__post__form card">
+            <TextInput
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onSend={handleSend}
-                placeholder="Escribe tu publicación..."
+                placeholder="What´s on your mind?"
                 disabled={loading}
             />
 
-            <label htmlFor="file" style={{ marginTop: "1rem", display: "block" }}>
-                Sube tu foto
+            <label htmlFor="file" className="upload__btn">
+                <Image className="icon" size={18} weight="bold" />
+                <span className="upload__text">Image</span>
             </label>
             <input
                 type="file"
@@ -81,10 +81,11 @@ function NewPostForm() {
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files[0])}
                 disabled={loading}
+                style={{ display: "none" }}
             />
 
-            {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
-            {success && <p style={{ color: "green", marginTop: "1rem" }}>{success}</p>}
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">{success}</p>}
         </div>
     );
 }

@@ -1,4 +1,4 @@
-.new-post-container {
+.new-post__container {
     background-color: white;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
@@ -16,7 +16,7 @@
     margin-bottom: 12px;
 }
 
-.user-avatar {
+.user__avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -24,7 +24,7 @@
     /* Color de ejemplo */
 }
 
-.post-input {
+.post__input {
     flex-grow: 1;
     border: none;
     outline: none;
@@ -33,7 +33,7 @@
     padding: 8px 0;
 }
 
-.emoji-button {
+.emoji__button {
     background: none;
     border: none;
     font-size: 24px;
@@ -50,13 +50,13 @@
     margin-top: 12px;
 }
 
-.action-buttons {
+.action__buttons {
     display: flex;
     gap: 16px;
 }
 
 .action-label,
-.action-button {
+.action__button {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -84,7 +84,7 @@
     cursor: pointer;
 }
 
-.submit-button {
+.submit__button {
     width: 100%;
     margin-top: 16px;
     padding: 10px;
@@ -97,7 +97,7 @@
     cursor: pointer;
 }
 
-.submit-button:disabled {
+.submit__button:disabled {
     background-color: #a0c9f1;
     cursor: not-allowed;
 }

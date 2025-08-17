@@ -1,16 +1,16 @@
 // components/common/ProfileStats.jsx
 const ProfileStats = ({ counters }) => {
     return (
-        <div className="profile-stats">
-            <div className="stats-counters">
+        <div className="profile__stats">
+            <div className="stats__counters">
                 <strong>{counters.publications}</strong>
                 <span>Posts</span>
             </div>
-            <div className="stats-counters">
+            <div className="stats__counters">
                 <strong>{counters.followed}</strong>
                 <span>Followers</span>
             </div>
-            <div className="stats-counters">
+            <div className="stats__counters">
                 <strong>{counters.following}</strong>
                 <span>Following</span>
             </div>

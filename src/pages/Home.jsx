@@ -9,8 +9,6 @@ function Home() {
 
     return (
         <section>
-            <h2>Hola, {user?.name}</h2>
-            <h2>Timeline</h2>
             <NewPostForm />
             <PostList />
         </section>

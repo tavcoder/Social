@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
-import CommentsItem from "./CommentsItem";
-import RemovePostButton from "../post/RemovePostButton";
-import { useToggleLike } from "../../hooks/useToggleLike";
+import { format } from "date-fns";
 import { ChatCircle, Heart, Repeat, BookmarkSimple } from "phosphor-react";
+import { AuthContext } from "../../context/AuthContext";
+import { useToggleLike } from "../../hooks/useToggleLike";
+import CommentsItem from "./CommentsItem";
+import UserRow from "../common/UserRow";
+import RemovePostButton from "../post/RemovePostButton";
 
 function PostItem({ post, queryKeyToUpdate }) {
     const { user: authUser } = useContext(AuthContext);
@@ -11,30 +13,30 @@ function PostItem({ post, queryKeyToUpdate }) {
     const myUserName = authUser?.name;
 
     const { isUserLiked, handleLikeToggle, isLoading } = useToggleLike();
-    console.log(post._id);
+
+    const RemovePostButtonWrapper = () => (
+        <RemovePostButton targetUserId={post._id} myUserId={authUser.id} />
+    );
+
+    const formattedDate = format(new Date(post.created_at), "d MMM 'at' H:mm");
+    console.log(post.created_at)
 
     return (
-        <div style={styles.container}>
+        <div className="post__item card">
             {/* Header */}
-            <div style={styles.header}>
-                <img
-                    src={post.user?.image || "/avatar.png"}
-                    alt="avatar"
-                    style={styles.avatar}
-                />
-                <div>
-                    <strong>{post.user?.name || "User"}</strong>
-                    <div style={styles.time}>{post.time}</div>
-                </div>
-                <RemovePostButton postId={post._id} queryKeyToUpdate={queryKeyToUpdate} />
-            </div>
+            <UserRow
+                avatar={post.user.image}
+                name={post.user.name}
+                subtext={formattedDate}
+                ActionComponent={RemovePostButtonWrapper}
+            />
 
             {/* Texto del post */}
-            <p style={styles.text}>{post.text}</p>
+            <p className="post__text">{post.text}</p>
 
             {/* Imagen única */}
-            {post.file && (
-                <div style={{ marginBottom: "1rem" }}>
+            {post.file?.trim() && (
+                <div className="post__image__wrapper">
                     <img
                         src={
                             post.file.startsWith("http")
@@ -42,37 +44,38 @@ function PostItem({ post, queryKeyToUpdate }) {
                                 : `http://localhost:3900/api/publication/media/${post.file}`
                         }
                         alt="post-image"
-                        style={styles.image}
+                        className="post__image"
                     />
                 </div>
             )}
 
+
             {/* Reacciones */}
-            <div style={styles.actions}>
+            <div className="post__actions">
                 <button
                     onClick={() => setShowComments((prev) => !prev)}
-                    style={styles.button}
+                    className="post__button icon"
                 >
-                    <ChatCircle size={20} weight="regular" style={{ marginRight: "4px" }} />
+                    <ChatCircle size={16} weight="regular" className="icon" />
                     {post.comments?.length || 0}
                 </button>
                 <button
                     onClick={() => handleLikeToggle(post._id)}
                     disabled={isLoading}
-                    style={styles.button}
+                    className="post__button icon"
                 >
                     {isUserLiked(post) ? (
-                        <Heart size={20} weight="fill" color="red" style={{ marginRight: "4px" }} />
+                        <Heart size={16} weight="fill" color="red" className="icon" />
                     ) : (
-                        <Heart size={20} weight="regular" style={{ marginRight: "4px" }} />
+                        <Heart size={16} weight="regular" className="icon" />
                     )}
                     {post.likes?.length || 0}
                 </button>
-                <button style={styles.button}>
-                    <Repeat size={20} weight="regular" style={{ marginRight: "4px" }} /> 231
+                <button className="post__button icon">
+                    <Repeat size={16} weight="regular" className="icon" /> 231
                 </button>
-                <button style={styles.button}>
-                    <BookmarkSimple size={20} weight="regular" style={{ marginRight: "4px" }} /> 12
+                <button className="post__button icon">
+                    <BookmarkSimple size={16} weight="regular" className="icon" /> 12
                 </button>
             </div>
 
@@ -87,41 +90,5 @@ function PostItem({ post, queryKeyToUpdate }) {
         </div>
     );
 }
-
-const styles = {
-    container: {
-        border: "1px solid #eee",
-        borderRadius: "12px",
-        padding: "1rem",
-        marginBottom: "2rem",
-        backgroundColor: "#fff",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-        fontFamily: "Arial, sans-serif",
-    },
-    header: { display: "flex", alignItems: "center", marginBottom: "1rem" },
-    avatar: { width: "48px", height: "48px", borderRadius: "50%", objectFit: "cover", marginRight: "1rem" },
-    time: { fontSize: "0.8rem", color: "#777" },
-    text: { marginBottom: "1rem", fontSize: "0.95rem", lineHeight: "1.4" },
-    image: { width: "100%", borderRadius: "8px", objectFit: "cover" },
-    actions: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        color: "#555",
-        fontSize: "0.85rem",
-        marginBottom: "1rem",
-    },
-    button: {
-        cursor: "pointer",
-        background: "none",
-        border: "none",
-        color: "#555",
-        display: "flex",
-        alignItems: "center",
-        padding: "0.5rem",
-    },
-    commentBox: { display: "flex", alignItems: "center", borderTop: "1px solid #eee", paddingTop: "0.5rem" },
-    smallAvatar: { width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", marginRight: "0.5rem" },
-};
 
 export default PostItem;

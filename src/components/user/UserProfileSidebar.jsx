@@ -20,7 +20,7 @@ export default function UserProfileSidebar() {
     if (!profile) return <div>Error al cargar el perfil.</div>;
 
     return (
-        <div className="user-profile">
+        <div className="user__profile card card--hover">
             <UserBadge avatar={profile.user.image} name={profile.user.name} />
             <ProfileStats counters={counters} />
         </div>
