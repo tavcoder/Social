@@ -1,14 +1,12 @@
 import { NavLink, useNavigate } from "react-router";
-import { useContext, useId } from "react";
-import { AuthContext } from "../../context/AuthContext";
-import { useApiQuery } from "../../api/useApiQuery";
-import { BellSimple} from "phosphor-react";
+import { useId } from "react";
+import { BellSimple } from "phosphor-react";
+import { useProfile } from "../../hooks/useProfile";
 import Avatar from "../common/Avatar";
 
 function Navbar() {
-  const { logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { data: profile } = useApiQuery("profile", user.id);
+  const { authUser, profile } = useProfile();
   const id = useId(); // Genera un ID único para este componente
 
   const handleLogout = () => {
@@ -17,7 +15,7 @@ function Navbar() {
   };
 
   const menuItems = [
-    { name: "Feed", path: "home" },
+    { name: "Feed", path: "" },
     { name: "Timeline", path: "timeline" },
     { name: "People", path: "people" },
   ];
@@ -46,7 +44,7 @@ function Navbar() {
       <div className="navbar__user">
         <Avatar
           src={profile?.user?.image}
-          alt={user?.name}
+          alt={authUser?.name}
           size={30}
           className="navbar__avatar"
         />

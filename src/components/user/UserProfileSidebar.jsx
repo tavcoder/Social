@@ -1,22 +1,16 @@
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
 import { useApiQuery } from "../../api/useApiQuery";
+import { useProfile } from "../../hooks/useProfile";
 import UserBadge from "../common/UserBadge";
 import ProfileStats from "./ProfileStats";
 
 export default function UserProfileSidebar() {
-    const { user } = useContext(AuthContext);
-    const userId = user?.id;
-    const { data: profile, isLoading: loadingProfile } = useApiQuery(
-        "profile",
-        userId
-    );
+    const {authUser, profile } = useProfile();
     const { data: counters, isLoading: loadingCounters } = useApiQuery(
         "counters",
-        userId
+        authUser.id
     );
 
-    if (loadingProfile || loadingCounters) return <div>Cargando perfil...</div>;
+    if (loadingCounters) return <div>Cargando perfil...</div>;
     if (!profile) return <div>Error al cargar el perfil.</div>;
 
     return (

@@ -1,9 +1,8 @@
 // components/post/buttons/PostActionButton.jsx
-export default function PostActionButton({ onClick, disabled, icon, count }) {
+export default function PostActionButton({ onClick, icon, count }) {
   return (
     <button
       onClick={onClick}
-      disabled={disabled}
       className="post__button icon"
     >
       {icon}

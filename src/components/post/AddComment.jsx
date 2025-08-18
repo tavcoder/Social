@@ -1,10 +1,9 @@
-import { useState } from "react";
-import ChatInput from "../common/TextInput"; // Asegúrate de que la ruta sea correcta
-import { useApiMutation } from "../../api/useApiMutation"; // tu hook genérico
+import { useState} from "react";
+import TextInput from "../common/TextInput";
+import { useApiMutation } from "../../api/useApiMutation";
 
 export default function AddComment({ postId }) {
   const [text, setText] = useState("");
-
   const { mutate, isLoading } = useApiMutation("addComment");
 
   const handleSend = () => {
@@ -16,7 +15,7 @@ export default function AddComment({ postId }) {
 
   return (
     <div className="comments">
-      <ChatInput
+      <TextInput
         value={text}
         onChange={(e) => setText(e.target.value)}
         onSend={handleSend}

@@ -1,7 +1,10 @@
+import { useProfile } from "../../hooks/useProfile";
 import { Smiley } from "phosphor-react";
 import Avatar from "./Avatar";
 
-export default function TextInput({ value, onChange, onSend, placeholder, disabled, avatarUrl }) {
+export default function TextInput({ value, onChange, onSend, placeholder, disabled }) {
+    const {authUser, profile } = useProfile();
+
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             onSend();
@@ -12,7 +15,12 @@ export default function TextInput({ value, onChange, onSend, placeholder, disabl
 
     return (
         <div className="text__input__container">
-            <Avatar url={avatarUrl} />
+            <Avatar
+                src={profile?.user?.image}
+                alt={authUser?.name}
+                size={30}
+            />
+
 
             <div className="text__input__wrapper">
                 {/* Input con botón de emoji dentro */}
