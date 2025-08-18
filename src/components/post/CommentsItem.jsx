@@ -1,11 +1,13 @@
 import AddComment from "./AddComment";
 import { useApiQuery } from "../../api/useApiQuery";
 import UserRow from "../common/UserRow";
+import RemoveButton from "../common/RemoveButton";
 import "../../styles/CommentsItem.css";
 
-export default function CommentsItem({ postId}) {
+export default function CommentsItem({ postId }) {
+
     const { data: comments = [], isLoading } = useApiQuery("comments", postId);
-    console.log(comments)
+    console.log(comments);
     if (isLoading) return <p>Cargando comentarios...</p>;
 
     return (
@@ -19,13 +21,19 @@ export default function CommentsItem({ postId}) {
                             avatar={comment.user.image}
                             name={comment.user.name}
                             subText={comment.text}
-                            targetUserId={comment.user._id}
+                            className={`comment__header`}
                         />
                         <div className="comment__date">
                             {comment.created_at
                                 ? new Date(comment.created_at).toLocaleString()
                                 : ""}
                         </div>
+                        <RemoveButton
+                            elementId={comment._id}
+                            ownerId={comment.user._id}
+                            queryKey={"userComments"}
+                            resourceType="Comment"
+                        />
                     </div>
                 ))
             )}

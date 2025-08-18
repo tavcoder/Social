@@ -266,6 +266,45 @@ const addComment = async (req, res) => {
     }
 }
 
+// Eliminar comentario
+const removeComment = async (req, res) => {
+    const publicationId = req.params.id; // ID de la publicación
+    const commentId = req.params.commentId; // ID del comentario
+    const userId = req.user.id; // Usuario que hace la petición
+
+    try {
+        // Buscar la publicación
+        const publication = await Publication.findById(publicationId);
+        if (!publication) {
+            return res.status(404).send({ status: "error", message: "Publicación no encontrada" });
+        }
+
+        // Buscar el comentario
+        const comment = publication.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).send({ status: "error", message: "Comentario no encontrado" });
+        }
+
+        // Solo el usuario que escribió el comentario o el dueño de la publicación puede borrarlo
+        if (comment.user.toString() !== userId && publication.user.toString() !== userId) {
+            return res.status(403).send({ status: "error", message: "No tienes permiso para eliminar este comentario" });
+        }
+
+        // Eliminar el comentario
+        comment.remove();
+        await publication.save();
+
+        return res.status(200).send({
+            status: "success",
+            message: "Comentario eliminado",
+            publication
+        });
+    } catch (error) {
+        return res.status(500).send({ status: "error", message: "Error al eliminar comentario" });
+    }
+}
+
+
 // Listar comentarios
 const listComments = async (req, res) => {
     const publicationId = req.params.id;
@@ -298,5 +337,6 @@ module.exports = {
     feed,
     toggleLike,
     addComment,
+    removeComment,
     listComments
 }

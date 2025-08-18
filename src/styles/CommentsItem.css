@@ -1,6 +1,7 @@
 /* src/components/CommentsItem.css */
 .comments__container {
     margin-top: 1rem;
+    width: 100%;
 }
 
 .comments__empty-message {
@@ -12,26 +13,11 @@
     border-top: 1px solid #eee;
     padding: 0.5rem 0;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    width: 40rem;
 }
 
-.comment__avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 0.5rem;
-}
-
-.comment__user-name {
-    font-size: 0.9rem;
-}
-
-.comment__text {
-    margin: 0.2rem 0;
-    font-size: 0.85rem;
-    color: #333;
-}
 
 .comment__date {
     font-size: 0.75rem;

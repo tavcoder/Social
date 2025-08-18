@@ -1,3 +1,4 @@
+const { auth} = require('../middlewares/auth'); 
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
@@ -31,6 +32,7 @@ router.post("/:id/like", check.auth, PublicationContoller.toggleLike);
 
 // Comentarios
 router.post("/:id/comment", check.auth, PublicationContoller.addComment);
+router.delete('/publication/:id/comment/:commentId', check.auth, PublicationContoller.removeComment);
 router.get("/:id/comments", check.auth, PublicationContoller.listComments);
 
 // Exportar router

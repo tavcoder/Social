@@ -543,13 +543,14 @@ h1 {
   flex-direction: row;
   gap: 0.5rem;
   align-items: center;
-  justify-content: space-around;
+  justify-content: start;
+  width: 80%;
 }
 
 .user__row__info {
   display: flex;
   flex-direction: column;
-  width: 6.5rem;
+  min-width: 0;
 }
 
 .user__row__subtext {
@@ -846,6 +847,7 @@ h1 {
 }
 
 /* Post*/
+
 
 .post__text {
   margin-bottom: 1rem;

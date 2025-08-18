@@ -9,6 +9,7 @@ const queryEndpointsMap = {
     follow: () => `follow/save`,
     unfollow: (targetUserId) => `follow/unfollow/${targetUserId}`,
     addComment: (postId) => `publication/${postId}/comment`,
+    removeComment: ({ postId, commentId }) => `publication/${postId}/comment/${commentId}`,
     addPost: () => `publication/save`,
     removePost: (id) => `publication/remove/${id}`,
 };
@@ -19,6 +20,7 @@ const querySelectMap = {
     follow: (res) => res,
     unfollow: (res) => res,
     addComment: (res) => res,
+    removeComment: (res) => res,
     addPost: (res) => res,
     removePost: (res) => res,
 };
