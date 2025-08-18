@@ -17,9 +17,9 @@ function Navbar() {
   };
 
   const menuItems = [
-    { name: "Feed", path: "/feed" },
-    { name: "Timeline", path: "/timeline" },
-    { name: "People", path: "/people" },
+    { name: "Feed", path: "home" },
+    { name: "Timeline", path: "timeline" },
+    { name: "People", path: "people" },
   ];
 
   return (

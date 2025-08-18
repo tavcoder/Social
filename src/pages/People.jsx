@@ -30,7 +30,6 @@ function People() {
 
     return (
         <div className="people-page">
-            <h2>Gente</h2>
 
             <input
                 type="text"

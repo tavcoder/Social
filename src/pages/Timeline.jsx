@@ -7,7 +7,6 @@ function Timeline() {
 
     return (
         <div className="timeline-page">
-            <h2>Mi Timeline</h2>
             <PostList userId={user.id} />
         </div>
     );

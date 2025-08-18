@@ -1,6 +1,6 @@
 import { User } from "phosphor-react";
 
-function Avatar({ src, alt, size = 40, isOnline }) {
+export default function Avatar({ src, alt, size = 40, isOnline }) {
   return (
     <div
       className="avatar__wrapper"
@@ -22,4 +22,4 @@ function Avatar({ src, alt, size = 40, isOnline }) {
   );
 }
 
-export default Avatar;
+
