@@ -13,7 +13,7 @@ export function get(endpoint) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: token  }),
+            ...(token && { Authorization: token }),
         },
     }).then((res) => res.json());
 }
@@ -21,16 +21,18 @@ export function get(endpoint) {
 // Función para POST, PUT, DELETE, etc.
 export function callApi(method, endpoint, data) {
     const token = getToken();
+    console.log("endpoint",token)
 
     return fetch(`${API_BASE_URL}/${endpoint}`, {
         method,
         headers: {
             "Content-Type": "application/json",
-            ...(token && { Authorization: token  }),
+            ...(token && { Authorization: token }),
         },
         body: JSON.stringify(data),
     }).then((res) => res.json());
 }
+
 
 // Función para subir archivo a publicación
 export function uploadPublicationFile(publicationId, file) {

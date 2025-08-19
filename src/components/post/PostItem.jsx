@@ -10,7 +10,6 @@ function PostItem({ post }) {
     const { showComments, handleCommentToggle } = useComments();
     const { authUser } = useProfile();
     const myUserName = authUser?.name;
-
     const formattedDate = format(new Date(post.created_at), "d MMM 'at' H:mm");
     return (
         <div className="post__item card">

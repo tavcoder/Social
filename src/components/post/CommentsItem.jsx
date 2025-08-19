@@ -7,7 +7,6 @@ import "../../styles/CommentsItem.css";
 export default function CommentsItem({ postId }) {
 
     const { data: comments = [], isLoading } = useApiQuery("comments", postId);
-    console.log(comments);
     if (isLoading) return <p>Cargando comentarios...</p>;
 
     return (
@@ -29,10 +28,11 @@ export default function CommentsItem({ postId }) {
                                 : ""}
                         </div>
                         <RemoveButton
+                            resourceType="Comment"
+                            postId={postId}
                             elementId={comment._id}
                             ownerId={comment.user._id}
-                            queryKey={"userComments"}
-                            resourceType="Comment"
+                            queryKey={"Comments"}
                         />
                     </div>
                 ))

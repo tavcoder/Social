@@ -1,23 +1,25 @@
 import { useProfile } from "../../hooks/useProfile";
 import { useApiMutation } from "../../api/useApiMutation";
 
-export default function RemoveButton({ elementId, ownerId, resourceType, queryKey }) {
+export default function RemoveButton({ postId, elementId, ownerId, resourceType, queryKey }) {
     const { authUser } = useProfile();
     const myUserId = authUser?.id;
     if (ownerId !== myUserId) return null;
 
-    const  queryKeyToUpdate = [queryKey, myUserId]
+    const queryKeyToUpdate = postId ? [queryKey, postId] : [queryKey];
     const removeMutation = useApiMutation(`remove${resourceType}`, queryKeyToUpdate);
 
     const handleDelete = async () => {
-        if (!elementId) {
-            console.error("No se ha pasado una ID de publicación");
-            return;
-        }
-
         if (!window.confirm(`¿Seguro que quieres eliminar este ${resourceType}?`)) return;
 
-        removeMutation.mutate({ id: elementId, method: "DELETE" });
+        const baseVariables = resourceType === "Comment"
+            ? { id: postId, commentId: elementId }
+            : { id: elementId };
+
+        const variables = { method: "DELETE", ...baseVariables };
+
+        removeMutation.mutate(variables);
+
     };
 
     return (

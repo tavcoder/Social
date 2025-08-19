@@ -1,19 +1,20 @@
-// useApiMutation.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { callApi } from "./apiHelper";
 
-// Mapas de endpoints y selectores
+// Endpoints dinámicos
 const queryEndpointsMap = {
     login: () => `user/login`,
     register: () => `user/register`,
     follow: () => `follow/save`,
-    unfollow: (targetUserId) => `follow/unfollow/${targetUserId}`,
-    addComment: (postId) => `publication/${postId}/comment`,
-    removeComment: ({ postId, commentId }) => `publication/${postId}/comment/${commentId}`,
+    unfollow: ({ targetUserId }) => `follow/unfollow/${targetUserId}`,
+    addComment: ({ postId }) => `publication/${postId}/comment`,
+    removeComment: ({ id, commentId }) => `publication/${id}/comment/${commentId}`,
     addPost: () => `publication/save`,
-    removePost: (id) => `publication/remove/${id}`,
+    removePost: ({ id }) => `publication/remove/${id}`,
+    removeMessage: ({ id }) => `message/remove/${id}`,
 };
 
+// Selectores (por si quieres transformar la respuesta)
 const querySelectMap = {
     login: (res) => res,
     register: (res) => res,
@@ -23,6 +24,7 @@ const querySelectMap = {
     removeComment: (res) => res,
     addPost: (res) => res,
     removePost: (res) => res,
+    removeMessage: (res) => res,
 };
 
 // Hook genérico con optimistic update
@@ -36,31 +38,29 @@ export function useApiMutation(mutationKey, queryKeyToUpdate) {
     const selectFn = querySelectMap[mutationKey];
 
     return useMutation({
-        mutationFn: async ({ method = "POST", ...variables }) => {
-            const endpoint = endpointFn(variables.id);
+        mutationFn: async ({ method = "POST", ...variables })  => {
+            const endpoint = endpointFn(variables); // pasamos todo el objeto variables
             const response = await callApi(method, endpoint, variables);
             return selectFn(response);
         },
 
         onMutate: async (variables) => {
-            // Se cancelan las queries con el prefijo de la clave
             await queryClient.cancelQueries({ queryKey: queryKeyToUpdate, exact: false });
-
-            // Se obtienen los datos previos usando el prefijo
             const previousData = queryClient.getQueriesData({ queryKey: queryKeyToUpdate, exact: false });
 
-            // Actualización optimista de todos los cachés paginados
             queryClient.setQueriesData({ queryKey: queryKeyToUpdate, exact: false }, (old) => {
                 if (!old) return old;
-                if (mutationKey === "removePost") {
+
+                if (mutationKey === "removePost" || mutationKey === "removeComment" || mutationKey === "removeMessage") {
                     return {
                         ...old,
-                        pages: old.pages.map(page => ({
+                        pages: old.pages.map((page) => ({
                             ...page,
-                            data: page.data.filter(post => post._id !== variables.id)
-                        }))
+                            data: page.data.filter((item) => item._id !== (variables.id || variables.commentId)),
+                        })),
                     };
                 }
+
                 return old;
             });
 
@@ -69,14 +69,12 @@ export function useApiMutation(mutationKey, queryKeyToUpdate) {
 
         onError: (_err, _variables, context) => {
             if (context?.previousData) {
-                // Se revierte la actualización optimista en caso de error
                 queryClient.setQueriesData({ queryKey: queryKeyToUpdate, exact: false }, context.previousData);
             }
             console.error(`Error en mutación "${mutationKey}":`, _err);
         },
 
         onSuccess: () => {
-            // Se invalida el caché para forzar un refetch de los datos actualizados
             queryClient.invalidateQueries({ queryKey: queryKeyToUpdate, exact: false });
         },
     });
