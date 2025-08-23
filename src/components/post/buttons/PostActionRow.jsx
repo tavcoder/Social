@@ -1,6 +1,6 @@
 import { Heart, ChatCircle } from "phosphor-react";
 import { useToggleLike } from "../../../hooks/useToggleLike";
-import PostActionButton from "./PostActionButton";
+import ActionButton from "../../common/ActionButton";
 import RemoveButton from "../../common/RemoveButton";
 
 export default function PostActionRow({ post, onCommentToggle }) {
@@ -8,7 +8,7 @@ export default function PostActionRow({ post, onCommentToggle }) {
 
     return (
         <div className="post__actions">
-            <PostActionButton
+            <ActionButton
                 onClick={() => handleLikeToggle(post._id)}
                 icon={
                     isUserLiked(post) ? (
@@ -18,11 +18,13 @@ export default function PostActionRow({ post, onCommentToggle }) {
                     )
                 }
                 count={post.likes?.length || 0}
+                className="post__button"
             />
-            <PostActionButton
+            <ActionButton
                 onClick={onCommentToggle}
                 icon={<ChatCircle size={16} />}
                 count={post.comments?.length || 0}
+                className="post__button icon"
             />
 
             <RemoveButton

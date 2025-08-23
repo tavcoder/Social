@@ -1,0 +1,132 @@
+
+## Week 1 – Setup & Authentication
+
+### Project Setup
+- [ ] Initialize project with Vite + React  
+- [ ] Install dependencies: React Router, axios/fetch, state management (Context/Redux)  
+- [ ] Configure folder structure (components, pages, hooks, services, styles)  
+- [ ] Setup main routes: `/login`, `/register`, `/feed`, `/profile`  
+
+### Authentication Forms
+- [ ] Build **Login form** (email, password fields)  
+- [ ] Build **Registration form** (name, email, password, confirm password fields)  
+- [ ] Connect forms to API (send credentials, receive token)  
+- [ ] Store token in localStorage/sessionStorage  
+
+### Validation
+- [ ] Validate email format  
+- [ ] Validate password strength (min length, numbers/symbols)  
+- [ ] Match "password" and "confirm password"  
+- [ ] Show validation errors in UI  
+
+### User Experience
+- [ ] Add loading spinner when submitting forms  
+- [ ] Show error messages from API (e.g., invalid credentials)  
+- [ ] Show success feedback (redirect to `/feed` after login)  
+- [ ] Protect private routes (redirect to `/login` if not authenticated)  
+
+## Week 2 – User Profile
+
+### Profile Basics
+- [ ] Create profile page layout  
+- [ ] Fetch user data from API (name, bio, profile picture, stats)  
+- [ ] Display user statistics: total posts, followers, following  
+
+### Edit Profile
+- [ ] Add "Edit Profile" button  
+- [ ] Create form for editing bio, name, and profile picture  
+- [ ] Implement image upload for profile picture  
+- [ ] Show preview before saving changes  
+- [ ] Update data via API and refresh profile  
+
+### Other Users' Profiles
+- [ ] Create route `/profile/:id` for viewing other users  
+- [ ] Fetch data of the selected user from API  
+- [ ] Show "Follow / Unfollow" button (only on others’ profiles)  
+- [ ] Hide "Edit" button if the profile is not yours  
+
+### UI/UX
+- [ ] Make profile page responsive (mobile + desktop)  
+- [ ] Add smooth animations for opening edit forms and saving changes  
+
+## Week 3 – Feed & Interactions
+
+### Feed Display
+- [ ] Create Feed page layout  
+- [ ] Fetch posts from API and display them in a list  
+- [ ] Show post details: user info, text, image, timestamp  
+
+### Create Post
+- [ ] Add "New Post" input (text + optional image)  
+- [ ] Implement image upload with preview before posting  
+- [ ] Send new post to API and update feed instantly  
+
+### Interactions
+- [ ] Add "Like" button to posts (toggle state)  
+- [ ] Display like count on each post  
+- [ ] Add "Comment" section below posts  
+- [ ] Show existing comments under each post  
+- [ ] Add delete button for comments (only if they are mine)  
+
+### User Experience
+- [ ] Show loading spinner while fetching posts  
+- [ ] Show error message if posts can’t load  
+- [ ] Update UI instantly on new like/comment (optimistic UI)  
+- [ ] Smooth animations for adding/removing posts and comments  
+
+## Week 4 – Social Features & Refinement
+
+### Notifications
+- [ ] Add toast notifications for new likes, comments, or follows  
+- [ ] Style notifications with icons and colors  
+- [ ] Auto-dismiss notifications after a few seconds  
+
+### Dark Mode & Responsiveness
+- [ ] Add dark mode toggle button  
+- [ ] Store dark mode preference in localStorage  
+- [ ] Apply dark/light theme across all pages  
+- [ ] Double-check responsiveness across mobile, tablet, desktop  
+
+### Search
+- [ ] Create search bar component  
+- [ ] Allow searching for users by name  
+- [ ] Display search results in dropdown or separate page  
+- [ ] Link results to user profiles  
+
+### Final Testing & Polish
+- [ ] Go through all pages and fix visual bugs  
+- [ ] Check error handling (invalid inputs, network errors)  
+- [ ] Optimize components (avoid unnecessary re-renders)  
+- [ ] Final UI/UX refinements for smooth navigation  
+
+## Week 5 – Simulated Instant Chat (No Backend)
+
+### Setup
+- [ ] Create a Chat UI component (chat window with message list, input field, send button)  
+- [ ] Define a state hook for storing chat messages (e.g., `useState([])`)  
+
+### Sending Messages
+- [ ] Capture input text when user presses Enter or clicks "Send"  
+- [ ] Add the new message to the messages state (with sender = "You")  
+- [ ] Display it immediately in the chat window  
+
+### Simulated Responses
+- [ ] Create a function to generate an automatic response after a short delay (e.g., 1–2s)  
+- [ ] Add "Bot" messages to the messages state as if coming from another user  
+- [ ] Optionally randomize responses from a predefined list for variety  
+
+### Display & Styling
+- [ ] Differentiate "You" vs "Bot" messages with colors, alignment, or bubbles  
+- [ ] Add timestamps (optional)  
+- [ ] Auto-scroll to the latest message  
+
+### Extra Features (Optional)
+- [ ] Simulate typing indicator ("Bot is typing...") before response appears  
+- [ ] Show message status (sent ✅ / seen 👀)  
+- [ ] Support sending emojis or simple attachments (just UI simulation)  
+- [ ] Responsive design and dark mode compatibility  
+
+### Polish & Refinement
+- [ ] Smooth animations for new messages appearing  
+- [ ] Error handling for empty inputs (don’t send empty messages)  
+- [ ] Final UI/UX refinements for a realistic feel  

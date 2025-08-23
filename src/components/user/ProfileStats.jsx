@@ -4,15 +4,15 @@ const ProfileStats = ({ counters }) => {
         <div className="profile__stats">
             <div className="stats__counters">
                 <strong>{counters.publications}</strong>
-                <span>Posts</span>
+                <span className="stats__name">Posts</span>
             </div>
             <div className="stats__counters">
                 <strong>{counters.followed}</strong>
-                <span>Followers</span>
+                <span className="stats__name">Followers</span>
             </div>
             <div className="stats__counters">
                 <strong>{counters.following}</strong>
-                <span>Following</span>
+                <span className="stats__name">Following</span>
             </div>
         </div>
     );

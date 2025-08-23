@@ -1,42 +1,29 @@
-// src/components/UserSuggestions.jsx
-import UserList from "./UserList";
+import { useUnfollowedUsers } from "../../hooks/useUnfollowedUsers";
+import UserRow from "../common/UserRow";
 import FollowButton from "../common/FollowButton";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
 
-function UserSuggestions() {
-    const { user: authUser } = useContext(AuthContext);
-    const myUserId = authUser?.id;
+export default function UserSuggestions() {
+    const { unfollowedUsers, search, setSearch, loading, error } = useUnfollowedUsers();
+    const myUserId = "aquí iría tu authUser.id o lo tomas del contexto";
 
-    // Datos ficticios para pruebas
-    const allUsersData = [
-        { _id: "1", name: "Ana Pérez", username: "ana" },
-        { _id: "2", name: "Juan López", username: "juan" },
-        { _id: "3", name: "María García", username: "maria" },
-        { _id: "4", name: "Carlos Díaz", username: "carlos" },
-        { _id: "5", name: "Laura Martínez", username: "laura" },
-        { _id: "6", name: "Pedro Sánchez", username: "pedro" }
-    ];
-
-    // Filtramos para no sugerirnos a nosotros mismos
-    const usersToSuggest = allUsersData.filter(user => user._id !== myUserId);
-
-    // Wrapper para pasar el botón de seguir a UserList
-    const FollowButtonWrapper = ({ user }) => (
-        <FollowButton targetUserId={user._id} myUserId={myUserId} />
-    );
+    if (loading) return <p>Cargando usuarios...</p>;
+    if (error) return <p>Error al cargar usuarios.</p>;
 
     return (
-        <div className="card card--hover">
-            <h3 className="title">Sugerencias para ti</h3>
-            <UserList
-                users={usersToSuggest.slice(0, 5)}
-                selectedUserId={null}
-                showStatus={false}
-                actionComponent={FollowButtonWrapper}
+        <div>
+            <input
+                type="text"
+                placeholder="Buscar usuarios..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
             />
+
+            {unfollowedUsers.map(u => (
+                <div key={u._id} style={{ display: "flex", justifyContent: "space-between" }}>
+                    <UserRow avatar={u.image} name={u.name} subText={u.nick} />
+                    <FollowButton targetUserId={u._id} myUserId={myUserId} followingData={[]} />
+                </div>
+            ))}
         </div>
     );
 }
-
-export default UserSuggestions;

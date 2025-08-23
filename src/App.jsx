@@ -5,6 +5,7 @@ import MainLayout from "./pages/MainLayout";
 import Home from "./pages/Home";
 import Timeline from "./pages/Timeline";
 import People from "./pages/People";
+import EditUserProfile from "./pages/EditUserProfile";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="timeline" element={<Timeline />} />
           <Route path="people" element={<People />} />
+          <Route path="editprofile" element={<EditUserProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>
