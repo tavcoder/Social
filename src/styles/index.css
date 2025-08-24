@@ -369,6 +369,13 @@ h1 {
   place-items: center;
 }
 
+.search {
+  padding: 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
 
 /* Cookies notification container */
 .CookieConsent {

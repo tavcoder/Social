@@ -1,19 +1,22 @@
-// src/components/UserList.jsx
+import React from "react";
 import UserRow from "../common/UserRow";
 
-function UserList({ users, onUserClick, selectedUserId, getSubText, actionComponent }) {
+function UserList({ users, onUserClick, getSubText, actionComponent: ActionComponent }) {
     return (
         <div className="user__list">
             {users.map((user) => (
-                <UserRow
+                <div
                     key={user._id}
-                    name={user.name}
-                    subText={getSubText ? getSubText(user) : ""}
-                    ActionComponent={actionComponent}
-                    user={user}
-                    className={`user__list__item ${selectedUserId === user._id ? "user__list__item--active" : ""}`}
+                    className="user__list__item-wrapper"
                     onClick={() => onUserClick && onUserClick(user._id)}
-                />
+                >
+                    <UserRow
+                        name={user.name}
+                        subText={getSubText ? getSubText(user) : ""}
+                        ActionComponent={ActionComponent ? <ActionComponent user={user} /> : null}
+                        user={user}
+                    />
+                </div>
             ))}
         </div>
     );

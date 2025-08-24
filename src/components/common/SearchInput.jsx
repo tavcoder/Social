@@ -1,12 +1,8 @@
-
-const SearchInput = ({ value, onChange, placeholder = "Buscar..." }) => (
+export const SearchInput = ({ search, setSearch, placeholder = "Buscar..." }) => (
     <input
         type="text"
-        className="search__input"
-        value={value}
-        onChange={onChange}
+        value={search}
+        onChange={e => setSearch(e.target.value)}
         placeholder={placeholder}
     />
 );
-
-export default SearchInput;
