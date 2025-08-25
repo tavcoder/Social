@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useApiQuery } from "../api/useApiQuery";
 
@@ -19,27 +19,34 @@ export function useUsers(initialPage = 1, itemsPerPage = 10, targetUserId = null
     const loading = allUsersLoading || followingLoading;
     const error = allUsersError || followingError;
 
-    const unfollowedUsers = useMemo(() => {
-        if (!allUsersDataRaw) return [];
-        return allUsersDataRaw
-            .filter(user => user._id !== userId)
-            .filter(user => !followingIds.includes(user._id));
-    }, [allUsersDataRaw, followingIds, userId]);
+    /**
+     * Filtra usuarios según IDs a incluir o excluir
+     * Siempre excluye al usuario actual
+     */
+    const filterUsers = ({ includeIds = null, excludeIds = [] } = {}) => {
+        return allUsersDataRaw.filter(user => {
+            if (user._id === userId) return false; // siempre excluir al usuario actual
+            if (includeIds && !includeIds.includes(user._id)) return false;
+            if (excludeIds.includes(user._id)) return false;
+            return true;
+        });
+    };
 
-    const followers = useMemo(() => {
-        if (!allUsersDataRaw) return [];
-        return allUsersDataRaw.filter(user => followersIds.includes(user._id));
-    }, [allUsersDataRaw, followersIds]);
+    const users = filterUsers();
+    const unfollowedUsers = filterUsers({ excludeIds: followingIds });
+    const followers = filterUsers({ includeIds: followersIds });
+    const following = filterUsers({ includeIds: followingIds });
 
     const hasMore = allUsersDataRaw.length === itemsPerPage;
     const loadMore = () => { if (hasMore) setPage(prev => prev + 1); };
 
     return {
-        users: allUsersDataRaw,
+        users,
         unfollowedUsers,
+        following,
+        followers,
         followingIds,
         followersIds,
-        followers,
         loading,
         error,
         page,

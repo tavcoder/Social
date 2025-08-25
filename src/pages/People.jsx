@@ -1,37 +1,82 @@
+//Puede recibir targetUserId y usa useParams para filtrar por tipo (all, followers, following).
+//Tiene buscador (SearchBox) y paginación (hasMore + loadMore).
+import { useParams } from "react-router";
 import { useUsers } from "../hooks/useUsers";
 import { SearchBox } from "../components/common/SearchBox";
 import UserList from "../components/user/UserList";
-import FollowButton from "../components/common/FollowButton";
+import UserFollowWrapper from "../components/common/UserFollowWrapper";
 import "../styles/People.css";
 
-function People() {
-    const { users, followingIds, loading, error, hasMore, loadMore } = useUsers();
+// Hook interno para manejar listas y placeholders según type
+function usePeopleLists(type, users, followers, following) {
+    const lists = {
+        all: users,
+        followers,
+        following
+    };
 
-    if (loading && users.length === 0) return <p className="people__loading">Cargando usuarios...</p>;
-    if (error) return <p className="people__error">Error al cargar usuarios.</p>;
+    const placeholders = {
+        all: "Buscar usuarios...",
+        followers: "Buscar seguidores...",
+        following: "Buscar a quienes sigue..."
+    };
 
-    const FollowAction = ({ user }) => (
-        <FollowButton
-            targetUserId={user._id}
-            isFollowing={followingIds.includes(user._id)}
-        />
-    );
+    return {
+        listToDisplay: lists[type] || users,
+        placeholder: placeholders[type] || "Buscar usuarios..."
+    };
+}
+
+function People({ targetUserId = null }) {
+    const { type = "all" } = useParams();
+    const {
+        users,
+        followers,
+        following,
+        followingIds,
+        loading,
+        error,
+        hasMore,
+        loadMore
+    } = useUsers(1, 10, targetUserId);
+
+    const { listToDisplay, placeholder } = usePeopleLists(type, users, followers, following);
+
+    if (loading && users.length === 0) {
+        return <p className="people__loading">Cargando usuarios...</p>;
+    }
+
+    if (error) {
+        return <p className="people__error">Error al cargar usuarios.</p>;
+    }
 
     return (
         <div className="people-page">
-            <SearchBox items={users} keys={["name", "nick"]} placeholder="Buscar usuarios...">
+            <SearchBox
+                items={listToDisplay}
+                keys={["name", "nick"]}
+                placeholder={placeholder}
+            >
                 {(displayUsers) => (
                     <UserList
                         users={displayUsers}
                         getSubText={(user) => user.nick}
-                        actionComponent={FollowAction}
-                        onUserClick={(userId) => console.log("Usuario clickeado:", userId)}
+                        RowComponent={(props) => (
+                            <UserFollowWrapper
+                                {...props}
+                                isFollowing={followingIds}
+                            />
+                        )}
                     />
                 )}
             </SearchBox>
 
             {hasMore && (
-                <button onClick={loadMore} className="people__load-more" disabled={loading}>
+                <button
+                    onClick={loadMore}
+                    className="people__load-more"
+                    disabled={loading}
+                >
                     {loading ? "Cargando..." : "Cargar más"}
                 </button>
             )}

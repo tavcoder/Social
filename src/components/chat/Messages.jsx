@@ -1,6 +1,5 @@
 import { useState } from "react";
 import TextInput from "../common/TextInput";
-import UserList from "../user/UserList"; // Importa el nuevo componente
 
 const fakeUsers = [
     { id: 1, name: "Ana López", nick: "anita", avatar: "/avatar.png", online: true },
@@ -26,6 +25,7 @@ function Messages() {
     const handleSend = () => {
         if (!messageText.trim() || !selectedUserId) return;
         const newConversations = { ...conversations };
+        if (!newConversations[selectedUserId]) newConversations[selectedUserId] = [];
         newConversations[selectedUserId].push({ from: "Tú", text: messageText });
         setConversations(newConversations);
         setMessageText("");
@@ -36,17 +36,34 @@ function Messages() {
     return (
         <div className="chat__container__column card">
             <h2 className="title">Messages</h2>
-            <UserList
-                users={fakeUsers}
-                onUserClick={setSelectedUserId}
-                selectedUserId={selectedUserId}
-                getSubText={(user) => {
-                    const msgs = conversations[user.id] || [];
-                    if (msgs.length === 0) return user.online ? "Online" : user.lastSeen || "";
-                    return msgs[msgs.length - 1].text; // último mensaje
-                }}
-            />
 
+            <div className="user__list">
+                {fakeUsers.map((user) => {
+                    const lastMsgs = conversations[user.id] || [];
+                    const subText =
+                        lastMsgs.length === 0
+                            ? user.online
+                                ? "Online"
+                                : user.lastSeen || ""
+                            : lastMsgs[lastMsgs.length - 1].text;
+
+                    return (
+                        <div
+                            key={user.id}
+                            className={`user__list__item-wrapper ${selectedUserId === user.id ? "selected" : ""}`}
+                            onClick={() => setSelectedUserId(user.id)}
+                        >
+                            <div className="user__row">
+                                <img src={user.avatar} alt={user.name} width={40} height={40} />
+                                <div className="user__row__info">
+                                    <p>{user.name}</p>
+                                    <p>{subText}</p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
 
             <section className="chat__main__section">
                 {selectedUser ? (

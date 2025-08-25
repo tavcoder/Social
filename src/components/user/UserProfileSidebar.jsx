@@ -26,14 +26,14 @@ export default function UserProfileSidebar() {
                     className="profile__edit__btn btn--level2"
                 />
             </NavLink>
-            <NavLink to="timeline">
-                <div className="profile__info">
+            <div className="profile__info">
+                <NavLink to="timeline">
                     <UserBadge user={profile.user} />
-                    <ProfileStats counters={counters} />
-                    <UserFollowedBy following={profile.user.following} user={profile.user} />
+                </NavLink>
+                <ProfileStats counters={counters} />
+                <UserFollowedBy following={profile.user.following} user={profile.user} />
 
-                </div>
-            </NavLink>
+            </div>
         </div >
     );
 }

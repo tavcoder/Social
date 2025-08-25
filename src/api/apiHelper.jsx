@@ -21,7 +21,6 @@ export function get(endpoint) {
 // Función para POST, PUT, DELETE, etc.
 export function callApi(method, endpoint, data) {
     const token = getToken();
-    console.log("endpoint",token)
 
     return fetch(`${API_BASE_URL}/${endpoint}`, {
         method,

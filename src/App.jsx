@@ -8,6 +8,7 @@ import People from "./pages/People";
 import EditUserProfile from "./pages/EditUserProfile";
 
 function App() {
+  ("App render");
   return (
     <BrowserRouter>
       <Routes>
@@ -28,7 +29,7 @@ function App() {
           {/* Contenido que se renderiza dentro del <Outlet> de MainLayout */}
           <Route index element={<Home />} />
           <Route path="timeline" element={<Timeline />} />
-          <Route path="people" element={<People />} />
+          <Route path="people/:type?" element={<People />} />
           <Route path="editprofile" element={<EditUserProfile />} />
         </Route>
       </Routes>

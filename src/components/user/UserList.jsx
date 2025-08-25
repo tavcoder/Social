@@ -1,25 +1,16 @@
-import React from "react";
-import UserRow from "../common/UserRow";
 
-function UserList({ users, onUserClick, getSubText, actionComponent: ActionComponent }) {
+export default function UserList({ users, getSubText, RowComponent }) {
     return (
         <div className="user__list">
             {users.map((user) => (
-                <div
+                <RowComponent
                     key={user._id}
-                    className="user__list__item-wrapper"
-                    onClick={() => onUserClick && onUserClick(user._id)}
-                >
-                    <UserRow
-                        name={user.name}
-                        subText={getSubText ? getSubText(user) : ""}
-                        ActionComponent={ActionComponent ? <ActionComponent user={user} /> : null}
-                        user={user}
-                    />
-                </div>
+                    user={user}
+                    subText={getSubText ? getSubText(user) : ""}
+
+                />
             ))}
         </div>
     );
 }
 
-export default UserList;
