@@ -4,8 +4,8 @@ import AuthPage from "./pages/AuthPage";
 import MainLayout from "./pages/MainLayout";
 import Home from "./pages/Home";
 import Timeline from "./pages/Timeline";
-import People from "./pages/People";
 import EditUserProfile from "./pages/EditUserProfile";
+import People from "./pages/People";
 
 function App() {
   ("App render");
@@ -28,7 +28,7 @@ function App() {
         >
           {/* Contenido que se renderiza dentro del <Outlet> de MainLayout */}
           <Route index element={<Home />} />
-          <Route path="timeline" element={<Timeline />} />
+          <Route path="timeline/:userId" element={<Timeline />} />
           <Route path="people/:type?" element={<People />} />
           <Route path="editprofile" element={<EditUserProfile />} />
         </Route>

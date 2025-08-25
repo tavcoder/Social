@@ -1,18 +1,14 @@
-import { NavLink } from "react-router";
+import { NavLink, useParams } from "react-router";
 import { PencilLine } from "phosphor-react";
 import { useApiQuery } from "../../api/useApiQuery";
-import { useProfile } from "../../hooks/useProfile";
 import UserBadge from "../common/UserBadge";
 import ActionButton from "../common/ActionButton";
 import ProfileStats from "./ProfileStats";
 import UserFollowedBy from "./UserFollowedBy";
 
 export default function UserProfileSidebar() {
-    const { authUser, profile } = useProfile();
-    const { data: counters, isLoading: loadingCounters } = useApiQuery(
-        "counters",
-        authUser.id
-    );
+    const { userId } = useParams();
+    const { data: profile, isLoading } = useApiQuery("profile", userId);
     if (loadingCounters) return <div>Cargando perfil...</div>;
     if (!profile) return <div>Error al cargar el perfil.</div>;
 
@@ -30,7 +26,7 @@ export default function UserProfileSidebar() {
                 <NavLink to="timeline">
                     <UserBadge user={profile.user} />
                 </NavLink>
-                <ProfileStats counters={counters} />
+                <ProfileStats counters={profile.counters} />
                 <UserFollowedBy following={profile.user.following} user={profile.user} />
 
             </div>

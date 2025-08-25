@@ -47,6 +47,7 @@ function Navbar() {
           alt={authUser?.name}
           size={30}
           className="navbar__avatar"
+          userId={authUser.id}
         />
         <BellSimple className="navbar__icon" size={15} weight="regular" />
       </div>

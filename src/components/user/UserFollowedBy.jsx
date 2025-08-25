@@ -12,7 +12,7 @@ const UserFollowedBy = ({ user }) => {
         <div className="user__followed">
             <div className="user__followed__avatars">
                 {topFollowers.map(f => (
-                    <Avatar key={f._id} src={f.image} alt={f.name} size={30} className="followed__avatar" />
+                    <Avatar key={f._id} src={f.image} alt={f.name} size={30} className="followed__avatar" userId={f._id} />
                 ))}
             </div>
             <div className="user__info">

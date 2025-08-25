@@ -10,9 +10,10 @@ export default function UserRow({
   className = "",
   onClick = () => { } // valor por defecto, no hace nada si no se pasa
 }) {
+  if (!user) return null;
   return (
     <div className={`${className} user__row`} onClick={onClick}>
-      <Avatar src={avatar || user?.image} alt={name} size={40} />
+      <Avatar src={avatar || user?.image} alt={name} size={40} userId={user._id} />
       <div className="user__row__info">
         <p className="user__row__name">{name}</p>
         <p className="user__row__subtext">{subText}</p>
