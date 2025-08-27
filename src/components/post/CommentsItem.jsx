@@ -17,8 +17,7 @@ export default function CommentsItem({ postId }) {
                 comments.map((comment) => (
                     <div key={comment._id} className="comment__item">
                         <UserRow
-                            avatar={comment.user.image}
-                            name={comment.user.name}
+                            user={comment.user}
                             subText={comment.text}
                             className={`comment__header`}
                         />

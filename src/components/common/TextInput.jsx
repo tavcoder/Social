@@ -3,7 +3,7 @@ import { Smiley } from "phosphor-react";
 import Avatar from "./Avatar";
 
 export default function TextInput({ value, onChange, onSend, placeholder, disabled }) {
-    const { authUser, profile } = useProfile();
+    const { authUser, authUserProfile } = useProfile();
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -12,11 +12,10 @@ export default function TextInput({ value, onChange, onSend, placeholder, disabl
     };
 
     const isSendDisabled = disabled || !value.trim();
-
     return (
         <div className="text__input__container">
             <Avatar
-                src={profile?.user?.image}
+                src={authUserProfile?.user?.image}
                 alt={authUser?.name}
                 size={30}
                 userId={authUser.id}

@@ -1,27 +1,34 @@
 import Avatar from "../common/Avatar";
-import { useUsers } from "../../hooks/useUsers";
+import { useTopFollowers } from "../../hooks/useTopFollowers";
 
 const UserFollowedBy = ({ user }) => {
-    // Pasamos el user._id para obtener sus seguidores
-    const { followers } = useUsers(1, 10, user._id);
+    const { topFollowers, totalFollowers, loading } = useTopFollowers(user._id, 3);
 
-    // Mostrar hasta 3 avatares
-    const topFollowers = followers.slice(0, 3);
-
+    if (loading) return <p>Cargando...</p>;
+    if (!topFollowers.length) return <p>No tiene seguidores</p>;
+console.log(topFollowers);
     return (
         <div className="user__followed">
             <div className="user__followed__avatars">
                 {topFollowers.map(f => (
-                    <Avatar key={f._id} src={f.image} alt={f.name} size={30} className="followed__avatar" userId={f._id} />
+                    <Avatar
+                        key={f._id}
+                        src={f.user.image}
+                        alt={f.user.name}
+                        size={30}
+                        userId={f.user._id}
+                    />
                 ))}
             </div>
             <div className="user__info">
                 <p className="user__followed__names">
                     Followed by{" "}
                     {topFollowers.map(f => (
-                        <span key={f._id}>{f.name}</span>
+                        <span key={f.user._id}>{f.user.name}</span>
                     ))}
-                    {followers.length > 3 && <span> and {followers.length - 3} others</span>}
+                    {totalFollowers > topFollowers.length &&
+                        <span> and {totalFollowers - topFollowers.length} others</span>
+                    }
                 </p>
             </div>
         </div>

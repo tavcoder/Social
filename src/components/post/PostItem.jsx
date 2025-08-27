@@ -14,8 +14,7 @@ function PostItem({ post }) {
     return (
         <div className="post__item card">
             <UserRow
-                avatar={post.user.image}
-                name={post.user.name}
+                user={post.user}
                 subText={formattedDate}
                 className={`post__header`}
             />

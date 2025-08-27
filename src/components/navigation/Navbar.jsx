@@ -6,7 +6,7 @@ import Avatar from "../common/Avatar";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { authUser, profile } = useProfile();
+  const { authUser, authUserProfile } = useProfile();
   const id = useId(); // Genera un ID único para este componente
 
   const handleLogout = () => {
@@ -43,10 +43,9 @@ function Navbar() {
       {/* Usuario */}
       <div className="navbar__user">
         <Avatar
-          src={profile?.user?.image}
+          src={authUserProfile?.user?.image}
           alt={authUser?.name}
           size={30}
-          className="navbar__avatar"
           userId={authUser.id}
         />
         <BellSimple className="navbar__icon" size={15} weight="regular" />

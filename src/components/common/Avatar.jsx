@@ -1,21 +1,22 @@
 import { User } from "phosphor-react";
 import { useNavigate } from "react-router";
+import { useOnlineStatus } from "../../hooks/useOnlineStatus";
 
-export default function Avatar({ src, alt, size = 40, isOnline, userId }) {
+export default function Avatar({ src, alt, size = 40, userId }) {
   const navigate = useNavigate();
+  const { isOnline } = useOnlineStatus(userId);
 
   const handleClick = () => {
     // Navega a la ruta del usuario pasando su id
-    navigate(`/feed/user/${userId}`);
+    navigate(`/feed/timeline/${userId}`);
   };
-
   return (
     <div
       className="avatar__wrapper"
       style={{
         width: size,
         height: size,
-        border: isOnline ? "3px solid limegreen" : "3px solid transparent",
+        border: isOnline ? "2px solid limegreen" : "2px solid transparent",
         cursor: "pointer",
       }}
       onClick={handleClick}

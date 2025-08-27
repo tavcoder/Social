@@ -4,6 +4,6 @@ import { useApiQuery } from "../api/useApiQuery";
 
 export function useProfile() {
     const { user: authUser } = useContext(AuthContext);
-    const { data: profile, ...rest } = useApiQuery("profile", authUser.id);
-    return { authUser, profile, ...rest };
+    const { data: authUserProfile, ...rest } = useApiQuery("profile", authUser.id);
+    return { authUser, authUserProfile, ...rest };
 }

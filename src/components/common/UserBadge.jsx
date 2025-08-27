@@ -1,9 +1,13 @@
-import Avatar from "../common/Avatar"; // Ajusta la ruta según tu estructura
+import Avatar from "../common/Avatar";
 
-const UserBadge = ({ user, isOnline }) => {
+const UserBadge = ({ user }) => {
   return (
     <div className="user__badge">
-      <Avatar src={user.image} alt={name} size={60} isOnline={isOnline} userId={user._id} />
+      <Avatar
+        src={user.image}
+        alt={user.name}
+        size={60}
+        userId={user._id} />
       <div className="user__info">
         <p className="user__info__name">{user.name}</p>
         <p className="user__info__email">{user.email}</p>

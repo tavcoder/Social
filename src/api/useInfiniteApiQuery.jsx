@@ -5,13 +5,14 @@ import Spinner from "../components/common/Spinner";
 import { queryEndpointsMap, querySelectMap } from "./queryMaps";
 
 export function useInfiniteApiQuery(key, params, options = {}) {
+
     if (!queryEndpointsMap[key] || !querySelectMap[key]) {
         throw new Error(`No query endpoint or selector found for key "${key}"`);
     }
 
     const endpointFn = queryEndpointsMap[key];
     const selectFn = querySelectMap[key];
-
+   
     const loaderRef = useRef(null); // ✅ ahora useRef
 
     const query = useInfiniteQuery({
