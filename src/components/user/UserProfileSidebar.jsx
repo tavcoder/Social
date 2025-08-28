@@ -23,7 +23,6 @@ export default function UserProfileSidebar() {
 
     if (isLoading) return <div>Cargando perfil...</div>;
     if (!profile) return <div>Error al cargar el perfil.</div>;
-
     return (
         <div className="user__profile__sidebar card card--hover">
             {authUser?.id === profile.user.id && (
@@ -36,11 +35,11 @@ export default function UserProfileSidebar() {
                 </NavLink>
             )}
             <div className="profile__info">
-                <NavLink to="timeline">
+                <NavLink to={`timeline/${targetUserId}`}>
                     <UserBadge user={profile.user} />
                 </NavLink>
-                <FollowButton  />
-                <ProfileStats counters={counters} />
+                <FollowButton />
+                <ProfileStats counters={counters} userId={targetUserId} />
                 <UserFollowedBy
                     following={profile.user.following}
                     user={profile.user}

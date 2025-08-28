@@ -27,8 +27,9 @@ function usePeopleLists(type, users, followers, following) {
     };
 }
 
-function People({ targetUserId = null }) {
-    const { type = "all" } = useParams();
+function People() {
+    // 👇 Recibimos directamente type y userId de la URL
+    const { type = "all", userId = null } = useParams();
     const {
         users,
         followers,
@@ -38,9 +39,15 @@ function People({ targetUserId = null }) {
         error,
         hasMore,
         loadMore
-    } = useUsers(1, 10, targetUserId);
+    } = useUsers(1, 10, userId);
+    console.log("following",following);
+    console.log("followers",followers);
 
-    const { listToDisplay, placeholder } = usePeopleLists(type, users, followers, following);
+    // 👇 Si hay userId, solo tiene sentido mostrar followers/following
+    const effectiveType = userId
+        ? (type === "followers" ? "followers" : "following")
+        : type;
+    const { listToDisplay, placeholder } = usePeopleLists(effectiveType, users, followers, following);
 
     if (loading && users.length === 0) {
         return <p className="people__loading">Cargando usuarios...</p>;

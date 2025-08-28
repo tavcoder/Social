@@ -29,7 +29,7 @@ function App() {
           {/* Contenido que se renderiza dentro del <Outlet> de MainLayout */}
           <Route index element={<Home />} />
           <Route path="timeline/:userId?" element={<Timeline />} />
-          <Route path="people/:type?" element={<People />} />
+          <Route path="people/:type?/:userId?" element={<People />} />
           <Route path="editprofile" element={<EditUserProfile />} />
         </Route>
       </Routes>

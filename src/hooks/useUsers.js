@@ -62,8 +62,21 @@ export function useUsers(targetUserId = null, initialPage = 1) {
 
     const users = filterUsers();
     const unfollowedUsers = filterUsers({ excludeIds: followingIds });
-    const followers = filterUsers({ includeIds: followersIds });
-    const following = filterUsers({ includeIds: followingIds });
+    const followers = followersData.filter(u => u._id !== userId);
+    const following = followingData.filter(u => u._id !== userId);
+    console.log("users:", users);
+    console.log("unfollowedUsers:", unfollowedUsers);
+    console.log("followers:", followers);
+    console.log("following:", following);
+    console.log("followingIds:", followingIds);
+    console.log("followersIds:", followersIds);
+    console.log("totalFollowers:", followersIds.length);
+    console.log("totalFollowing:", followingIds.length);
+    console.log("loading:", loading);
+    console.log("error:", error);
+    console.log("page:", page);
+    console.log("followingQuery:", followingQuery);
+    console.log("followersQuery:", followersQuery);
 
     return {
         users,
