@@ -3,13 +3,14 @@ import { PencilLine } from "phosphor-react";
 import { useApiQuery } from "../../api/useApiQuery";
 import { useProfile } from "../../hooks/useProfile";
 import UserBadge from "../common/UserBadge";
+import FollowButton from "../common/FollowButton";
 import ActionButton from "../common/ActionButton";
 import ProfileStats from "./ProfileStats";
 import UserFollowedBy from "./UserFollowedBy";
 
 export default function UserProfileSidebar() {
     const { userId: paramUserId } = useParams();
-    const { authUser} = useProfile();
+    const { authUser } = useProfile();
     // si no hay userId en la URL, toma el del usuario autenticado
     const targetUserId = paramUserId || authUser?.id;
 
@@ -25,17 +26,20 @@ export default function UserProfileSidebar() {
 
     return (
         <div className="user__profile__sidebar card card--hover">
-            <NavLink to="editprofile">
-                <ActionButton
-                    icon={<PencilLine size={15} weight="regular" />}
-                    label=" edit"
-                    className="profile__edit__btn btn--level2"
-                />
-            </NavLink>
+            {authUser?.id === profile.user.id && (
+                <NavLink to="editprofile">
+                    <ActionButton
+                        icon={<PencilLine size={15} weight="regular" />}
+                        label=" edit"
+                        className="profile__edit__btn btn--level2"
+                    />
+                </NavLink>
+            )}
             <div className="profile__info">
                 <NavLink to="timeline">
                     <UserBadge user={profile.user} />
                 </NavLink>
+                <FollowButton  />
                 <ProfileStats counters={counters} />
                 <UserFollowedBy
                     following={profile.user.following}
