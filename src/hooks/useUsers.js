@@ -1,58 +1,47 @@
+// hooks/useUsers.js
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useApiQuery } from "../api/useApiQuery";
-import { useInfiniteApiQuery } from "../api/useInfiniteApiQuery";
+import { useFollowers } from "./useFollowers";
+import { useFollowing } from "./useFollowing";
 
 export function useUsers(targetUserId = null, initialPage = 1) {
     const { user: authUser } = useContext(AuthContext);
     const [page, setPage] = useState(initialPage);
 
     const userId = targetUserId || authUser?.id;
-    // Trae usuarios que este usuario sigue
+
+    // followers
     const {
-        data: followingPages,
-        isLoading: followingLoading,
-        isError: followingError,
-        ...followingQuery
-    } = useInfiniteApiQuery(
-        "following",
-        [userId, page],   // 👈 Array, no objeto
-        { enabled: !!userId }
-    );
-    
-    
-    // Trae usuarios que siguen a este usuario
+        users: followers,
+        ids: followersIds,
+        total: totalFollowers,
+        loading: followersLoading,
+        error: followersError,
+        query: followersQuery,
+    } = useFollowers(userId, page);
+
+    // following
     const {
-        data: followersPages,
-        isLoading: followersLoading,
-        isError: followersError,
-        ...followersQuery
-    } = useInfiniteApiQuery(
-        "followers",
-        [userId, page],   // 👈 Array, no objeto
-        { enabled: !!userId }
-    );
-   
-    
-    // Trae todos los usuarios (para mostrar sugerencias o filtrados)
+        users: following,
+        ids: followingIds,
+        total: totalFollowing,
+        loading: followingLoading,
+        error: followingError,
+        query: followingQuery,
+    } = useFollowing(userId, page);
+
+    // todos los usuarios
     const {
         data: allUsersData = [],
         isLoading: allUsersLoading,
         isError: allUsersError,
     } = useApiQuery("allUsersData", page);
 
-    const loading = followingLoading || followersLoading || allUsersLoading;
-    const error = followingError || followersError || allUsersError;
+    const loading = followersLoading || followingLoading || allUsersLoading;
+    const error = followersError || followingError || allUsersError;
 
-    // 🔹 Flatten de las páginas devueltas por useInfiniteApiQuery
-    const followingData = followingPages?.pages.flatMap(p => p.data?.follows ?? []) ?? [];
-    const followersData = followersPages?.pages.flatMap(p => p.data?.follows ?? []) ?? [];
-
-    // Arrays de IDs de seguidores y seguidos
-    const followingIds = followingData.map(user => user._id);
-    const followersIds = followersData.map(user => user._id);
-
-    // Función de filtrado
+    // función de filtrado
     const filterUsers = ({ includeIds = null, excludeIds = [] } = {}) =>
         allUsersData.filter(user => {
             if (user._id === userId) return false;
@@ -63,24 +52,21 @@ export function useUsers(targetUserId = null, initialPage = 1) {
 
     const users = filterUsers();
     const unfollowedUsers = filterUsers({ excludeIds: followingIds });
-    const followers = followersData.filter(u => u._id !== userId);
-    const following = followingData.filter(u => u._id !== userId);
-    console.log("Revisando2:", followers);
+
     return {
         users,
         unfollowedUsers,
-        followers,
-        following,
-        followingIds,
+        followers: followers.filter(u => u._id !== userId),
+        following: following.filter(u => u._id !== userId),
         followersIds,
-        totalFollowers: followersIds.length,
-        totalFollowing: followingIds.length,
+        followingIds,
+        totalFollowers,
+        totalFollowing,
         loading,
         error,
         page,
         setPage,
-        // 🔹 Devuelvo también los queries infinitos por si quieres usarlos en UI
-        followingQuery,
         followersQuery,
+        followingQuery,
     };
 }
