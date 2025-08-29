@@ -40,8 +40,6 @@ function People() {
         hasMore,
         loadMore
     } = useUsers(1, 10, userId);
-    console.log("following",following);
-    console.log("followers",followers);
 
     // 👇 Si hay userId, solo tiene sentido mostrar followers/following
     const effectiveType = userId

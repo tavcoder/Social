@@ -8,8 +8,6 @@ function Timeline() {
     const { userId } = useParams();
 
     const finalUserId = userId || user.id;
-console.log("finaluser:",finalUserId);
-console.log("userId:",userId);
     return (
         <div className="timeline-page">
             <PostList userId={finalUserId} />

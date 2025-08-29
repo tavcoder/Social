@@ -6,7 +6,6 @@ const UserFollowedBy = ({ user }) => {
 
     if (loading) return <p>Cargando...</p>;
     if (!topFollowers.length) return <p>No tiene seguidores</p>;
-console.log(topFollowers);
     return (
         <div className="user__followed">
             <div className="user__followed__avatars">

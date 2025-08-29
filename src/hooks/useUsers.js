@@ -8,19 +8,6 @@ export function useUsers(targetUserId = null, initialPage = 1) {
     const [page, setPage] = useState(initialPage);
 
     const userId = targetUserId || authUser?.id;
-    // Trae usuarios que siguen a este usuario
-    const {
-        data: followersPages,
-        isLoading: followersLoading,
-        isError: followersError,
-        ...followersQuery
-    } = useInfiniteApiQuery(
-        "followers",
-        [userId, page],   // 👈 Array, no objeto
-        { enabled: !!userId }
-    );
-    console.log("followersPages:", followersPages);
-
     // Trae usuarios que este usuario sigue
     const {
         data: followingPages,
@@ -32,8 +19,21 @@ export function useUsers(targetUserId = null, initialPage = 1) {
         [userId, page],   // 👈 Array, no objeto
         { enabled: !!userId }
     );
-
-
+    
+    
+    // Trae usuarios que siguen a este usuario
+    const {
+        data: followersPages,
+        isLoading: followersLoading,
+        isError: followersError,
+        ...followersQuery
+    } = useInfiniteApiQuery(
+        "followers",
+        [userId, page],   // 👈 Array, no objeto
+        { enabled: !!userId }
+    );
+   
+    
     // Trae todos los usuarios (para mostrar sugerencias o filtrados)
     const {
         data: allUsersData = [],
@@ -45,8 +45,8 @@ export function useUsers(targetUserId = null, initialPage = 1) {
     const error = followingError || followersError || allUsersError;
 
     // 🔹 Flatten de las páginas devueltas por useInfiniteApiQuery
-    const followingData = followingPages?.pages.flatMap(p => p.data) ?? [];
-    const followersData = followersPages?.pages.flatMap(p => p.data) ?? [];
+    const followingData = followingPages?.pages.flatMap(p => p.data?.follows ?? []) ?? [];
+    const followersData = followersPages?.pages.flatMap(p => p.data?.follows ?? []) ?? [];
 
     // Arrays de IDs de seguidores y seguidos
     const followingIds = followingData.map(user => user._id);
@@ -65,20 +65,7 @@ export function useUsers(targetUserId = null, initialPage = 1) {
     const unfollowedUsers = filterUsers({ excludeIds: followingIds });
     const followers = followersData.filter(u => u._id !== userId);
     const following = followingData.filter(u => u._id !== userId);
-    console.log("users:", users);
-    console.log("unfollowedUsers:", unfollowedUsers);
-    console.log("followers:", followers);
-    console.log("following:", following);
-    console.log("followingIds:", followingIds);
-    console.log("followersIds:", followersIds);
-    console.log("totalFollowers:", followersIds.length);
-    console.log("totalFollowing:", followingIds.length);
-    console.log("loading:", loading);
-    console.log("error:", error);
-    console.log("page:", page);
-    console.log("followingQuery:", followingQuery);
-    console.log("followersQuery:", followersQuery);
-
+    console.log("Revisando2:", followers);
     return {
         users,
         unfollowedUsers,
