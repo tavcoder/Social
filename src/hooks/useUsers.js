@@ -15,10 +15,11 @@ export function useUsers(targetUserId = null, initialPage = 1) {
         isError: followersError,
         ...followersQuery
     } = useInfiniteApiQuery(
-        "followersPage",
+        "followers",
         [userId, page],   // 👈 Array, no objeto
         { enabled: !!userId }
     );
+    console.log("followersPages:", followersPages);
 
     // Trae usuarios que este usuario sigue
     const {
@@ -27,7 +28,7 @@ export function useUsers(targetUserId = null, initialPage = 1) {
         isError: followingError,
         ...followingQuery
     } = useInfiniteApiQuery(
-        "followingPage",
+        "following",
         [userId, page],   // 👈 Array, no objeto
         { enabled: !!userId }
     );

@@ -1,5 +1,6 @@
 
-## Week 1 – Setup & Authentication
+## Week 1 – Setup & Authentication 
+veda.nikolaus32@hotmail.com
 
 ### Project Setup
 - [ ] Initialize project with Vite + React  

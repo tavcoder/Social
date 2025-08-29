@@ -3,7 +3,7 @@ import { useApiQuery } from "../api/useApiQuery";
 export function useTopFollowers(userId, limit = 3) {
     // La API no tiene parámetro limit, así que usamos page=1 y itemsPerPage=limit
     const { data, isLoading, isError } = useApiQuery(
-        "followersPage", [userId, 1],
+        "followers", [userId, 1],
         { enabled: !!userId }
     );
 
