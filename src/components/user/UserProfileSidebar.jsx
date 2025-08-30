@@ -2,8 +2,8 @@ import { NavLink, useParams } from "react-router";
 import { PencilLine } from "phosphor-react";
 import { useApiQuery } from "@/api";
 import { useProfile } from "@/hooks/users";
-import {UserBadge, FollowButton, ActionButton }from "@/components/common";
-import {ProfileStats, UserFollowedBy} from "@/components/user";
+import { UserBadge, FollowButton, ActionButton } from "@/components/common";
+import { ProfileStats, UserFollowedBy } from "@/components/user";
 
 export default function UserProfileSidebar() {
     const { userId: paramUserId } = useParams();
@@ -20,9 +20,10 @@ export default function UserProfileSidebar() {
 
     if (isLoading) return <div>Cargando perfil...</div>;
     if (!profile) return <div>Error al cargar el perfil.</div>;
+
     return (
         <div className="user__profile__sidebar card card--hover">
-            {authUser?.id === profile.user.id && (
+            {authUser?.id === targetUserId && (
                 <NavLink to="editprofile">
                     <ActionButton
                         icon={<PencilLine size={15} weight="regular" />}
@@ -35,7 +36,7 @@ export default function UserProfileSidebar() {
                 <NavLink to={`timeline/${targetUserId}`}>
                     <UserBadge user={profile.user} />
                 </NavLink>
-                <FollowButton />
+                {authUser?.id !== targetUserId && <FollowButton />}
                 <ProfileStats counters={counters} userId={targetUserId} />
                 <UserFollowedBy
                     following={profile.user.following}
