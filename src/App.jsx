@@ -1,11 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import PrivateRoute from "./components/navigation/PrivateRoute";
-import AuthPage from "./pages/AuthPage";
-import MainLayout from "./pages/MainLayout";
-import Home from "./pages/Home";
-import Timeline from "./pages/Timeline";
-import EditUserProfile from "./pages/EditUserProfile";
-import People from "./pages/People";
+import { PrivateRoute } from "@/components/navigation";
+import { AuthPage, MainLayout, Home, Timeline, EditUserProfile, People } from "@/pages";
 
 function App() {
   ("App render");

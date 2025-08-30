@@ -1,5 +1,5 @@
-import { useProfile } from "../../hooks/useProfile";
-import { useApiMutation } from "../../api/useApiMutation";
+import { useProfile } from "@/hooks/users";
+import { useApiMutation } from "@/api";
 
 export default function RemoveButton({ postId, elementId, ownerId, resourceType, queryKey }) {
     const { authUser } = useProfile();

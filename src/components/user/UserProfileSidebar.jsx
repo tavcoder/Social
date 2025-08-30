@@ -1,12 +1,9 @@
 import { NavLink, useParams } from "react-router";
 import { PencilLine } from "phosphor-react";
-import { useApiQuery } from "../../api/useApiQuery";
-import { useProfile } from "../../hooks/useProfile";
-import UserBadge from "../common/UserBadge";
-import FollowButton from "../common/FollowButton";
-import ActionButton from "../common/ActionButton";
-import ProfileStats from "./ProfileStats";
-import UserFollowedBy from "./UserFollowedBy";
+import { useApiQuery } from "@/api";
+import { useProfile } from "@/hooks/users";
+import {UserBadge, FollowButton, ActionButton }from "@/components/common";
+import {ProfileStats, UserFollowedBy} from "@/components/user";
 
 export default function UserProfileSidebar() {
     const { userId: paramUserId } = useParams();

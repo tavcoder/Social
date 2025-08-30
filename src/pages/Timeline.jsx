@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import PostList from "../components/post/PostList";
+import { AuthContext } from "@/context";
+import { PostList } from "@/components/post";
 
 function Timeline() {
     const { user } = useContext(AuthContext);
@@ -16,3 +16,4 @@ function Timeline() {
 }
 
 export default Timeline;
+ 

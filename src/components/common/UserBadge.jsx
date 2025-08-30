@@ -1,4 +1,4 @@
-import Avatar from "../common/Avatar";
+import { Avatar } from "@/components/common";
 
 const UserBadge = ({ user }) => {
   return (

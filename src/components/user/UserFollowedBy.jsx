@@ -1,5 +1,5 @@
-import Avatar from "../common/Avatar";
-import { useTopFollowers } from "../../hooks/useTopFollowers";
+import {Avatar }from "@/components/common";
+import { useTopFollowers } from "@/hooks/users";
 
 const UserFollowedBy = ({ user }) => {
     const { topFollowers, totalFollowers, loading } = useTopFollowers(user._id, 3);

@@ -1,5 +1,5 @@
 // hooks/useTopFollowers.js
-import { useFollowers } from "./useFollowers";
+import { useFollowers } from "@/hooks/users"
 
 export function useTopFollowers(userId, limit = 3) {
     const {

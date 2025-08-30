@@ -1,10 +1,8 @@
 import { format } from "date-fns";
-import { useProfile } from "../../hooks/useProfile";
-import UserRow from "../common/UserRow";
-import PostImage from "./PostImage";
-import PostActionRow from "./buttons/PostActionRow";
-import CommentsItem from "./CommentsItem";
-import { useComments } from "../../hooks/useComments";
+import { UserRow} from "@/components/common";
+import { PostImage, PostActionRow, CommentsItem} from "@/components/post";
+import { useProfile } from "@/hooks/users";
+import { useComments } from "@/hooks/social";
 
 function PostItem({ post }) {
     const { showComments, handleCommentToggle } = useComments();

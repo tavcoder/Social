@@ -1,9 +1,9 @@
 // useApiQuery.js
 import { useQuery } from "@tanstack/react-query";
-import { get } from "./apiHelper";
-import { queryEndpointsMap, querySelectMap } from "./queryMaps";
+import { get } from "@/api/apiHelper";
+import { queryEndpointsMap, querySelectMap } from "@/api";
 
-export function useApiQuery(key, params, options = {}) {
+export default function useApiQuery(key, params, options = {}) {
     if (!queryEndpointsMap[key] || !querySelectMap[key]) {
         throw new Error(`No endpoint or selector found for key "${key}"`);
     }

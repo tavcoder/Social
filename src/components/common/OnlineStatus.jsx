@@ -1,5 +1,5 @@
 // components/OnlineStatus.jsx
-import { useOnlineStatus } from "../../hooks/useOnlineStatus";
+import { useOnlineStatus } from "@/hooks/users";
 
 export default function OnlineStatus({ userId }) {
     const { isOnline, lastSeen } = useOnlineStatus(userId);

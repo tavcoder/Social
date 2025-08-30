@@ -1,7 +1,6 @@
 import { Heart, ChatCircle } from "phosphor-react";
-import { useToggleLike } from "../../../hooks/useToggleLike";
-import ActionButton from "../../common/ActionButton";
-import RemoveButton from "../../common/RemoveButton";
+import { useToggleLike } from "@/hooks/social";
+import { ActionButton, RemoveButton } from "@/components/common";
 
 export default function PostActionRow({ post, onCommentToggle }) {
     const { isUserLiked, handleLikeToggle } = useToggleLike();

@@ -1,9 +1,8 @@
 // hooks/useUsers.js
 import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useApiQuery } from "../api/useApiQuery";
-import { useFollowers } from "./useFollowers";
-import { useFollowing } from "./useFollowing";
+import { AuthContext } from "@/context";
+import { useApiQuery } from "@/api";
+import { useFollowers, useFollowing } from "@/hooks/users"
 
 export function useUsers(targetUserId = null, initialPage = 1) {
     const { user: authUser } = useContext(AuthContext);

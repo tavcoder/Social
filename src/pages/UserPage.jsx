@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
-import { useApiQuery } from "../api/useApiQuery";
-import UserProfileSidebar from "../components/user/UserProfileSidebar";
-import PostList from "../components/post/PostList";
+import { useApiQuery } from "@/api";
+import { UserProfileSidebar } from "@/components/user";
+import { PostList } from "@/components/post";
 
 export default function UserPage() {
     const { userId } = useParams();
@@ -20,6 +20,6 @@ export default function UserPage() {
             <div className="timeline-page">
                 <PostList userId={userId} />
             </div>
-        </div>
+        </div> 
     );
 }

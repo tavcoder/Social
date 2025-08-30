@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { AuthContext } from "@/context";
 
 export function useAuthForm(mode = "login") {
     const {

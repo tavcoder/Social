@@ -1,5 +1,5 @@
 // hooks/useUserConnections.js
-import { useInfiniteApiQuery } from "../api/useInfiniteApiQuery";
+import { useInfiniteApiQuery }from "@/api";
 
 export function useUserConnections(type, userId, initialPage = 1) {
     if (type !== "followers" && type !== "following") {

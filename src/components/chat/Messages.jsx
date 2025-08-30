@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TextInput from "../common/TextInput";
+import { TextInput } from "@/components/common";
 
 const fakeUsers = [
     { id: 1, name: "Ana López", nick: "anita", avatar: "/avatar.png", online: true },

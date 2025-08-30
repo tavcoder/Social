@@ -1,8 +1,8 @@
 // src/hooks/useToggleLike.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
-import { callApi } from "../api/apiHelper";
-import { AuthContext } from "../context/AuthContext";
+import { callApi } from "@/api/apiHelper";
+import { AuthContext } from "@/context";
 
 export function useToggleLike() {
     const { user: authUser } = useContext(AuthContext);

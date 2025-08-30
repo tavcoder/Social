@@ -1,10 +1,10 @@
 import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { get } from "./apiHelper";
-import Spinner from "../components/common/Spinner";
-import { queryEndpointsMap, querySelectMap } from "./queryMaps";
+import { get } from "@/api/apiHelper";
+import { queryEndpointsMap, querySelectMap } from "@/api";
+import {Spinner} from "@/components/common";
 
-export function useInfiniteApiQuery(key, params, options = {}) {
+export default function useInfiniteApiQuery(key, params, options = {}) {
 
     if (!queryEndpointsMap[key] || !querySelectMap[key]) {
         throw new Error(`No query endpoint or selector found for key "${key}"`);

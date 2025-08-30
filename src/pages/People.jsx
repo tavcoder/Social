@@ -1,10 +1,9 @@
 //Puede recibir targetUserId y usa useParams para filtrar por tipo (all, followers, following).
 //Tiene buscador (SearchBox) y paginación (hasMore + loadMore).
 import { useParams } from "react-router";
-import { useUsers } from "../hooks/useUsers";
-import { SearchBox } from "../components/common/SearchBox";
-import UserList from "../components/user/UserList";
-import UserFollowWrapper from "../components/common/UserFollowWrapper";
+import { useUsers } from "@/hooks/users";
+import { SearchBox, UserFollowWrapper  }  from "@/components/common";
+import { UserList }  from "@/components/user";
 import "../styles/People.css";
 
 // Hook interno para manejar listas y placeholders según type
@@ -18,7 +17,7 @@ function usePeopleLists(type, users, followers, following) {
     const placeholders = {
         all: "Buscar usuarios...",
         followers: "Buscar seguidores...",
-        following: "Buscar a quienes sigue..."
+        following: "Buscar a quienes sigue..." 
     };
 
     return {

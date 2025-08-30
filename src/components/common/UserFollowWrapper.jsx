@@ -1,5 +1,4 @@
-import UserRow from "./UserRow";
-import FollowButton from "./FollowButton";
+import {FollowButton, UserRow} from "@/components/common";
 
 export default function UserFollowWrapper({ user, subText, isFollowing }) {
     ("UserFollowWrapper cargado");
