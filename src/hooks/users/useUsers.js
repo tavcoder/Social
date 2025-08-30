@@ -51,7 +51,7 @@ export function useUsers(targetUserId = null, initialPage = 1) {
 
     const users = filterUsers();
     const unfollowedUsers = filterUsers({ excludeIds: followingIds });
-
+    console.log("usershook", users)
     return {
         users,
         unfollowedUsers,
