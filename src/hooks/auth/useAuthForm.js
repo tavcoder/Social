@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
-import { AuthContext } from "@/context";
+import { useAuth } from "@/context";
 
 export function useAuthForm(mode = "login") {
     const {
@@ -8,7 +8,7 @@ export function useAuthForm(mode = "login") {
         register,
         loginStatus,
         registerStatus,
-    } = useContext(AuthContext);
+    } = useContext(useAuth);
 
     const [formData, setFormData] = useState({
         name: "",

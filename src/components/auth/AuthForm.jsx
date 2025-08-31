@@ -9,7 +9,7 @@ function AuthForm({ mode = "login" }) {
         updateField,
         handleSubmit,
         loginWithGoogle,
-    } = useAuthForm(mode);
+    } = useAuthForm(mode); 
 
     const isLogin = mode === "login";
 
