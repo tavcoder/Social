@@ -1,5 +1,6 @@
 export { default as ActionButton } from "./ActionButton";
 export { default as Avatar } from "./Avatar";
+export { default as Carousel } from "./Carousel";
 export { default as FollowButton } from "./FollowButton";
 export { default as OnlineStatus } from "./OnlineStatus";
 export { default as RemoveButton } from "./RemoveButton";
