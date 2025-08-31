@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 import { useUsers } from "@/hooks/users";
+import { usePeopleLists } from "@/hooks/users";
 import { SearchBox, UserFollowWrapper } from "@/components/common";
 import { UserList } from "@/components/user";
-import { usePeopleLists } from "@/hooks/users";
 import "../styles/People.css";
 
 function People() {
