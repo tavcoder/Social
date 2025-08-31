@@ -32,7 +32,7 @@ function AuthPage() {
 
                     <div className="divider">or</div>
 
-                    <button className="google-btn">
+                    <button className="btn btn--level2">
                         <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google" />
                         {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
                     </button>
@@ -41,14 +41,14 @@ function AuthPage() {
                         {mode === "login" ? (
                             <>
                                 Don’t have an account?{" "}
-                                <button className="link-btn" onClick={toggleMode}>
+                                <button className="btn" onClick={toggleMode}>
                                     Sign up
                                 </button>
                             </>
                         ) : (
                             <>
                                 Already have an account?{" "}
-                                <button className="link-btn" onClick={toggleMode}>
+                                <button className="btn" onClick={toggleMode}>
                                     Sign in
                                 </button>
                             </>

@@ -5,14 +5,30 @@
 :root {
   height: 100%;
   align-items: center;
-  --primary: #A2213A;
-  --primary-hover: #BE2A45;
-  --primary-pressed: #881C32;
-  --primary-disabled: #D6A3AB;
-  --primary-light: #F9E6E9;
+
+  /* Primary Colors: */
+  --primary: #3498DB;
+  --primary-hover: #2980B9;
+  --primary-pressed: #1A5276;
+  --primary-disabled: #AAB7B8;
+  --primary-light: #EAF2F8;
+
+  /*Secondary Colors:*/
+  --secondary: #2ECC71;
+  --secondary-hover: #27AE60;
+  --secondary-pressed: #1E8449;
+  --secondary-disabled: #D0F0E0;
+
+  /*Status Colors: For alerts and feedback.*/
+  --warning: #F39C12;
+  --error: #E74C3C;
+  --success: #2ECC71;
 
   /* Typography */
-  font-family: system-ui, Helvetica, Arial, sans-serif;
+  font-family: system-ui,
+    Helvetica,
+    Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-size: 1rem;
@@ -23,7 +39,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --text-primary: #191919;
-  --text-secondary: #7D8AA5;
+  --text-secondary: #4b5563;
 
   /* Neutrals */
   --white: #ffffff;
@@ -78,17 +94,22 @@ body {
 
 /* Generic button base styles */
 .btn {
-  all: unset;
-  outline: revert;
-  display: inline-block;
-  padding: 4px 32px;
-  border-radius: 72px;
-  min-width: fit-content;
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: normal;
-  text-align: center;
-  transition: opacity 180ms, translate 180ms;
+  transition: background-color 0.3s ease-in-out;
 }
+
+.btn:hover {
+  background-color: var(--primary-hover);
+}
+
 
 .btn:focus-visible {
   outline: 2px solid #0060DF;
@@ -118,13 +139,24 @@ body {
 
 /* Button level 2 (outline style) */
 .btn--level2 {
-  background: transparent;
-  border: 1px solid var(--primary);
-  color: var(--primary);
+  width: 100%;
+  padding: 12px;
+  background-color: var(--white);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  border: var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: background-color 0.3s;
 }
 
 .btn--level2:hover {
-  background-color: rgba(232, 99, 115, 0.1);
+  background-color: #f9fafb;
 }
 
 .btn--level2:active {
@@ -308,21 +340,24 @@ body {
 }
 
 input {
-  border: none;
-  border-bottom: var(--border);
-  padding: 0.5rem 0;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  border: var(--border);
+  border-radius: 10px;
   font-size: 1rem;
-  background: transparent;
-  color: var(--gray-dark);
+  color: var(--text-secondary);
+  transition: border-color 0.3s;
 }
 
 input::placeholder {
   color: var(--gray-dark);
 }
 
-input:focus {
+.auth-form input:focus {
   outline: none;
-  border-color: var(--gray-dark);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
 }
 
 /* Label for inputs */
@@ -1002,39 +1037,8 @@ h1 {
 }
 
 /* Estilos para el formulario y sus elementos */
-.auth-form input {
-  width: 100%;
-  padding: 12px 16px;
-  margin-bottom: 15px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 1rem;
-  color: #374151;
-  transition: border-color 0.3s;
-}
 
-.auth-form input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
 
-.auth-form button {
-  width: 100%;
-  padding: 12px;
-  background-color: #3b82f6;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-}
-
-.auth-form button:hover {
-  background-color: #2563eb;
-}
 
 .divider {
   color: #9ca3af;
@@ -1059,27 +1063,6 @@ h1 {
 
 .divider::after {
   right: 0;
-}
-
-.google-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #ffffff;
-  color: #4b5563;
-  font-size: 1rem;
-  font-weight: 600;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  transition: background-color 0.3s;
-}
-
-.google-btn:hover {
-  background-color: #f9fafb;
 }
 
 .bottom-text {

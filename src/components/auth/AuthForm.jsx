@@ -15,7 +15,7 @@ function AuthForm({ mode = "login" }) {
 
     return (
         <form onSubmit={handleSubmit} className="auth-form" autoComplete="on">
-            <h2>{isLogin ? "Iniciar sesión" : "Registrarse"}</h2>
+            <h3>{isLogin ? "" : "Join the comunity today"}</h3>
 
             {!isLogin && (
                 <>
@@ -54,7 +54,7 @@ function AuthForm({ mode = "login" }) {
             <input
                 type="email"
                 name="email"
-                placeholder="Correo electrónico"
+                placeholder="Email"
                 value={formData.email || ""}
                 onChange={(e) => updateField("email", e.target.value)}
                 required
@@ -64,7 +64,7 @@ function AuthForm({ mode = "login" }) {
             <input
                 type="password"
                 name="password"
-                placeholder="Contraseña"
+                placeholder="Password"
                 value={formData.password || ""}
                 onChange={(e) => updateField("password", e.target.value)}
                 required
@@ -73,16 +73,10 @@ function AuthForm({ mode = "login" }) {
 
             {error && <p className="error">{error}</p>}
 
-            <button type="submit">
-                {isLogin ? "Entrar" : "Crear cuenta"}
+            <button  className="btn" type="submit">
+                {isLogin ? "Sign in" : "Sign up"}
             </button>
 
-            {isLogin && (
-                <>
-                    <p>O entra con:</p>
-                    <button type="button" onClick={loginWithGoogle}>Google</button>
-                </>
-            )}
         </form>
     );
 }
