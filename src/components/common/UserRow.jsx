@@ -1,5 +1,5 @@
 // src/components/UserRow.jsx
-import Avatar from "./Avatar";
+import {Avatar} from "@/components/common";
 
 export default function UserRow({
   user,

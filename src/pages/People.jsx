@@ -1,34 +1,12 @@
-//Puede recibir targetUserId y usa useParams para filtrar por tipo (all, followers, following).
-//Tiene buscador (SearchBox) y paginación (hasMore + loadMore).
 import { useParams } from "react-router";
-import { useUsers } from "../hooks/useUsers";
-import { SearchBox } from "../components/common/SearchBox";
-import UserList from "../components/user/UserList";
-import UserFollowWrapper from "../components/common/UserFollowWrapper";
+import { useUsers } from "@/hooks/users";
+import { SearchBox, UserFollowWrapper } from "@/components/common";
+import { UserList } from "@/components/user";
+import { usePeopleLists } from "@/hooks/users";
 import "../styles/People.css";
 
-// Hook interno para manejar listas y placeholders según type
-function usePeopleLists(type, users, followers, following) {
-    const lists = {
-        all: users,
-        followers,
-        following
-    };
-
-    const placeholders = {
-        all: "Buscar usuarios...",
-        followers: "Buscar seguidores...",
-        following: "Buscar a quienes sigue..."
-    };
-
-    return {
-        listToDisplay: lists[type] || users,
-        placeholder: placeholders[type] || "Buscar usuarios..."
-    };
-}
-
-function People({ targetUserId = null }) {
-    const { type = "all" } = useParams();
+function People() {
+    const { type, userId } = useParams();
     const {
         users,
         followers,
@@ -38,17 +16,23 @@ function People({ targetUserId = null }) {
         error,
         hasMore,
         loadMore
-    } = useUsers(1, 10, targetUserId);
+    } = useUsers(userId, 1);
 
-    const { listToDisplay, placeholder } = usePeopleLists(type, users, followers, following);
+    const { listToDisplay, placeholder } = usePeopleLists(
+        type,
+        userId,
+        users,
+        followers,
+        following
+    );
+    console.log("type",type);
+    console.log("userId",userId);
+    console.log("users",users);
+    console.log("followers",followers);
+    console.log("following",following);
 
-    if (loading && users.length === 0) {
-        return <p className="people__loading">Cargando usuarios...</p>;
-    }
-
-    if (error) {
-        return <p className="people__error">Error al cargar usuarios.</p>;
-    }
+    if (loading && users.length === 0) return <p className="people__loading">Cargando usuarios...</p>;
+    if (error) return <p className="people__error">Error al cargar usuarios.</p>;
 
     return (
         <div className="people-page">
@@ -57,9 +41,9 @@ function People({ targetUserId = null }) {
                 keys={["name", "nick"]}
                 placeholder={placeholder}
             >
-                {(displayUsers) => (
+                {(listToDisplay) => (
                     <UserList
-                        users={displayUsers}
+                        users={listToDisplay}
                         getSubText={(user) => user.nick}
                         RowComponent={(props) => (
                             <UserFollowWrapper

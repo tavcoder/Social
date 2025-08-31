@@ -1,26 +1,11 @@
-// Importar modelo
-const follow = require("../models/follow");
+// Importar modelos
 const Follow = require("../models/follow");
+const Publication = require("../models/publication");
 const User = require("../models/user");
 
-// Imprtar servicio
+// Importar servicio
 const followService = require("../services/followService");
 
-// Importar dependencias
-const mongoosePaginate = require("mongoose-pagination");
-
-
-// Acciones de prueba
-const pruebaFollow = (req, res) => {
-
-    document.querySelector()
-
-    return res.status(200).send({
-        message: "Mensaje enviado desde: controllers/follow.js"
-    });
-}
-
-// Accion de guardar un follow (accion seguir)
 // Accion de guardar un follow (accion seguir)
 const save = async (req, res) => {
     try {
@@ -88,115 +73,115 @@ const save = async (req, res) => {
     }
 };
 
-
 // Accion de borrar un follow (accion dejar de seguir)
 const unfollow = (req, res) => {
     // Recoger el id del usuario identificado
     const userId = req.user.id;
-
     // Recoger el id del usuario que sigo y quiero dejar de seguir
     const followedId = req.params.id;
-
     // Find de las coincidencias y hacer remove
-    Follow.find({
+    Follow.findOneAndDelete({
         "user": userId,
         "followed": followedId
-    }).remove((error, followDeleted) => {
-
-        if (error || !followDeleted) {
+    }).then((followDeleted) => {
+        if (!followDeleted) {
             return res.status(500).send({
                 status: "error",
                 message: "No has dejado de seguir a nadie"
             });
         }
-
         return res.status(200).send({
             status: "success",
             message: "Follow eliminado correctamente"
         });
+    }).catch((error) => {
+        return res.status(500).send({
+            status: "error",
+            message: "Error interno del servidor"
+        });
     });
+};
 
+// Función base para obtener seguidores o seguidos
+const getFollowsBase = async (req, res, queryType) => {
+    try {
+        const userId = req.params.id || req.user.id;
+        const page = parseInt(req.params.page) || 1;
+        const itemsPerPage = 5;
 
-}
+        let query = {};
+        let populateField = "";
+        let message = "";
 
-// Acción listado de usuarios que cualquier usuario está siguiendo (siguiendo)
+        if (queryType === 'followers') {
+            query = { followed: userId };
+            populateField = "user";
+            message = "Listado de usuarios que siguen a este usuario";
+        } else if (queryType === 'following') {
+            query = { user: userId };
+            populateField = "followed";
+            message = "Listado de usuarios que este usuario está siguiendo";
+        } else {
+            return res.status(400).send({
+                status: "error",
+                message: "Tipo de consulta no válido. Usa 'followers' o 'following'."
+            });
+        }
+
+        const total = await Follow.countDocuments(query);
+
+        const follows = await Follow.find(query)
+            .populate(populateField, "-password -role -__v -email")
+            .skip((page - 1) * itemsPerPage)
+            .limit(itemsPerPage)
+            .lean();
+
+        if (!follows || follows.length === 0) {
+            return res.status(404).send({
+                status: "error",
+                message: "No se encontraron relaciones de seguimiento para este usuario."
+            });
+        }
+
+        let followUserIds = {};
+        if (req.user && req.user.id) {
+            followUserIds = await followService.followUserIds(req.user.id);
+        } else {
+            followUserIds = { following: [], followers: [] };
+        }
+
+        return res.status(200).send({
+            status: "success",
+            message,
+            follows,
+            total,
+            page,
+            pages: Math.ceil(total / itemsPerPage),
+            user_following: followUserIds.following,
+            user_follow_me: followUserIds.followers
+        });
+
+    } catch (error) {
+        console.error(`Error en getFollowsBase (${queryType}):`, error);
+        return res.status(500).send({
+            status: "error",
+            message: "Error interno del servidor al obtener las relaciones de seguimiento."
+        });
+    }
+};
+
 const following = (req, res) => {
-    // Sacar el id del usuario identificado
-    let userId = req.user.id;
+    return getFollowsBase(req, res, 'following');
+};
 
-    // Comprobar si me llega el id por paramatro en url
-    if (req.params.id) userId = req.params.id;
-
-    // Comprobar si me llega la pagina, si no la pagina 1
-    let page = 1;
-
-    if (req.params.page) page = req.params.page;
-
-    // Usuarios por pagina quiero mostrar
-    const itemsPerPage = 5;
-
-    // Find a follow, popular datos de los usuario y paginar con mongoose paginate
-    Follow.find({ user: userId })
-        .populate("user followed", "-password -role -__v -email")
-        .paginate(page, itemsPerPage, async (error, follows, total) => {
-
-            // Listado de usuarios de trinity, y soy victor
-            // Sacar un array de ids de los usuarios que me siguen y los que sigo como victor
-            let followUserIds = await followService.followUserIds(req.user.id);
-
-            return res.status(200).send({
-                status: "success",
-                message: "Listado de usuarios que estoy siguiendo",
-                follows,
-                total,
-                pages: Math.ceil(total / itemsPerPage),
-                user_following: followUserIds.following,
-                user_follow_me: followUserIds.followers
-            });
-        })
-
-}
-
-// Acción listado de usuarios que siguen a cualquier otro usuario (soy seguido, mis seguidores)
 const followers = (req, res) => {
-
-    // Sacar el id del usuario identificado
-    let userId = req.user.id;
-
-    // Comprobar si me llega el id por paramatro en url
-    if (req.params.id) userId = req.params.id;
-
-    // Comprobar si me llega la pagina, si no la pagina 1
-    let page = 1;
-
-    if (req.params.page) page = req.params.page;
-
-    // Usuarios por pagina quiero mostrar
-    const itemsPerPage = 5;
-
-    Follow.find({ followed: userId })
-        .populate("user", "-password -role -__v -email")
-        .paginate(page, itemsPerPage, async (error, follows, total) => {
-
-            let followUserIds = await followService.followUserIds(req.user.id);
-
-            return res.status(200).send({
-                status: "success",
-                message: "Listado de usuarios que me siguen",
-                follows,
-                total,
-                pages: Math.ceil(total / itemsPerPage),
-                user_following: followUserIds.following,
-                user_follow_me: followUserIds.followers
-            });
-        })
-}
+    return getFollowsBase(req, res, 'followers');
+};
 
 // Exportar acciones
 module.exports = {
-    pruebaFollow,
     save,
     unfollow,
     following,
     followers
-}
+};

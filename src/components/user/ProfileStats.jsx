@@ -1,21 +1,21 @@
 import { NavLink } from "react-router";
 
-const ProfileStats = ({ counters }) => {
+const ProfileStats = ({ counters, userId }) => {
     return (
         <div className="profile__stats">
-            <NavLink to="timeline">
+            <NavLink to={`timeline/${userId}`}>
                 <div className="stats__counters">
                     <strong>{counters.publications}</strong>
                     <span className="stats__name">Posts</span>
                 </div>
             </NavLink>
-            <NavLink to="people/followers">
+            <NavLink to={`people/followers/${userId}`}>
                 <div className="stats__counters">
                     <strong>{counters.followed}</strong>
                     <span className="stats__name">Followers</span>
                 </div>
             </NavLink>
-            <NavLink to="people/following">
+            <NavLink to={`people/following/${userId}`}>
                 <div className="stats__counters">
                     <strong>{counters.following}</strong>
                     <span className="stats__name">Following</span>
@@ -25,4 +25,4 @@ const ProfileStats = ({ counters }) => {
     );
 };
 
-export default ProfileStats;
+export default ProfileStats; 

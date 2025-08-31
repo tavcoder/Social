@@ -1,7 +1,6 @@
 import AddComment from "./AddComment";
-import { useApiQuery } from "../../api/useApiQuery";
-import UserRow from "../common/UserRow";
-import RemoveButton from "../common/RemoveButton";
+import { useApiQuery } from "@/api";
+import { UserRow, RemoveButton} from "@/components/common";
 import "../../styles/CommentsItem.css";
 
 export default function CommentsItem({ postId }) {

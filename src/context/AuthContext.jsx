@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { useApiMutation } from "../api/useApiMutation";
+import { useApiMutation } from "@/api";
 
 export const AuthContext = createContext(null);
 

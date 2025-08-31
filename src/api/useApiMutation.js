@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { callApi } from "./apiHelper";
+import { callApi } from "@/api/apiHelper";
+
 
 // Endpoints dinámicos
 const queryEndpointsMap = {
@@ -28,7 +29,7 @@ const querySelectMap = {
 };
 
 // Hook genérico con optimistic update
-export function useApiMutation(mutationKey, queryKeyToUpdate) {
+export default function useApiMutation(mutationKey, queryKeyToUpdate) {
     const queryClient = useQueryClient();
 
     if (!queryEndpointsMap[mutationKey]) throw new Error(`No query endpoint for key "${mutationKey}"`);

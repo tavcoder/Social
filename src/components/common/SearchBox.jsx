@@ -1,6 +1,6 @@
 // src/components/common/SearchBox.jsx
-import { useSearch } from "../../hooks/useSearch";
-import { SearchInput } from "./SearchInput";
+import { useSearch } from "@/hooks/users";
+import { SearchInput } from "@/components/common";
 
 /**
  * SearchBox

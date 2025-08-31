@@ -1,8 +1,7 @@
 import { Outlet, useParams } from "react-router";
-import UserProfileSidebar from "../components/user/UserProfileSidebar";
-import UserSuggestions from "../components/user/UserSuggestions";
-import Navbar from "../components/navigation/Navbar";
-import Messages from "../components/chat/Messages";
+import { UserProfileSidebar, UserSuggestions } from "@/components/user";
+import { Navbar } from "@/components/navigation";
+import { Messages } from "@/components/chat";
 import "../styles/MainLayout.css";
 
 function MainLayout() {

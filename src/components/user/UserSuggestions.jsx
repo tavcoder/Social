@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
-import { useUsers } from "../../hooks/useUsers";
-import UserList from "../user/UserList";
-import UserFollowWrapper from "../common/UserFollowWrapper";
+import { AuthContext } from "@/context";
+import { useUsers } from "@/hooks/users";
+import {UserList} from "@/components/user";
+import {UserFollowWrapper} from "@/components/common";
 
 export default function UserSuggestions() {
     const { user: authUser } = useContext(AuthContext);

@@ -16,11 +16,8 @@ export const queryEndpointsMap = {
     pruebaPublication: () => `publication/prueba-publication`,      // Ruta de prueba publicación
 
     // FOLLOW
-    following: (id) => `follow/following/${id}`,                    // Devuelve total de usuarios que sigo
-    followingPage: (id, page) => `follow/following/${id}/${page}`,  // Devuelve usuarios que sigo paginados
-    followers: (id) => `follow/followers/${id}`,                    // Devuelve total de mis seguidores
-    followersPage: (id, page) => `follow/followers/${id}/${page}`,  // Devuelve seguidores paginados
-    pruebaFollow: () => `follow/prueba-follow`,                     // Ruta de prueba follow
+    following: (id, page) => `follow/following/${id}/${page}`,                    // Devuelve total de usuarios que sigo
+    followers: (id, page) => `follow/followers/${id}/${page}`,                    // Devuelve total de mis seguidores
 };
 
 export const querySelectMap = {
@@ -41,9 +38,6 @@ export const querySelectMap = {
     pruebaPublication: (res) => res,              // Devuelve resultado de prueba publicación
 
     // FOLLOW
-    following: (res) => res.total,                // Devuelve total de usuarios que sigo
-    followingPage: (res) => res,                  // Devuelve lista paginada de usuarios que sigo
-    followers: (res) => res.total,                // Devuelve total de mis seguidores
-    followersPage: (res) => res,                  // Devuelve todo: follows, total, pages, user_following, user_follow_me
-    pruebaFollow: (res) => res,                   // Devuelve resultado de prueba follow
+    following: (res) => res,                // Devuelve total de usuarios que sigo
+    followers: (res) => res,                // Devuelve total de mis seguidores
 };

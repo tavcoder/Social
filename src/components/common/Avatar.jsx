@@ -1,7 +1,6 @@
 import { User } from "phosphor-react";
 import { useNavigate } from "react-router";
-import { useOnlineStatus } from "../../hooks/useOnlineStatus";
-
+import { useOnlineStatus } from "@/hooks/users";
 export default function Avatar({ src, alt, size = 40, userId }) {
   const navigate = useNavigate();
   const { isOnline } = useOnlineStatus(userId);

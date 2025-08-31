@@ -1,8 +1,8 @@
-import { NavLink, useNavigate } from "react-router";
 import { useId } from "react";
+import { NavLink, useNavigate } from "react-router";
 import { BellSimple } from "phosphor-react";
-import { useProfile } from "../../hooks/useProfile";
-import Avatar from "../common/Avatar";
+import { useProfile } from "@/hooks/users";
+import { Avatar} from "@/components/common";
 
 function Navbar() {
   const navigate = useNavigate();

@@ -1,8 +1,9 @@
 import { useState, useContext } from "react";
 import { Image } from "phosphor-react";
-import { useApiMutation } from "../../api/useApiMutation.js";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import TextInput from "../common/TextInput.jsx";
+import { useApiMutation } from "@/api";
+import { AuthContext } from "@/context";
+import { TextInput} from "@/components/common";
+
 
 function NewPostForm() {
     const { token } = useContext(AuthContext); // ✅ dentro del componente

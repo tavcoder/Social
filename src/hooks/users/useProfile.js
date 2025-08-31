@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { useApiQuery } from "../api/useApiQuery";
+import { AuthContext } from "@/context";
+import { useApiQuery } from "@/api";
 
 export function useProfile() {
     const { user: authUser } = useContext(AuthContext);

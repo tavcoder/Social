@@ -1,10 +1,10 @@
 import { useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { get } from "./apiHelper";
-import Spinner from "../components/common/Spinner";
-import { queryEndpointsMap, querySelectMap } from "./queryMaps";
+import { get } from "@/api/apiHelper";
+import { queryEndpointsMap, querySelectMap } from "@/api";
+import { Spinner } from "@/components/common";
 
-export function useInfiniteApiQuery(key, params, options = {}) {
+export default function useInfiniteApiQuery(key, params, options = {}) {
 
     if (!queryEndpointsMap[key] || !querySelectMap[key]) {
         throw new Error(`No query endpoint or selector found for key "${key}"`);
@@ -12,7 +12,7 @@ export function useInfiniteApiQuery(key, params, options = {}) {
 
     const endpointFn = queryEndpointsMap[key];
     const selectFn = querySelectMap[key];
-   
+
     const loaderRef = useRef(null); // ✅ ahora useRef
 
     const query = useInfiniteQuery({
@@ -23,8 +23,10 @@ export function useInfiniteApiQuery(key, params, options = {}) {
             const res = await get(endpointFn(...args));
             return { page: pageParam, data: selectFn(res) };
         },
-        getNextPageParam: (lastPage) =>
-            lastPage.data.length > 0 ? lastPage.page + 1 : undefined,
+        getNextPageParam: (lastPage) => {
+            if (!lastPage || !Array.isArray(lastPage.data)) return undefined;
+            return lastPage.data.length > 0 ? lastPage.page + 1 : undefined;
+        },
         retry: options.retry ?? 1,
         staleTime: options.staleTime ?? 1000 * 60,
         ...options,

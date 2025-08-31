@@ -1,6 +1,6 @@
 import { useState} from "react";
-import TextInput from "../common/TextInput";
-import { useApiMutation } from "../../api/useApiMutation";
+import { TextInput} from "@/components/common";
+import { useApiMutation } from "@/api";
 
 export default function AddComment({ postId }) {
   const [text, setText] = useState("");

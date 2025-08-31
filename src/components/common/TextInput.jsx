@@ -1,6 +1,6 @@
-import { useProfile } from "../../hooks/useProfile";
 import { Smiley } from "phosphor-react";
-import Avatar from "./Avatar";
+import { useProfile } from "@/hooks/users";
+import {Avatar} from "@/components/common";
 
 export default function TextInput({ value, onChange, onSend, placeholder, disabled }) {
     const { authUser, authUserProfile } = useProfile();

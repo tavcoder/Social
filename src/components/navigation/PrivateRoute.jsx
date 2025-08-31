@@ -1,7 +1,7 @@
 // Componente de composición, verifica si el usuario está autenticado
 import { useContext } from "react";
 import { Navigate } from "react-router";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "@/context";
 
 function PrivateRoute({ children }) {
     const { user } = useContext(AuthContext);

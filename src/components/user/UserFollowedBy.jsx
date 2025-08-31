@@ -1,12 +1,17 @@
-import Avatar from "../common/Avatar";
-import { useTopFollowers } from "../../hooks/useTopFollowers";
+import { useContext } from "react";
+import { AuthContext } from "@/context";
+import { useTopFollowers } from "@/hooks/users";
+import { Avatar } from "@/components/common";
 
 const UserFollowedBy = ({ user }) => {
     const { topFollowers, totalFollowers, loading } = useTopFollowers(user._id, 3);
+    const { user: authUser } = useContext(AuthContext);
 
     if (loading) return <p>Cargando...</p>;
     if (!topFollowers.length) return <p>No tiene seguidores</p>;
-console.log(topFollowers);
+
+    const isFollowedByYou = topFollowers.some(f => f.user._id === authUser?.id);
+
     return (
         <div className="user__followed">
             <div className="user__followed__avatars">
@@ -23,12 +28,23 @@ console.log(topFollowers);
             <div className="user__info">
                 <p className="user__followed__names">
                     Followed by{" "}
-                    {topFollowers.map(f => (
-                        <span key={f.user._id}>{f.user.name}</span>
-                    ))}
-                    {totalFollowers > topFollowers.length &&
+                    {isFollowedByYou ? (
+                        <>
+                            <span>you and</span>
+                            {topFollowers
+                                .filter(f => f.user._id !== authUser?.id)
+                                .map(f => (
+                                    <span key={f.user._id}> , {f.user.name}</span>
+                                ))}
+                        </>
+                    ) : (
+                        topFollowers.map(f => (
+                            <span key={f.user._id}>{f.user.name} </span>
+                        ))
+                    )}
+                    {totalFollowers > topFollowers.length && (
                         <span> and {totalFollowers - topFollowers.length} others</span>
-                    }
+                    )}
                 </p>
             </div>
         </div>
