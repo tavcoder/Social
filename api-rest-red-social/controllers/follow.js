@@ -112,15 +112,18 @@ const getFollowsBase = async (req, res, queryType) => {
         let query = {};
         let populateField = "";
         let message = "";
+        let emptyMessage = "";
 
         if (queryType === 'followers') {
             query = { followed: userId };
             populateField = "user";
             message = "Listado de usuarios que siguen a este usuario";
+            emptyMessage = "No se encontraron seguidores para este usuario.";
         } else if (queryType === 'following') {
             query = { user: userId };
             populateField = "followed";
             message = "Listado de usuarios que este usuario está siguiendo";
+            emptyMessage = "Este usuario no sigue a nadie.";
         } else {
             return res.status(400).send({
                 status: "error",
@@ -136,10 +139,17 @@ const getFollowsBase = async (req, res, queryType) => {
             .limit(itemsPerPage)
             .lean();
 
+        // Se modifica la respuesta para que sea 200 OK con un array vacío si no hay resultados
         if (!follows || follows.length === 0) {
-            return res.status(404).send({
-                status: "error",
-                message: "No se encontraron relaciones de seguimiento para este usuario."
+            return res.status(200).send({
+                status: "success",
+                message: emptyMessage,
+                follows: [],
+                total: 0,
+                page: page,
+                pages: 0,
+                user_following: [],
+                user_follow_me: []
             });
         }
 

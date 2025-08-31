@@ -84,10 +84,13 @@ const user = (req, res) => {
         .sort("-created_at")
         .populate('user', '-password -__v -role -email')
         .paginate(page, itemsPerPage, (error, publications, total) => {
+            // Se modifica la respuesta para que sea 200 OK con un array vacío si no hay publicaciones
             if (error || !publications || publications.length <= 0) {
-                return res.status(404).send({
-                    status: "error",
-                    message: "No hay publicaciones para mostrar"
+                return res.status(200).send({
+                    status: "success",
+                    message: "No hay publicaciones para mostrar",
+                    publications: [],
+                    total: 0
                 });
             }
 
@@ -174,10 +177,13 @@ const feed = async (req, res) => {
             .populate("user", "-password -role -__v -email")
             .sort("-created_at")
             .paginate(page, itemsPerPage, (error, publications, total) => {
-                if (error || !publications) {
-                    return res.status(500).send({
-                        status: "error",
+                // Se modifica la respuesta para que sea 200 OK con un array vacío
+                if (error || !publications || publications.length === 0) {
+                    return res.status(200).send({
+                        status: "success",
                         message: "No hay publicaciones para mostrar",
+                        publications: [],
+                        total: 0
                     });
                 }
 
@@ -315,6 +321,15 @@ const listComments = async (req, res) => {
 
         if (!publication) {
             return res.status(404).send({ status: "error", message: "Publicación no encontrada" });
+        }
+
+        // Se modifica para devolver 200 OK con un array vacío si no hay comentarios
+        if (publication.comments.length === 0) {
+            return res.status(200).send({
+                status: "success",
+                message: "No hay comentarios para mostrar",
+                comments: []
+            });
         }
 
         return res.status(200).send({

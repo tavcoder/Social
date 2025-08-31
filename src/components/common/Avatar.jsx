@@ -4,6 +4,7 @@ import { useOnlineStatus } from "@/hooks/users";
 export default function Avatar({ src, alt, size = 40, userId }) {
   const navigate = useNavigate();
   const { isOnline } = useOnlineStatus(userId);
+  console.log("UserId para followers:", userId);
 
   const handleClick = () => {
     // Navega a la ruta del usuario pasando su id
@@ -20,11 +21,13 @@ export default function Avatar({ src, alt, size = 40, userId }) {
       }}
       onClick={handleClick}
     >
-      {src ? (
-        <img className="avatar__img" src={src} alt={alt} />
-      ) : (
+      {!src || src === "default.png" ? (
         <User size={size * 0.6} color="#888" weight="bold" />
+      ) : (
+        <img className="avatar__img" src={src} alt={alt} />
       )}
+
+
     </div>
   );
 }

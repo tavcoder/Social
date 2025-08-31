@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { useApiMutation } from "@/api";
 
-export const AuthContext = createContext(null);
+export const AuthContext = createContext({ user: null });
 
 export function AuthProvider(props) {
     const [user, setUser] = useState(() => {

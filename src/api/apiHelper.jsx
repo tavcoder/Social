@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3900/api"; // Ahora incluye /api
+const API_BASE_URL = "http://localhost:3900/api"; 
 
 // Obtener el token desde localStorage
 function getToken() {
