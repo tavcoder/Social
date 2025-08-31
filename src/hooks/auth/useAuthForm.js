@@ -6,6 +6,7 @@ export function useAuthForm(mode = "login") {
     const {
         login,
         register,
+        // Acceder a las propiedades de los objetos de estado con encadenamiento opcional
         loginStatus,
         registerStatus,
     } = useContext(AuthContext);
@@ -37,16 +38,18 @@ export function useAuthForm(mode = "login") {
             } else {
                 await register(formData);
             }
-
+            // La redirección aquí puede ser problemática si la mutación falla.
+            // Es mejor manejarla dentro del "onSuccess" de la mutación.
             navigate("/feed");
         } catch (err) {
             // No hace falta setError porque ya lo tienes desde `loginStatus.error`
         }
     };
 
-    const isLoading = mode === "login" ? loginStatus.isLoading : registerStatus.isLoading;
-    const isError = mode === "login" ? loginStatus.isError : registerStatus.isError;
-    const error = mode === "login" ? loginStatus.error : registerStatus.error;
+    // Usar el encadenamiento opcional para una lectura segura.
+    const isLoading = mode === "login" ? loginStatus?.isLoading : registerStatus?.isLoading;
+    const isError = mode === "login" ? loginStatus?.isError : registerStatus?.isError;
+    const error = mode === "login" ? loginStatus?.error : registerStatus?.error;
 
     return {
         formData,

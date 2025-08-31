@@ -4,7 +4,6 @@ import { useOnlineStatus } from "@/hooks/users";
 export default function Avatar({ src, alt, size = 40, userId }) {
   const navigate = useNavigate();
   const { isOnline } = useOnlineStatus(userId);
-  console.log("UserId para followers:", userId);
 
   const handleClick = () => {
     // Navega a la ruta del usuario pasando su id

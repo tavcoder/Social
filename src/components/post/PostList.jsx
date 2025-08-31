@@ -1,5 +1,5 @@
 // PostList.jsx
-import { PostItem} from "@/components/post";
+import { PostItem } from "@/components/post";
 import { useInfiniteApiQuery } from "@/api";
 
 function PostList({ userId }) {
@@ -10,8 +10,9 @@ function PostList({ userId }) {
     const { data, isError, InfiniteList, spinner } =
         useInfiniteApiQuery(queryKey, queryParams);
 
-    if (spinner) return spinner; // Spinner inicial
+    if (spinner) return spinner;
     if (isError) return <p style={{ textAlign: "center" }}>⚠ Error al cargar los posts.</p>;
+
 
     return (
         <InfiniteList>
