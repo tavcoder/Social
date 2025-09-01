@@ -12,6 +12,22 @@ const UserFollowedBy = ({ user }) => {
 
     const isFollowedByYou = topFollowers.some(f => f.user._id === authUser?.id);
 
+    // Lista de nombres excluyendo al usuario autenticado si aplica
+    const otherFollowers = topFollowers.filter(f => f.user._id !== authUser?.id);
+
+    // Construir array final de nombres en orden
+    const names = [];
+    if (isFollowedByYou) names.push("you");
+    otherFollowers.forEach(f => names.push(f.user.name));
+
+    // Función para renderizar nombres con comas y 'and' antes del último
+    const renderNames = (arr) => {
+        if (arr.length === 1) return arr[0];
+        const allButLast = arr.slice(0, -1).join(", ");
+        const last = arr[arr.length - 1];
+        return `${allButLast} and ${last}`;
+    };
+
     return (
         <div className="user__followed">
             <div className="user__followed__avatars">
@@ -27,21 +43,7 @@ const UserFollowedBy = ({ user }) => {
             </div>
             <div className="user__info">
                 <p className="user__followed__names">
-                    Followed by{" "}
-                    {isFollowedByYou ? (
-                        <>
-                            <span>you and</span>
-                            {topFollowers
-                                .filter(f => f.user._id !== authUser?.id)
-                                .map(f => (
-                                    <span key={f.user._id}> , {f.user.name}</span>
-                                ))}
-                        </>
-                    ) : (
-                        topFollowers.map(f => (
-                            <span key={f.user._id}>{f.user.name} </span>
-                        ))
-                    )}
+                    Followed by {renderNames(names)}
                     {totalFollowers > topFollowers.length && (
                         <span> and {totalFollowers - topFollowers.length} others</span>
                     )}

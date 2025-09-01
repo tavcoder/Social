@@ -36,7 +36,7 @@ export default function UserProfileSidebar() {
                 <NavLink to={`timeline/${targetUserId}`}>
                     <UserBadge user={profile.user} />
                 </NavLink>
-                {authUser?.id !== targetUserId && <FollowButton />}
+                {authUser?.id !== targetUserId && <FollowButton className="profile__btn btn"/>}
                 <ProfileStats counters={counters} userId={targetUserId} />
                 <UserFollowedBy
                     following={profile.user.following}

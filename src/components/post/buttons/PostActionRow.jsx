@@ -11,9 +11,9 @@ export default function PostActionRow({ post, onCommentToggle }) {
                 onClick={() => handleLikeToggle(post._id)}
                 icon={
                     isUserLiked(post) ? (
-                        <Heart size={16} weight="fill" color="red" className="icon" />
+                        <Heart size={20} weight="fill" color="red" className="icon" />
                     ) : (
-                        <Heart size={16} weight="regular" className="icon" />
+                        <Heart size={20} weight="regular" className="icon" />
                     )
                 }
                 count={post.likes?.length || 0}
@@ -21,7 +21,7 @@ export default function PostActionRow({ post, onCommentToggle }) {
             />
             <ActionButton
                 onClick={onCommentToggle}
-                icon={<ChatCircle size={16} />}
+                icon={<ChatCircle size={20} />}
                 count={post.comments?.length || 0}
                 className="post__button icon"
             />

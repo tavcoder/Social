@@ -11,7 +11,7 @@ export default function Avatar({ src, alt, size = 40, userId }) {
   };
   return (
     <div
-      className="avatar__wrapper"
+      className="avatar__wrapper icon"
       style={{
         width: size,
         height: size,

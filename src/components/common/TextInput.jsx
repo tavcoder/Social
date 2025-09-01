@@ -1,17 +1,18 @@
-import { Smiley } from "phosphor-react";
+import { Smiley, PaperPlaneRight } from "phosphor-react";
 import { useProfile } from "@/hooks/users";
-import {Avatar} from "@/components/common";
+import { Avatar } from "@/components/common";
 
 export default function TextInput({ value, onChange, onSend, placeholder, disabled }) {
     const { authUser, authUserProfile } = useProfile();
 
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             onSend();
         }
     };
 
     const isSendDisabled = disabled || !value.trim();
+
     return (
         <div className="text__input__container">
             <Avatar
@@ -20,7 +21,6 @@ export default function TextInput({ value, onChange, onSend, placeholder, disabl
                 size={30}
                 userId={authUser.id}
             />
-
 
             <div className="text__input__wrapper">
                 {/* Input con botón de emoji dentro */}
@@ -39,13 +39,13 @@ export default function TextInput({ value, onChange, onSend, placeholder, disabl
                 </div>
             </div>
 
-            {/* Botón de enviar fuera, a la derecha */}
+            {/* Botón de enviar con icono de Phosphor */}
             <button
                 onClick={onSend}
                 disabled={isSendDisabled}
                 className="send__button"
             >
-                ➤
+                <PaperPlaneRight size={20} weight="fill" className="icon" />
             </button>
         </div>
     );

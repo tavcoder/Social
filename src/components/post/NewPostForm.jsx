@@ -72,8 +72,8 @@ function NewPostForm() {
                 disabled={loading}
             />
 
-            <label htmlFor="file" className="upload__btn">
-                <Image className="icon" size={18} weight="bold" />
+            <label htmlFor="file" className="upload__btn icon">
+                <Image size={18} weight="bold" />
                 <span className="upload__text">Image</span>
             </label>
             <input

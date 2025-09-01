@@ -1,6 +1,6 @@
-export default function FollowButton({ targetUserId, isFollowing }) {
+export default function FollowButton({ targetUserId, isFollowing, className }) {
     return (
-        <button style={{ padding: "0.5rem 1rem" }}>
+        <button className={className || "btn"}>
             {isFollowing ? "Siguiendo" : "Seguir"}
         </button>
     );
