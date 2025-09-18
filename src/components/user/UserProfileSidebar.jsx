@@ -1,4 +1,5 @@
 import { NavLink, useParams } from "react-router";
+// Componente para la barra lateral del perfil de usuario con stats y seguidores - Props: ninguna
 import { PencilLine } from "phosphor-react";
 import { useApiQuery } from "@/api";
 import { useProfile } from "@/hooks/users";

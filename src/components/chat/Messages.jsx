@@ -1,4 +1,5 @@
 import { useState } from "react";
+// Componente para mostrar la lista de mensajes de chat con usuarios - Props: ninguna (usa datos internos)
 import { TextInput } from "@/components/common";
 
 const fakeUsers = [

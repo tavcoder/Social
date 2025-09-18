@@ -1,3 +1,5 @@
+// Componente para filas de usuario con avatar, nombre, subtexto y elemento derecho
+//  - Props: user (object), subText (string), rightElement (ReactNode), className (string, opcional), onClick (function, opcional)
 // src/components/UserRow.jsx
 import {Avatar} from "@/components/common";
 

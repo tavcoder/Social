@@ -1,3 +1,4 @@
+// Componente para mostrar una insignia con avatar e info básica de usuario - Props: user (object)
 import { Avatar } from "@/components/common";
 
 const UserBadge = ({ user }) => {

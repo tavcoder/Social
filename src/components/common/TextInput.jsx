@@ -1,3 +1,4 @@
+// Componente para input de texto con avatar, emoji y botón de enviar - Props: value (string), onChange (function), onSend (function), placeholder (string), disabled (boolean, opcional)
 import { Smiley } from "phosphor-react";
 import { useProfile } from "@/hooks/users";
 import {Avatar} from "@/components/common";

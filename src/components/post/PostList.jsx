@@ -1,4 +1,5 @@
 // PostList.jsx
+// Componente para la lista infinita de posts de un usuario - Props: userId (string, opcional)
 import { PostItem} from "@/components/post";
 import { useInfiniteApiQuery } from "@/api";
 

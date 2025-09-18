@@ -21,11 +21,11 @@ export function usePeopleLists(type = "all", userId = null, users = [], follower
             followers: "Buscar seguidores...",
             following: "Buscar a quienes sigue..."
         };
-
+      
         return {
             listToDisplay: lists[effectiveType] || users,
             placeholder: placeholders[effectiveType] || "Buscar usuarios..."
         };
     }, [type, userId, users, followers, following]);
-    console.log("list: ",listToDisplay);
+
 }

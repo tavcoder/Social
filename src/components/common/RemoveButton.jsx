@@ -1,3 +1,4 @@
+// Componente para el botón de eliminar elementos (posts, comentarios) con confirmación - Props: postId (string), elementId (string), ownerId (string), resourceType (string), queryKey (array)
 import { useProfile } from "@/hooks/users";
 import { useApiMutation } from "@/api";
 

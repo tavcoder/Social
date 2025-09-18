@@ -1,4 +1,5 @@
 import { useId } from "react";
+// Componente para la barra de navegación principal con enlaces y avatar - Props: ninguna
 import { NavLink, useNavigate } from "react-router";
 import { BellSimple } from "phosphor-react";
 import { useProfile } from "@/hooks/users";

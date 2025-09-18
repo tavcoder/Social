@@ -1,3 +1,4 @@
+export { useAllUsers } from "./useAllUsers";
 export { useFollowers } from "./useFollowers";
 export { useFollowing } from "./useFollowing";
 export { useOnlineStatus } from "./useOnlineStatus";

@@ -1,4 +1,5 @@
 // src/components/common/SearchBox.jsx
+// Componente para la caja de búsqueda que filtra y muestra resultados - Props: items (array), keys (array), placeholder (string), children (function)
 import { useSearch } from "@/hooks/users";
 import { SearchInput } from "@/components/common";
 

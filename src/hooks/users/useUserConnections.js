@@ -1,5 +1,4 @@
-// hooks/useUserConnections.js
-import { useInfiniteApiQuery }from "@/api";
+import { useInfiniteApiQuery } from "@/api";
 
 export function useUserConnections(type, userId, initialPage = 1) {
     if (type !== "followers" && type !== "following") {
@@ -12,8 +11,17 @@ export function useUserConnections(type, userId, initialPage = 1) {
         { enabled: !!userId }
     );
 
-    const users = data?.pages.flatMap(p => p.data?.follows ?? []) ?? [];
+    // extraer y unificar los usuarios
+    const users = data?.pages.flatMap(p =>
+        (p.data?.follows ?? []).map(follow => {
+            if (type === "followers") return follow.user;   // el que sigue
+            if (type === "following") return follow.followed; // el que es seguido
+        })
+    ) ?? [];
+
     const ids = users.map(u => u._id);
+
+    console.log(`useUserConnections(${type}):`, users);
 
     return {
         users,

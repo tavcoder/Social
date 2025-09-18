@@ -1,4 +1,5 @@
 //Interfaz visual que muetsra el formulario de autenticación
+// Componente para el formulario de autenticación (login y registro de usuarios) - Props: mode (string, opcional, default "login")
 //usa la lógica del useAuthForm
 import { useAuthForm } from "@/hooks/auth";
 

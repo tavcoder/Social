@@ -25,11 +25,6 @@ function People() {
         followers,
         following
     );
-    console.log("type",type);
-    console.log("userId",userId);
-    console.log("users",users);
-    console.log("followers",followers);
-    console.log("following",following);
 
     if (loading && users.length === 0) return <p className="people__loading">Cargando usuarios...</p>;
     if (error) return <p className="people__error">Error al cargar usuarios.</p>;
@@ -43,7 +38,7 @@ function People() {
             >
                 {(listToDisplay) => (
                     <UserList
-                        users={listToDisplay}
+                        users={listToDisplay.map(item => item.user || item)}
                         getSubText={(user) => user.nick}
                         RowComponent={(props) => (
                             <UserFollowWrapper

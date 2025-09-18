@@ -1,3 +1,4 @@
+// Componente para mostrar estadísticas del perfil (posts, followers, following) - Props: counters (object), userId (string)
 import { NavLink } from "react-router";
 
 const ProfileStats = ({ counters, userId }) => {

@@ -24,11 +24,13 @@ const pruebaUser = (req, res) => {
 
 // Regristro de usuarios
 const register = (req, res) => {
+    console.log("Register request received with params:", req.body);
     // Recoger datos de la peticion
     let params = req.body;
 
     // Comprobar que me llegan bien (+ validacion)
-    if (!params.name || !params.surName || !params.email || !params.password || !params.nick) {
+    if (!params.name || !params.surname || !params.email || !params.password || !params.nick) {
+        console.log("Missing required fields");
         return res.status(400).json({
             status: "error",
             message: "Faltan datos por enviar",
@@ -387,6 +389,7 @@ const getUsers = async (req, res) => {
     try {
         const users = await User.find()
             .select('-password') // Excluir contraseña
+            .sort('_id') // Orden consistente para paginación
             .skip((page - 1) * itemsPerPage)
             .limit(itemsPerPage);
 

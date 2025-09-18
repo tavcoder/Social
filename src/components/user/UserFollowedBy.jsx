@@ -1,4 +1,5 @@
 import { useContext } from "react";
+// Componente para mostrar quién sigue al usuario actual - Props: user (object)
 import { AuthContext } from "@/context";
 import { useTopFollowers } from "@/hooks/users";
 import { Avatar } from "@/components/common";
@@ -10,18 +11,18 @@ const UserFollowedBy = ({ user }) => {
     if (loading) return <p>Cargando...</p>;
     if (!topFollowers.length) return <p>No tiene seguidores</p>;
 
-    const isFollowedByYou = topFollowers.some(f => f.user._id === authUser?.id);
-
+    const isFollowedByYou = topFollowers.some(f => f._id === authUser?.id);
+    console.log("UserFollowedBy:", topFollowers);
     return (
         <div className="user__followed">
             <div className="user__followed__avatars">
                 {topFollowers.map(f => (
                     <Avatar
                         key={f._id}
-                        src={f.user.image}
-                        alt={f.user.name}
+                        src={f.image}
+                        alt={f.name}
                         size={30}
-                        userId={f.user._id}
+                        userId={f._id}
                     />
                 ))}
             </div>
@@ -32,14 +33,14 @@ const UserFollowedBy = ({ user }) => {
                         <>
                             <span>you and</span>
                             {topFollowers
-                                .filter(f => f.user._id !== authUser?.id)
+                                .filter(f => f._id !== authUser?.id)
                                 .map(f => (
-                                    <span key={f.user._id}> , {f.user.name}</span>
+                                    <span key={f._id}> , {f.name}</span>
                                 ))}
                         </>
                     ) : (
                         topFollowers.map(f => (
-                            <span key={f.user._id}>{f.user.name} </span>
+                            <span key={f._id}>{f.name} </span>
                         ))
                     )}
                     {totalFollowers > topFollowers.length && (

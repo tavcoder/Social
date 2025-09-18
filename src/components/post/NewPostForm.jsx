@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+// Componente para el formulario de crear nuevos posts - Props: ninguna
 import { Image } from "phosphor-react";
 import { useApiMutation } from "@/api";
 import { AuthContext } from "@/context";

@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+// Componente para sugerencias de usuarios a seguir - Props: ninguna
 import { AuthContext } from "@/context";
 import { useUsers } from "@/hooks/users";
 import {UserList} from "@/components/user";

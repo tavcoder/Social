@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+// Componente para mostrar un item de post con imagen, acciones y comentarios - Props: post (object)
 import { UserRow} from "@/components/common";
 import { PostImage, PostActionRow, CommentsItem} from "@/components/post";
 import { useProfile } from "@/hooks/users";

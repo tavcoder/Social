@@ -1,4 +1,5 @@
 import AddComment from "./AddComment";
+// Componente para mostrar la lista de comentarios de un post - Props: postId (string)
 import { useApiQuery } from "@/api";
 import { UserRow, RemoveButton} from "@/components/common";
 import "../../styles/CommentsItem.css";

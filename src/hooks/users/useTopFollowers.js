@@ -8,7 +8,7 @@ export function useTopFollowers(userId, limit = 3) {
         loading,
         error,
     } = useFollowers(userId);
-
+    console.log("useTopFollowers:", followers);
     return {
         topFollowers: followers.slice(0, limit),
         totalFollowers,
