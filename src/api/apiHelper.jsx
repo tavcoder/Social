@@ -15,7 +15,20 @@ export function get(endpoint) {
             "Content-Type": "application/json",
             ...(token && { Authorization: token }),
         },
-    }).then((res) => res.json());
+    }).then(async (res) => {
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            console.error(`API GET Error ${res.status} (${endpoint}):`, errorData);
+            throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+    }).catch((error) => {
+        if (error.message.includes('fetch')) {
+            console.error('Network error in GET:', error);
+            throw new Error('Error de conexión. Verifica tu internet.');
+        }
+        throw error;
+    });
 }
 
 // Función para POST, PUT, DELETE, etc.
@@ -29,7 +42,20 @@ export function callApi(method, endpoint, data) {
             ...(token && { Authorization: token }),
         },
         body: JSON.stringify(data),
-    }).then((res) => res.json());
+    }).then(async (res) => {
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            console.error(`API ${method} Error ${res.status} (${endpoint}):`, errorData);
+            throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+    }).catch((error) => {
+        if (error.message.includes('fetch')) {
+            console.error('Network error in callApi:', error);
+            throw new Error('Error de conexión. Verifica tu internet.');
+        }
+        throw error;
+    });
 }
 
 
@@ -44,8 +70,21 @@ export function uploadPublicationFile(publicationId, file) {
     return fetch(`${API_BASE_URL}/publication/upload/${publicationId}`, {
         method: "POST",
         headers: {
-            ...(token && { Authorization: token }), // OJO: Bearer
+            ...(token && { Authorization: token }),
         },
         body: formData,
-    }).then((res) => res.json());
+    }).then(async (res) => {
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            console.error(`API UPLOAD Error ${res.status} (publication/upload/${publicationId}):`, errorData);
+            throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+    }).catch((error) => {
+        if (error.message.includes('fetch')) {
+            console.error('Network error in uploadPublicationFile:', error);
+            throw new Error('Error de conexión. Verifica tu internet.');
+        }
+        throw error;
+    });
 }

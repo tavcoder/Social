@@ -9,6 +9,12 @@ function PostItem({ post }) {
     const { authUser } = useProfile();
     const myUserName = authUser?.name;
     const formattedDate = format(new Date(post.created_at), "d MMM 'at' H:mm");
+
+    // Forzar error para probar Error Boundary si el texto contiene 'error'
+    if (post.text && post.text.toLowerCase().includes('error')) {
+        throw new Error('Error forzado para probar Error Boundary');
+    }
+
     return (
         <div className="post__item card">
             <UserRow
