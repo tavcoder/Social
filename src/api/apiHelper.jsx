@@ -27,6 +27,20 @@ export function get(endpoint) {
         if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
             console.error(`API GET Error ${res.status} (${endpoint}):`, errorData);
+            // Handle 404 for follow endpoints as success with empty data
+            if (res.status === 404 && endpoint.includes('/follow/')) {
+                console.log(`apiHelper GET: Handling 404 for follow endpoint as success`);
+                return {
+                    status: "success",
+                    message: "No follow relationships found.",
+                    follows: [],
+                    total: 0,
+                    page: 1,
+                    pages: 0,
+                    user_following: [],
+                    user_follow_me: []
+                };
+            }
             throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
         }
         return res.json();
