@@ -8,17 +8,14 @@ function getToken() {
 // Función para GET
 export function get(endpoint) {
     const token = getToken();
-    console.log(`apiHelper GET: Endpoint ${endpoint}, token ${token ? "present" : "null"}`);
 
     // No enviar token para rutas públicas
     const isPublicRoute = endpoint.includes('/prueba') || endpoint.includes('/ruta-prueba');
-    console.log(`apiHelper GET: Is public route? ${isPublicRoute}`);
 
     const headers = {
         "Content-Type": "application/json",
         ...(!isPublicRoute && token && { Authorization: token }),
     };
-    console.log(`apiHelper GET: Headers include Authorization? ${!!headers.Authorization}`);
 
     return fetch(`${API_BASE_URL}/${endpoint}`, {
         method: "GET",
@@ -29,7 +26,6 @@ export function get(endpoint) {
             console.error(`API GET Error ${res.status} (${endpoint}):`, errorData);
             // Handle 404 for follow endpoints as success with empty data
             if (res.status === 404 && endpoint.includes('/follow/')) {
-                console.log(`apiHelper GET: Handling 404 for follow endpoint as success`);
                 return {
                     status: "success",
                     message: "No follow relationships found.",
@@ -56,17 +52,14 @@ export function get(endpoint) {
 // Función para POST, PUT, DELETE, etc.
 export function callApi(method, endpoint, data) {
     const token = getToken();
-    console.log(`apiHelper ${method}: Endpoint ${endpoint}, token ${token ? "present" : "null"}`);
 
     // No enviar token para rutas públicas como register y login
     const isPublicRoute = endpoint.includes('/register') || endpoint.includes('/login');
-    console.log(`apiHelper ${method}: Is public route? ${isPublicRoute}`);
 
     const headers = {
         "Content-Type": "application/json",
         ...(!isPublicRoute && token && { Authorization: token }),
     };
-    console.log(`apiHelper ${method}: Headers include Authorization? ${!!headers.Authorization}`);
 
     return fetch(`${API_BASE_URL}/${endpoint}`, {
         method,

@@ -72,8 +72,8 @@ export function AuthProvider(props) {
             localStorage.removeItem("user");
         }
     }, [user]);
-   
 
+    console.log("AuthContext: Rendering with user", user);
     // Provide context value with user data and auth state
     return (
         <AuthContext value={{

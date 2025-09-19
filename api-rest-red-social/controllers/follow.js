@@ -137,8 +137,8 @@ const getFollowsBase = async (req, res, queryType) => {
             .lean();
 
         if (!follows || follows.length === 0) {
-            return res.status(404).send({
-                status: "error",
+            return res.status(200).send({
+                status: "success",
                 message: "No se encontraron relaciones de seguimiento para este usuario."
             });
         }

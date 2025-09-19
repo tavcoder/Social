@@ -22,15 +22,12 @@ export function useAuthActions() {
      * @param {Object} credentials - Login credentials (email, password)
      */
     const login = async (credentials) => {
-        console.log("useAuthActions: Starting login");
         const data = await loginMutation.mutateAsync({ ...credentials, method: "POST" });
         const { user, token } = data;
-        console.log("useAuthActions: Login successful, setting user and token", token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("token", token);
         setUser(user);
         window.dispatchEvent(new Event('tokenChange'));
-        console.log("useAuthActions: Dispatched tokenChange:", token);
     };
 
     /**
@@ -39,12 +36,9 @@ export function useAuthActions() {
      * @param {Object} userData - User registration data
      */
     const register = async (userData) => {
-        console.log("useAuthActions: Starting register");
         const data = await registerMutation.mutateAsync({ ...userData, method: "POST" });
         const { user } = data;
-        console.log("useAuthActions: Register successful, user created", user);
         // Auto-login after registration
-        console.log("useAuthActions: Auto-logging in after registration");
         await login({ email: userData.email, password: userData.password });
     };
 
@@ -52,12 +46,10 @@ export function useAuthActions() {
      * Logout function that clears user data and token.
      */
     const logout = () => {
-        console.log("useAuthActions: Logging out, removing user and token from localStorage");
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
         window.dispatchEvent(new Event('tokenChange'));
-        console.log("useAuthActions: Dispatched tokenChange event for logout");
     };
 
     return {

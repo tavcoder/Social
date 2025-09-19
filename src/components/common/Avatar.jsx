@@ -24,7 +24,7 @@ export default function Avatar({ src, alt, size = 40, userId }) {
       }}
       onClick={handleClick}
     >
-      {src ? (
+      {src && !src.includes('default.png') ? (
         <img className="avatar__img" src={src} alt={alt} />
       ) : (
         <User size={size * 0.6} color="#888" weight="bold" />
