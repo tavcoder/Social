@@ -1,3 +1,10 @@
+/**
+ * Custom hook for fetching all users with infinite scrolling.
+ *
+ * Uses React Query for data fetching and caching, automatically fetching all pages.
+ *
+ * @returns {Object} allUsers array, loading state, error state.
+ */
 import { useContext, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { AuthContext } from "@/context";

@@ -8,13 +8,21 @@ function getToken() {
 // Función para GET
 export function get(endpoint) {
     const token = getToken();
+    console.log(`apiHelper GET: Endpoint ${endpoint}, token ${token ? "present" : "null"}`);
+
+    // No enviar token para rutas públicas
+    const isPublicRoute = endpoint.includes('/prueba') || endpoint.includes('/ruta-prueba');
+    console.log(`apiHelper GET: Is public route? ${isPublicRoute}`);
+
+    const headers = {
+        "Content-Type": "application/json",
+        ...(!isPublicRoute && token && { Authorization: token }),
+    };
+    console.log(`apiHelper GET: Headers include Authorization? ${!!headers.Authorization}`);
 
     return fetch(`${API_BASE_URL}/${endpoint}`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            ...(token && { Authorization: token }),
-        },
+        headers,
     }).then(async (res) => {
         if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
@@ -34,13 +42,21 @@ export function get(endpoint) {
 // Función para POST, PUT, DELETE, etc.
 export function callApi(method, endpoint, data) {
     const token = getToken();
+    console.log(`apiHelper ${method}: Endpoint ${endpoint}, token ${token ? "present" : "null"}`);
+
+    // No enviar token para rutas públicas como register y login
+    const isPublicRoute = endpoint.includes('/register') || endpoint.includes('/login');
+    console.log(`apiHelper ${method}: Is public route? ${isPublicRoute}`);
+
+    const headers = {
+        "Content-Type": "application/json",
+        ...(!isPublicRoute && token && { Authorization: token }),
+    };
+    console.log(`apiHelper ${method}: Headers include Authorization? ${!!headers.Authorization}`);
 
     return fetch(`${API_BASE_URL}/${endpoint}`, {
         method,
-        headers: {
-            "Content-Type": "application/json",
-            ...(token && { Authorization: token }),
-        },
+        headers,
         body: JSON.stringify(data),
     }).then(async (res) => {
         if (!res.ok) {

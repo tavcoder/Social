@@ -13,7 +13,7 @@ function NewPostForm() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const createPublicationMutation = useApiMutation("addPost");
+    const createPublicationMutation = useApiMutation("createPublication", ["followingPosts"]);
     const loading = createPublicationMutation.isLoading;
 
     const handleSend = async () => {
@@ -29,7 +29,7 @@ function NewPostForm() {
             // 1. Crear publicación con texto
             const response = await createPublicationMutation.mutateAsync({ text });
 
-            if (!response?.publicationStored?._id) {
+            if (!response?._id) {
                 throw new Error("Error creando la publicación");
             }
 
@@ -39,7 +39,7 @@ function NewPostForm() {
                 formData.append("file0", file);
 
                 const uploadRes = await fetch(
-                    `http://localhost:3900/api/publication/upload/${response.publicationStored._id}`,
+                    `http://localhost:3900/api/publication/upload/${response._id}`,
                     {
                         method: "POST",
                         headers: {

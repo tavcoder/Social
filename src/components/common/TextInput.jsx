@@ -1,10 +1,11 @@
 // Componente para input de texto con avatar, emoji y botón de enviar - Props: value (string), onChange (function), onSend (function), placeholder (string), disabled (boolean, opcional)
 import { Smiley } from "phosphor-react";
-import { useProfile } from "@/hooks/users";
+import { useContext } from "react";
+import { AuthContext } from "@/context";
 import {Avatar} from "@/components/common";
 
 export default function TextInput({ value, onChange, onSend, placeholder, disabled }) {
-    const { authUser, authUserProfile } = useProfile();
+    const { user } = useContext(AuthContext);
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -16,10 +17,10 @@ export default function TextInput({ value, onChange, onSend, placeholder, disabl
     return (
         <div className="text__input__container">
             <Avatar
-                src={authUserProfile?.user?.image}
-                alt={authUser?.name}
+                src={user?.image}
+                alt={user?.name}
                 size={30}
-                userId={authUser.id}
+                userId={user?._id}
             />
 
 

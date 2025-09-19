@@ -4,7 +4,7 @@ import { AuthContext } from "@/context";
 import { useTopFollowers } from "@/hooks/users";
 import { Avatar } from "@/components/common";
 
-const UserFollowedBy = ({ user }) => {
+const UserFollowedBy = ({ user}) => {
     const { topFollowers, totalFollowers, loading } = useTopFollowers(user._id, 3);
     const { user: authUser } = useContext(AuthContext);
 
@@ -12,7 +12,6 @@ const UserFollowedBy = ({ user }) => {
     if (!topFollowers.length) return <p>No tiene seguidores</p>;
 
     const isFollowedByYou = topFollowers.some(f => f._id === authUser?.id);
-    console.log("UserFollowedBy:", topFollowers);
     return (
         <div className="user__followed">
             <div className="user__followed__avatars">

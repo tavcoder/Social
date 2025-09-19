@@ -21,8 +21,6 @@ export function useUserConnections(type, userId, initialPage = 1) {
 
     const ids = users.map(u => u._id);
 
-    console.log(`useUserConnections(${type}):`, users);
-
     return {
         users,
         ids,

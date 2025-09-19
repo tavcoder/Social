@@ -3,7 +3,6 @@ export { useFollowers } from "./useFollowers";
 export { useFollowing } from "./useFollowing";
 export { useOnlineStatus } from "./useOnlineStatus";
 export { usePeopleLists } from "./usePeopleLists";
-export { useProfile } from "./useProfile";
 export { useSearch } from "./useSearch";
 export { useTopFollowers } from "./useTopFollowers";
 export { useUserConnections } from "./useUserConnections";

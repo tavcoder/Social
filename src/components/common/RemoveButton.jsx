@@ -1,14 +1,16 @@
 // Componente para el botón de eliminar elementos (posts, comentarios) con confirmación - Props: postId (string), elementId (string), ownerId (string), resourceType (string), queryKey (array)
-import { useProfile } from "@/hooks/users";
+import { useContext } from "react";
+import { AuthContext } from "@/context";
 import { useApiMutation } from "@/api";
 
 export default function RemoveButton({ postId, elementId, ownerId, resourceType, queryKey }) {
-    const { authUser } = useProfile();
-    const myUserId = authUser?.id;
+    const { user: authUser } = useContext(AuthContext);
+    const myUserId = authUser?._id;
     if (ownerId !== myUserId) return null;
 
     const queryKeyToUpdate = postId ? [queryKey, postId] : [queryKey];
-    const removeMutation = useApiMutation(`remove${resourceType}`, queryKeyToUpdate);
+    const mutationKey = resourceType === "Comment" ? "removeComment" : "deletePublication";
+    const removeMutation = useApiMutation(mutationKey, queryKeyToUpdate);
 
     const handleDelete = async () => {
         if (!window.confirm(`¿Seguro que quieres eliminar este ${resourceType}?`)) return;
@@ -17,7 +19,7 @@ export default function RemoveButton({ postId, elementId, ownerId, resourceType,
             ? { id: postId, commentId: elementId }
             : { id: elementId };
 
-        const variables = { method: "DELETE", ...baseVariables };
+        const variables = baseVariables;
 
         removeMutation.mutate(variables);
 

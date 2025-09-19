@@ -1,7 +1,10 @@
 import { User } from "phosphor-react";
-// Componente para mostrar el avatar de un usuario con indicador de estado online - Props: src (string), alt (string), size (number, opcional, default 40), userId (string)
 import { useNavigate } from "react-router";
 import { useOnlineStatus } from "@/hooks/users";
+
+// Componente para mostrar el avatar de un usuario con indicador de estado online
+//  - Props: src (string), alt (string), size (number, opcional, default 40), userId (string)
+
 export default function Avatar({ src, alt, size = 40, userId }) {
   const navigate = useNavigate();
   const { isOnline } = useOnlineStatus(userId);

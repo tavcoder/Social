@@ -32,10 +32,10 @@ function AuthForm({ mode = "login" }) {
 
                     <input
                         type="text"
-                        name="surName"
+                        name="surname"
                         placeholder="Apellido"
-                        value={formData.surName || ""}
-                        onChange={(e) => updateField("surName", e.target.value)}
+                        value={formData.surname || ""}
+                        onChange={(e) => updateField("surname", e.target.value)}
                         required
                         autoComplete="family-name"
                     />

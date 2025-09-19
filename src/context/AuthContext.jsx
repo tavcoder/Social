@@ -1,66 +1,86 @@
-import { createContext, useState } from "react";
-import { useApiMutation } from "@/api";
+/**
+ * AuthContext for managing authentication state across the application.
+ *
+ * Provides user profile data from API, token, and authentication status.
+ * Fetches full profile from API when authenticated.
+ */
+import { createContext, useState, useEffect } from "react";
+import { useApiQuery } from "@/api";
 
 export const AuthContext = createContext(null);
 
+/**
+ * AuthProvider component that wraps the app to provide authentication context.
+ *
+ * Manages user and token state, fetches full profile from API when authenticated.
+ *
+ * @param {Object} props - React props
+ * @param {ReactNode} props.children - Child components
+ */
 export function AuthProvider(props) {
+    // Initialize user from localStorage
     const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
     });
 
-    const [token, setToken] = useState(() => localStorage.getItem("token"));
+    // Initialize token from localStorage
+    const [token, setToken] = useState(() => {
+        const storedToken = localStorage.getItem("token");
+        console.log("AuthContext: Initializing token from localStorage", storedToken ? "present" : "null");
+        return storedToken;
+    });
     const isAuthenticated = !!token;
 
-    const loginMutation = useApiMutation("login", null); // null porque no necesitamos cache invalidation
-    const registerMutation = useApiMutation("register", null);
+    // Listen for token changes in localStorage
+    useEffect(() => {
+        console.log("AuthContext: Setting up event listeners for token changes");
+        const handleStorageChange = (e) => {
+            if (e.key === 'token') {
+                console.log("AuthContext: Storage event for token, updating to", e.newValue ? "present" : "null");
+                setToken(e.newValue);
+            }
+        };
+        const handleTokenChange = () => {
+            const newToken = localStorage.getItem("token");
+            console.log("AuthContext: Custom tokenChange event, updating token to", newToken ? "present" : "null");
+            setToken(newToken);
+        };
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('tokenChange', handleTokenChange);
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('tokenChange', handleTokenChange);
+        };
+    }, []);
 
-    // Wrap para agregar side effects específicos de login/register
-    const login = async (credentials) => {
-        const data = await loginMutation.mutateAsync({ ...credentials, method: "POST" });
-        const { user, token } = data;
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
-        setUser(user);
-        setToken(token);
-    };
+    // Fetch full user profile from API when authenticated
+    const { data: authUserProfile } = useApiQuery("profile", user?.id, { enabled: !!user?.id });
 
-    const register = async (userData) => {
-        const data = await registerMutation.mutateAsync({ ...userData, method: "POST" });
-        const { user, token } = data;
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
-        setUser(user);
-        setToken(token);
-    };
+    // Update user state with fetched profile data
+    useEffect(() => {
+        if (authUserProfile?.user) {
+            setUser(authUserProfile.user);
+        }
+    }, [authUserProfile]);
 
-    const logout = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        setUser(null);
-        setToken(null);
-    };
+    // Persist user to localStorage when updated
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem("user", JSON.stringify(user));
+        } else {
+            localStorage.removeItem("user");
+        }
+    }, [user]);
+   
 
+    // Provide context value with user data and auth state
     return (
         <AuthContext value={{
             user,
             setUser,
             token,
-            setToken,
             isAuthenticated,
-            login,
-            register,
-            logout,
-            loginStatus: {
-                isLoading: loginMutation.isLoading,
-                isError: loginMutation.isError,
-                error: loginMutation.error,
-            },
-            registerStatus: {
-                isLoading: registerMutation.isLoading,
-                isError: registerMutation.isError,
-                error: registerMutation.error,
-            },
         }}
         >
             {props.children}

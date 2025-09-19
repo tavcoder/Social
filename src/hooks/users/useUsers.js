@@ -1,4 +1,13 @@
-// hooks/useUsers.js
+/**
+ * Custom hook for managing user-related data and relationships.
+ *
+ * Aggregates followers, following, and all users data with filtering and pagination.
+ * Handles deduplication and exclusion of current user.
+ *
+ * @param {string|null} targetUserId - ID of the target user (defaults to auth user).
+ * @param {number} initialPage - Initial page for pagination.
+ * @returns {Object} Users data, relationships, loading states, and pagination.
+ */
 import { useState, useContext } from "react";
 import { AuthContext } from "@/context";
 import { useFollowers, useFollowing, useAllUsers } from "@/hooks/users"

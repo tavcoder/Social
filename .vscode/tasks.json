@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Iniciar Frontend",
+            "label": "Start Frontend",
             "type": "shell",
             "command": "npm run dev",
             "options": {
@@ -17,7 +17,7 @@
             }
         },
         {
-            "label": "Iniciar API",
+            "label": "Start API",
             "type": "shell",
             "command": "npm start",
             "options": {
@@ -32,10 +32,10 @@
             }
         },
         {
-            "label": "Iniciar Todo",
+            "label": "Start All",
             "dependsOn": [
-                "Iniciar Frontend",
-                "Iniciar API"
+                "Start Frontend",
+                "Start API"
             ],
             "dependsOrder": "parallel",
             "group": "build"

@@ -2,7 +2,6 @@
 // Componente para listar usuarios con subtexto y componente de fila personalizado
 //  - Props: users (array), getSubText (function), RowComponent (component)
 export default function UserList({ users, getSubText, RowComponent }) {
-    console.log("UserList:", users.map(u => u));
     return (
         <div className="user__list">
             {users.map((user) => {
