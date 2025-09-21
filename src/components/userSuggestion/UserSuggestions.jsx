@@ -2,8 +2,7 @@ import { useContext, useState } from "react";
 // Componente para sugerencias de usuarios a seguir - Props: ninguna
 import { AuthContext } from "@/context";
 import { useUsers } from "@/hooks/users";
-import {UserList} from "@/components/user";
-import {UserFollowWrapper} from "@/components/common";
+import {UserFollowWrapper,UserList} from "@/components/common";
 
 export default function UserSuggestions() {
     const { user: authUser } = useContext(AuthContext);

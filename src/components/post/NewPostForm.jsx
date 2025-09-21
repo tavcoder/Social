@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Image } from "phosphor-react";
 import { useApiMutation, uploadFile } from "@/api";
-import { TextInput } from "@/components/common";
 import { useFileUpload } from "@/hooks/common";
+import { TextInput } from "@/components/common";
 
 
 function NewPostForm() {

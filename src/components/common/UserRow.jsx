@@ -1,6 +1,17 @@
-// Componente para filas de usuario con avatar, nombre, subtexto y elemento derecho
-//  - Props: user (object), subText (string), rightElement (ReactNode), className (string, opcional), onClick (function, opcional)
-// src/components/UserRow.jsx
+/**
+ * UserRow component
+ *
+ * Displays a single row for a user with avatar, name, optional subtext, and a right-side element (like a button or icon).  
+ * Can handle clicks if an onClick function is provided.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.user - User object containing data to display
+ * @param {string} [props.subText] - Optional subtext to display below the user's name
+ * @param {React.ReactNode} [props.rightElement] - Optional element displayed on the right side (e.g., follow button)
+ * @param {string} [props.className] - Optional additional CSS classes for the row
+ * @param {function} [props.onClick] - Optional click handler for the row
+ */
 import {Avatar} from "@/components/common";
 
 export default function UserRow({
@@ -16,8 +27,8 @@ export default function UserRow({
       <Avatar
         src={user?.image}
         alt={user.name}
-        size={40}
         userId={user._id}
+        size={40}
       />
       <div className="user__row__info">
         <p className="user__row__name">{user.name}</p>

@@ -1,29 +1,50 @@
+/**
+ * Edit User Profile Page Component
+ *
+ * Multi-tab interface for editing user profile information.
+ * Handles general profile data (name, bio, avatar) and security settings
+ * (email, password). Uses refs to communicate with child tab components.
+ */
 import { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router";
-import { GeneralTab, SecurityTab } from "@/components/EditUserProfile";
+import { GeneralTab, SecurityTab } from "./components";
 import { AuthContext } from "@/context";
 
+/**
+ * EditUserProfile component - Profile editing interface with tabs
+ *
+ * @returns {JSX.Element} Profile editing page with general and security tabs
+ */
 const EditUserProfile = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
-    console.log("user:", user);
+
+    // UI state
     const [message, setMessage] = useState("");
     const [activeTab, setActiveTab] = useState("general");
+
+    // Refs to communicate with tab components
     const generalTabRef = useRef();
     const securityTabRef = useRef();
 
+    /**
+     * Handle form submission for profile updates
+     * Processes both general and security data, uploads avatar separately
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Upload avatar if needed
+        // Upload avatar first (handled by GeneralTab component)
         await generalTabRef.current?.uploadAvatar();
 
+        // Collect form data from both tabs
         const generalData = generalTabRef.current?.getData();
         const securityData = securityTabRef.current?.getData();
         const formData = { ...generalData, ...securityData };
 
         try {
             const token = localStorage.getItem("token");
+            // Update profile data via API
             const res = await fetch("http://localhost:3900/api/update", {
                 method: "PUT",
                 headers: {
@@ -37,7 +58,7 @@ const EditUserProfile = () => {
 
             if (data.status === "success") {
                 setMessage("Profile updated successfully 🎉");
-                // Guardar cambios en localStorage
+                // Update localStorage with new user data
                 localStorage.setItem("user", JSON.stringify(data.user));
             } else {
                 setMessage("Error: " + data.message);
@@ -52,8 +73,10 @@ const EditUserProfile = () => {
         <div className="profile-form-container card">
             <h2 className="form-title">Account Settings</h2>
 
+            {/* Status messages for user feedback */}
             {message && <p className="status-message">{message}</p>}
 
+            {/* Tab navigation between General and Security settings */}
             <div className="tabs">
                 <button
                     className={`tab-button ${activeTab === "general" ? "active" : ""}`}
@@ -69,13 +92,15 @@ const EditUserProfile = () => {
                 </button>
             </div>
 
-
-
+            {/* Main form with conditional tab content */}
             <form onSubmit={handleSubmit} className="form-grid">
+                {/* General tab: profile info and avatar */}
                 {activeTab === "general" && <GeneralTab ref={generalTabRef} initialData={user} className="generalTab" />}
 
+                {/* Security tab: email and password */}
                 {activeTab === "security" && <SecurityTab ref={securityTabRef} initialData={user} />}
 
+                {/* Form action buttons */}
                 <div className="form-actions">
                     <button
                         type="submit"

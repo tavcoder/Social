@@ -1,4 +1,4 @@
-import AddComment from "./AddComment";
+import { AddComment } from ".";
 // Componente para mostrar la lista de comentarios de un post - Props: postId (string)
 import { useApiQuery } from "@/api";
 import { UserRow, RemoveButton} from "@/components/common";
@@ -15,7 +15,7 @@ export default function CommentsItem({ postId }) {
                 <p className="comments__empty-message">No comments yet.</p>
             ) : (
                 comments.map((comment) => (
-                    <div key={comment._id} className="comment__item">
+                    <div key={comment._id} className="comment__item"> 
                         <UserRow
                             user={comment.user}
                             subText={comment.text}
@@ -27,11 +27,7 @@ export default function CommentsItem({ postId }) {
                                 : ""}
                         </div>
                         <RemoveButton
-                            resourceType="Comment"
-                            postId={postId}
-                            elementId={comment._id}
-                            ownerId={comment.user._id}
-                            queryKey={"Comments"}
+                            
                         />
                     </div>
                 ))

@@ -1,9 +1,23 @@
-// Componente para input de texto con avatar, emoji y botón de enviar - Props: value (string), onChange (function), onSend (function), placeholder (string), disabled (boolean, opcional), sendDisabled (boolean, opcional)
 import { Smiley } from "phosphor-react";
 import { useContext } from "react";
 import { AuthContext } from "@/context";
 import {Avatar} from "@/components/common";
-
+/**
+ * TextInput component
+ *
+ * A reusable text input component with user avatar, emoji button, and a send button.  
+ * Supports pressing Enter to trigger sending. Can be disabled entirely or just disable the send button.
+ *
+ * @component
+ * @param {Object} props
+ * @param {string} props.value - Current text value of the input
+ * @param {function} props.onChange - Callback triggered when the input value changes
+ * @param {function} props.onSend - Callback triggered when the send button is clicked or Enter is pressed
+ * @param {string} props.placeholder - Placeholder text for the input
+ * @param {boolean} [props.disabled=false] - Optional flag to disable the entire input
+ * @param {boolean} [props.sendDisabled=false] - Optional flag to disable only the send button
+  */
+ 
 export default function TextInput({ value, onChange, onSend, placeholder, disabled, sendDisabled }) {
     const { user } = useContext(AuthContext);
 

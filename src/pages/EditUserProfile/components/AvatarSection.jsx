@@ -1,7 +1,7 @@
 import { useEffect, useState, useImperativeHandle, forwardRef } from "react";
 import { uploadFile } from "@/api";
-import { Avatar } from "@/components/common";
 import { useFileUpload } from "@/hooks/common";
+import { Avatar } from "@/components/common";
 
 const AvatarSection = forwardRef(({ form, onImageUpdate }, ref) => {
     const [message, setMessage] = useState("");

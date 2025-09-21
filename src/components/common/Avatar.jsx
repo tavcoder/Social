@@ -2,8 +2,21 @@ import { User } from "phosphor-react";
 import { useNavigate } from "react-router";
 import { useOnlineStatus } from "@/hooks/users";
 
-// Componente para mostrar el avatar de un usuario con indicador de estado online
-//  - Props: src (string), alt (string), size (number, opcional, default 40), userId (string)
+/**
+ * Avatar component
+ *
+ * Displays a user's avatar image with an online status indicator.
+ * Falls back to a default user icon if no image is available.
+ * Clicking the avatar navigates to the user's timeline.
+ *
+ * @component
+ * @param {Object} props
+ * @param {string} props.src - The image source (file name, blob URL, or full URL)
+ * @param {string} props.alt - Alternative text for the image
+ * @param {number} [props.size=40] - Size of the avatar in pixels
+ * @param {string} props.userId - The user's ID, used for navigation and online status
+ *
+ */
 
 export default function Avatar({ src, alt, size = 40, userId }) {
   const navigate = useNavigate();

@@ -1,6 +1,25 @@
 import { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
 import AvatarSection from "./AvatarSection";
 
+/**
+ * GeneralTab component
+ *
+ * This component renders a form to edit general user profile information 
+ * such as name, surname, nickname, bio, and avatar.
+ *
+ * It uses `forwardRef` to expose imperative methods to parent components,
+ * so that the parent can:
+ * - Retrieve the current form data (`getData`)
+ * - Trigger the avatar upload (`uploadAvatar`)
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.initialData - Initial values for the form fields (name, surname, nick, bio, image)
+ * @param {React.Ref} ref - Forwarded ref to expose imperative methods
+ *
+ * @returns {JSX.Element} The rendered GeneralTab component
+ */
+
 const GeneralTab = forwardRef(({ initialData }, ref) => {
     const [form, setForm] = useState({
         name: "",
@@ -9,6 +28,7 @@ const GeneralTab = forwardRef(({ initialData }, ref) => {
         nick: "",
         image: ""
     });
+    /** Ref to control the AvatarSection child component */
     const avatarRef = useRef();
 
     useEffect(() => {

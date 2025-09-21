@@ -48,8 +48,8 @@ function Navbar() {
         <Avatar
           src={user?.image}
           alt={user?.name}
-          size={30}
           userId={user?._id}
+          size={30}
         />
         <BellSimple className="navbar__icon" size={15} weight="regular" />
       </div>
