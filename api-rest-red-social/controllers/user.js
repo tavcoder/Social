@@ -277,9 +277,13 @@ const update = (req, res) => {
 }
 
 const upload = (req, res) => {
+    console.log("Upload request received");
+    console.log("User:", req.user);
+    console.log("File:", req.file);
 
     // Recoger el fichero de imagen y comprobar que existe
     if (!req.file) {
+        console.log("No file received");
         return res.status(404).send({
             status: "error",
             message: "Petición no incluye la imagen"
@@ -308,14 +312,17 @@ const upload = (req, res) => {
     }
 
     // Si si es correcta, guardar imagen en bbdd
+    console.log("Updating user with filename:", req.file.filename);
     User.findOneAndUpdate({ _id: req.user.id }, { image: req.file.filename }, { new: true }, (error, userUpdated) => {
         if (error || !userUpdated) {
+            console.log("Database update error:", error);
             return res.status(500).send({
                 status: "error",
                 message: "Error en la subida del avatar"
             })
         }
 
+        console.log("User updated successfully:", userUpdated);
         // Devolver respuesta
         return res.status(200).send({
             status: "success",

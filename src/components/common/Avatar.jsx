@@ -13,6 +13,22 @@ export default function Avatar({ src, alt, size = 40, userId }) {
     // Navega a la ruta del usuario pasando su id
     navigate(`/feed/timeline/${userId}`);
   };
+
+  // Construct the full image URL
+  const getImageSrc = () => {
+    if (!src || src.includes('default.png')) return null;
+
+    // If src is already a full URL (like CDN), use it as-is
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('blob:')) {
+      return src;
+    }
+
+    // Otherwise, construct the full API URL for local avatars
+    return `http://localhost:3900/api/user/avatar/${src}`;
+  };
+
+  const imageSrc = getImageSrc();
+
   return (
     <div
       className="avatar__wrapper"
@@ -24,8 +40,8 @@ export default function Avatar({ src, alt, size = 40, userId }) {
       }}
       onClick={handleClick}
     >
-      {src && !src.includes('default.png') ? (
-        <img className="avatar__img" src={src} alt={alt} />
+      {imageSrc ? (
+        <img className="avatar__img" src={imageSrc} alt={alt} />
       ) : (
         <User size={size * 0.6} color="#888" weight="bold" />
       )}

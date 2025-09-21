@@ -5,9 +5,10 @@ import { useTopFollowers } from "@/hooks/users";
 import { Avatar } from "@/components/common";
 
 const UserFollowedBy = ({ user}) => {
-    const { topFollowers, totalFollowers, loading } = useTopFollowers(user._id, 3);
+    const { topFollowers, totalFollowers, loading } = useTopFollowers(user?._id, 3);
     const { user: authUser } = useContext(AuthContext);
 
+    if (!user) return <p>Error loading user data</p>;
     if (loading) return <p>Cargando...</p>;
     if (!topFollowers.length) return <p>No tiene seguidores</p>;
 

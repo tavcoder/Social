@@ -58,6 +58,7 @@
 ## Frontend
 
 ### High Priority
+- **src/components/common/Avatar.jsx**: ✅ **COMPLETED** - Fixed avatar image rendering for local filenames. Added logic to construct full API URLs for local avatar files (e.g., `avatar-1758356932815-7.jpg` → `http://localhost:3900/api/user/avatar/avatar-1758356932815-7.jpg`) while preserving support for full URLs like CDN links. This resolves the issue where local avatars weren't displaying while CDN URLs worked correctly.
 - **src/App.jsx:6**: `("App render");` – Syntax error; should be `console.log("App render");`.
 - **src/hooks/users/usePeopleLists.js:30**: `console.log("list: ",listToDisplay);` – `listToDisplay` is not defined; unreachable code due to early return; fix logic.
 - **src/components/navigation/Navbar.jsx:13**: `'logout' is not defined` – Import or define `logout` from AuthContext.

@@ -45,7 +45,20 @@ export default function useApiMutation(mutationKey, queryKeyToUpdate) {
 
         onError: (_err, _variables, context) => {
             if (context?.previousData) {
-                queryClient.setQueriesData({ queryKey: queryKeyToUpdate, exact: false }, context.previousData);
+                // Only restore data if it has the correct structure for infinite queries
+                const hasValidInfiniteStructure = context.previousData &&
+                    typeof context.previousData === 'object' &&
+                    'pages' in context.previousData &&
+                    'pageParams' in context.previousData &&
+                    Array.isArray(context.previousData.pages) &&
+                    Array.isArray(context.previousData.pageParams);
+
+                if (hasValidInfiniteStructure) {
+                    queryClient.setQueriesData({ queryKey: queryKeyToUpdate, exact: false }, context.previousData);
+                } else {
+                    // For invalid structures, just invalidate to refetch fresh data
+                    queryClient.invalidateQueries({ queryKey: queryKeyToUpdate, exact: false });
+                }
             }
             console.error(`Error en mutación "${mutationKey}":`, _err);
         },

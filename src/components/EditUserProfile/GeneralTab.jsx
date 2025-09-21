@@ -1,54 +1,71 @@
-import { Avatar } from "@/components/common";
+import { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
+import AvatarSection from "./AvatarSection";
 
-const GeneralTab = ({ form, handleChange, avatarFile, setAvatarFile, handleAvatarUpload, handleAvatarDelete }) => {
+const GeneralTab = forwardRef(({ initialData }, ref) => {
+    const [form, setForm] = useState({
+        name: "",
+        surname: "",
+        bio: "",
+        nick: "",
+        image: ""
+    });
+    const avatarRef = useRef();
+
+    useEffect(() => {
+        if (initialData) {
+            setForm({
+                name: initialData.name || "",
+                surname: initialData.surname || "",
+                bio: initialData.bio || "",
+                nick: initialData.nick || "",
+                image: initialData.image || ""
+            });
+        }
+    }, [initialData]);
+
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleImageUpdate = (image) => {
+        setForm({ ...form, image });
+    };
+
+    useImperativeHandle(ref, () => ({
+        getData: () => form,
+        uploadAvatar: () => avatarRef.current?.uploadAvatar()
+    }));
+
     return (
         <>
-            <div className="avatar-section">
-                <Avatar
-                    src={form.image ? `http://localhost:3900/api/user/avatar/${form.image}` : ""}
-                    alt={form.name}
-                    size={60}
-                />
-                <div className="avatar-buttons">
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setAvatarFile(e.target.files[0])}
-                        style={{ display: "none" }}
-                        id="avatar-upload"
-                    />
-                    <label htmlFor="avatar-upload" className="btn btn--level1">
-                        Seleccionar Avatar
-                    </label>
-                    <button
-                        type="button"
-                        onClick={handleAvatarDelete}
-                        className="btn btn--level3"
-                    >
-                        Eliminar Avatar
-                    </button>
-                </div>
-            </div>
+            <AvatarSection
+                ref={avatarRef}
+                form={form}
+                onImageUpdate={handleImageUpdate}
+            />
             <div className="info-section">
                 <div className="form-group">
-                    <label htmlFor="name">Nombre</label>
+                    <label htmlFor="name">Name</label>
                     <input
                         type="text"
                         id="name"
                         name="name"
-                        placeholder="Nombre"
+                        placeholder="Name"
                         value={form.name}
                         onChange={handleChange}
                         className="form-input"
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="surname">Apellido</label>
+                    <label htmlFor="surname">Surname</label>
                     <input
                         type="text"
                         id="surname"
                         name="surname"
-                        placeholder="Apellido"
+                        placeholder="Surname"
                         value={form.surname}
                         onChange={handleChange}
                         className="form-input"
@@ -67,11 +84,11 @@ const GeneralTab = ({ form, handleChange, avatarFile, setAvatarFile, handleAvata
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="bio">Biografía</label>
+                    <label htmlFor="bio">Bio</label>
                     <textarea
                         id="bio"
                         name="bio"
-                        placeholder="Biografía"
+                        placeholder="Bio"
                         value={form.bio}
                         onChange={handleChange}
                         className="form-input"
@@ -81,6 +98,8 @@ const GeneralTab = ({ form, handleChange, avatarFile, setAvatarFile, handleAvata
             </div>
         </>
     );
-};
+});
+
+GeneralTab.displayName = 'GeneralTab';
 
 export default GeneralTab;

@@ -1,20 +1,18 @@
-import { useState, useContext } from "react";
-// Componente para el formulario de crear nuevos posts - Props: ninguna
+import { useState } from "react";
 import { Image } from "phosphor-react";
-import { useApiMutation } from "@/api";
-import { AuthContext } from "@/context";
-import { TextInput} from "@/components/common";
+import { useApiMutation, uploadFile } from "@/api";
+import { TextInput } from "@/components/common";
+import { useFileUpload } from "@/hooks/common";
 
 
 function NewPostForm() {
-    const { token } = useContext(AuthContext); // ✅ dentro del componente
     const [text, setText] = useState("");
-    const [file, setFile] = useState(null);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    const createPublicationMutation = useApiMutation("createPublication", ["followingPosts"]);
-    const loading = createPublicationMutation.isLoading;
+    const { file, previewUrl, isLoading: fileLoading, selectFile, clearFile, uploadFile: uploadFileHook } = useFileUpload();
+    const createPublicationMutation = useApiMutation("createPublication");
+    const loading = createPublicationMutation.isLoading || fileLoading;
 
     const handleSend = async () => {
         setError(null);
@@ -33,31 +31,20 @@ function NewPostForm() {
                 throw new Error("Error creando la publicación");
             }
 
-            // 2. Si hay archivo, subirlo
+            // 2. Si hay archivo, subirlo usando el hook
             if (file) {
-                const formData = new FormData();
-                formData.append("file0", file);
-
-                const uploadRes = await fetch(
-                    `http://localhost:3900/api/publication/upload/${response._id}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            ...(token && { Authorization: token }),
-                        },
-                        body: formData,
+                await uploadFileHook(async (fileToUpload) => {
+                    const uploadData = await uploadFile(`publication/upload/${response._id}`, fileToUpload);
+                    if (uploadData.status !== "success") {
+                        throw new Error(uploadData.message || "Error subiendo archivo");
                     }
-                );
-
-                const uploadData = await uploadRes.json();
-                if (uploadData.status !== "success") {
-                    throw new Error(uploadData.message || "Error subiendo archivo");
-                }
+                    return uploadData;
+                });
             }
 
             setSuccess("¡Post creado exitosamente!");
             setText("");
-            setFile(null);
+            clearFile();
         } catch (err) {
             setError(err.message || "Error desconocido");
         }
@@ -71,6 +58,7 @@ function NewPostForm() {
                 onSend={handleSend}
                 placeholder="What´s on your mind?"
                 disabled={loading}
+                sendDisabled={!text.trim() && !file}
             />
 
             <label htmlFor="file" className="upload__btn">
@@ -81,10 +69,20 @@ function NewPostForm() {
                 type="file"
                 id="file"
                 accept="image/*"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => selectFile(e.target.files[0])}
                 disabled={loading}
                 style={{ display: "none" }}
             />
+
+            {previewUrl && (
+                <div className="image-preview">
+                    <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="preview-image"
+                    />
+                </div>
+            )}
 
             {error && <p className="error">{error}</p>}
             {success && <p className="success">{success}</p>}

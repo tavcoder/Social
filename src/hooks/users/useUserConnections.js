@@ -2,7 +2,7 @@ import { useInfiniteApiQuery } from "@/api";
 
 export function useUserConnections(type, userId, initialPage = 1) {
     if (type !== "followers" && type !== "following") {
-        throw new Error("type debe ser 'followers' o 'following'");
+        throw new Error("type must be 'followers' or 'following'");
     }
 
     const { data, isLoading, isError, ...query } = useInfiniteApiQuery(
@@ -12,12 +12,12 @@ export function useUserConnections(type, userId, initialPage = 1) {
     );
 
     // extraer y unificar los usuarios
-    const users = data?.pages.flatMap(p =>
+    const users = (data?.pages && Array.isArray(data.pages)) ? data.pages.flatMap(p =>
         (p.data?.follows ?? []).map(follow => {
             if (type === "followers") return follow.user;   // el que sigue
             if (type === "following") return follow.followed; // el que es seguido
-        })
-    ) ?? [];
+        }).filter(Boolean) // filter out undefined users
+    ) : [];
 
     const ids = users.map(u => u._id);
 

@@ -20,8 +20,8 @@ export default function UserProfileSidebar() {
         enabled: !!targetUserId, // evita que haga query sin id
     });
 
-    if (isLoading) return <div>Cargando perfil...</div>;
-    if (!profile) return <div>Error al cargar el perfil.</div>;
+    if (isLoading) return <div>Loading profile...</div>;
+    if (!profile || !profile.user) return <div>Error loading profile.</div>;
 
     return (
         <div className="user__profile__sidebar card card--hover">
@@ -48,7 +48,7 @@ export default function UserProfileSidebar() {
                 )}
                 <UserFollowedBy
                     following={profile.following}
-                    user={profile.user}
+                    user={profile.user || {}}
                 />
             </div>
         </div>

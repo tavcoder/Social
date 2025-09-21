@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3900/api"; // Ahora incluye /api
+const API_BASE_URL = "http://localhost:3900/api"; 
 
 // Obtener el token desde localStorage
 function getToken() {
@@ -43,7 +43,7 @@ export function get(endpoint) {
     }).catch((error) => {
         if (error.message.includes('fetch')) {
             console.error('Network error in GET:', error);
-            throw new Error('Error de conexión. Verifica tu internet.');
+            throw new Error('Connection error. Check your internet.');
         }
         throw error;
     });
@@ -75,22 +75,21 @@ export function callApi(method, endpoint, data) {
     }).catch((error) => {
         if (error.message.includes('fetch')) {
             console.error('Network error in callApi:', error);
-            throw new Error('Error de conexión. Verifica tu internet.');
+            throw new Error('Connection error. Check your internet.');
         }
         throw error;
     });
 }
 
 
-// Función para subir archivo a publicación
-export function uploadPublicationFile(publicationId, file) {
+// Función genérica para subir archivos
+export function uploadFile(endpoint, file, fieldName = "file0") {
     const token = getToken();
     const formData = new FormData();
 
-    // Campo exacto que espera tu API
-    formData.append("file0", file);
+    formData.append(fieldName, file);
 
-    return fetch(`${API_BASE_URL}/publication/upload/${publicationId}`, {
+    return fetch(`${API_BASE_URL}/${endpoint}`, {
         method: "POST",
         headers: {
             ...(token && { Authorization: token }),
@@ -99,14 +98,14 @@ export function uploadPublicationFile(publicationId, file) {
     }).then(async (res) => {
         if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            console.error(`API UPLOAD Error ${res.status} (publication/upload/${publicationId}):`, errorData);
+            console.error(`API UPLOAD Error ${res.status} (${endpoint}):`, errorData);
             throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
         }
         return res.json();
     }).catch((error) => {
         if (error.message.includes('fetch')) {
-            console.error('Network error in uploadPublicationFile:', error);
-            throw new Error('Error de conexión. Verifica tu internet.');
+            console.error('Network error in uploadFile:', error);
+            throw new Error('Connection error. Check your internet.');
         }
         throw error;
     });

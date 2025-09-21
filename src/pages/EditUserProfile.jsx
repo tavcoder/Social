@@ -1,47 +1,26 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext, useRef } from "react";
+import { useNavigate } from "react-router";
 import { GeneralTab, SecurityTab } from "@/components/EditUserProfile";
 import { AuthContext } from "@/context";
 
 const EditUserProfile = () => {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     console.log("user:", user);
-    const [form, setForm] = useState({
-        name: "",
-        surname: "",
-        bio: "",
-        nick: "",
-        email: "",
-        password: "",
-        image: ""
-    });
-    const [avatarFile, setAvatarFile] = useState(null);
     const [message, setMessage] = useState("");
     const [activeTab, setActiveTab] = useState("general");
-
-    // Load user data from useProfile hook
-    useEffect(() => {
-        if (user) {
-            setForm({
-                name: user.name || "",
-                surname: user.surname || "",
-                bio: user.bio || "",
-                nick: user.nick || "",
-                email: user.email || "",
-                password: "", // Keep empty for security
-                image: user.image || ""
-            });
-        }
-    }, [user]);
-
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    };
+    const generalTabRef = useRef();
+    const securityTabRef = useRef();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Upload avatar if needed
+        await generalTabRef.current?.uploadAvatar();
+
+        const generalData = generalTabRef.current?.getData();
+        const securityData = securityTabRef.current?.getData();
+        const formData = { ...generalData, ...securityData };
 
         try {
             const token = localStorage.getItem("token");
@@ -51,13 +30,13 @@ const EditUserProfile = () => {
                     "Content-Type": "application/json",
                     "Authorization": token
                 },
-                body: JSON.stringify(form)
+                body: JSON.stringify(formData)
             });
 
             const data = await res.json();
 
             if (data.status === "success") {
-                setMessage("Perfil actualizado con éxito 🎉");
+                setMessage("Profile updated successfully 🎉");
                 // Guardar cambios en localStorage
                 localStorage.setItem("user", JSON.stringify(data.user));
             } else {
@@ -65,67 +44,7 @@ const EditUserProfile = () => {
             }
         } catch (error) {
             console.error("Error updating profile:", error);
-            setMessage("Hubo un error en la conexión con el servidor ❌");
-        }
-    };
-
-    const handleAvatarUpload = async () => {
-        if (!avatarFile) return;
-
-        const token = localStorage.getItem("token");
-        const formData = new FormData();
-        formData.append("file0", avatarFile);
-
-        try {
-            const res = await fetch("http://localhost:3900/api/user/upload", {
-                method: "POST",
-                headers: {
-                    "Authorization": token
-                },
-                body: formData
-            });
-
-            const data = await res.json();
-
-            if (data.status === "success") {
-                setMessage("Avatar actualizado con éxito 🎉");
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setForm({ ...form, image: data.user.image });
-                setAvatarFile(null);
-            } else {
-                setMessage("Error: " + data.message);
-            }
-        } catch (error) {
-            console.error("Error uploading avatar:", error);
-            setMessage("Hubo un error subiendo el avatar ❌");
-        }
-    };
-
-    const handleAvatarDelete = async () => {
-        // Since no delete endpoint, update with empty image
-        try {
-            const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:3900/api/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": token
-                },
-                body: JSON.stringify({ ...form, image: "" })
-            });
-
-            const data = await res.json();
-
-            if (data.status === "success") {
-                setMessage("Avatar eliminado con éxito 🎉");
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setForm({ ...form, image: "" });
-            } else {
-                setMessage("Error: " + data.message);
-            }
-        } catch (error) {
-            console.error("Error deleting avatar:", error);
-            setMessage("Hubo un error eliminando el avatar ❌");
+            setMessage("There was an error connecting to the server ❌");
         }
     };
 
@@ -153,16 +72,25 @@ const EditUserProfile = () => {
 
 
             <form onSubmit={handleSubmit} className="form-grid">
-                {activeTab === "general" && <GeneralTab form={form} handleChange={handleChange} avatarFile={avatarFile} setAvatarFile={setAvatarFile} handleAvatarUpload={handleAvatarUpload} handleAvatarDelete={handleAvatarDelete} className="generalTab"/>}
+                {activeTab === "general" && <GeneralTab ref={generalTabRef} initialData={user} className="generalTab" />}
 
-                {activeTab === "security" && <SecurityTab form={form} handleChange={handleChange} />}
+                {activeTab === "security" && <SecurityTab ref={securityTabRef} initialData={user} />}
 
-                <button
-                    type="submit"
-                    className="save-button"
-                >
-                    Save
-                </button>
+                <div className="form-actions">
+                    <button
+                        type="submit"
+                        className="save-button"
+                    >
+                        Save
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="btn btn--level3"
+                    >
+                        Cancel
+                    </button>
+                </div>
             </form>
         </div>
     );

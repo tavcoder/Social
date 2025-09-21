@@ -18,7 +18,10 @@ app.use(cors());
 
 // Convertir los datos del body a objetos js
 app.use(express.json());
-app.use(express.urlencoded({extended: true})); 
+app.use(express.urlencoded({extended: true}));
+
+// Servir archivos estáticos desde uploads
+app.use("/uploads", express.static("uploads"));
 
 // Cargar conf rutas
 const UserRoutes = require("./routes/user");

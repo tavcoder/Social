@@ -66,7 +66,7 @@ export const mutationSelectMap = {
     uploadAvatar: (res) => res,
 
     // PUBLICATION
-    createPublication: (res) => res.publication,
+    createPublication: (res) => res.publicationStored,
     deletePublication: (res) => res,
     uploadPublicationFile: (res) => res,
     toggleLike: (res) => res,

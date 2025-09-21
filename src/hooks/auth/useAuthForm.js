@@ -45,26 +45,26 @@ export function useAuthForm(mode = "login") {
             const nickRegex = /^[a-zA-Z0-9_]+$/;
 
             if (!formData.name || !nameRegex.test(formData.name.trim())) {
-                errors.push("El nombre solo debe contener letras y espacios.");
+                errors.push("Name should only contain letters and spaces.");
             }
             if (!formData.surname || !nameRegex.test(formData.surname.trim())) {
-                errors.push("El apellido solo debe contener letras y espacios.");
+                errors.push("Surname should only contain letters and spaces.");
             }
             if (!formData.nick || !nickRegex.test(formData.nick.trim())) {
-                errors.push("El nick solo debe contener letras, números y guiones bajos.");
+                errors.push("Nick should only contain letters, numbers and underscores.");
             }
             if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                errors.push("El email no tiene un formato válido.");
+                errors.push("Email has an invalid format.");
             }
             if (!formData.password || formData.password.length < 6) {
-                errors.push("La contraseña debe tener al menos 6 caracteres.");
+                errors.push("Password must be at least 6 characters long.");
             }
         } else if (mode === "login") {
             if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                errors.push("El email no tiene un formato válido.");
+                errors.push("Email has an invalid format.");
             }
             if (!formData.password || formData.password.length < 1) {
-                errors.push("La contraseña es requerida.");
+                errors.push("Password is required.");
             }
         }
 
@@ -86,7 +86,7 @@ export function useAuthForm(mode = "login") {
             }
 
             navigate("/feed");
-        } catch (err) {
+        } catch {
             // Error handling is done via status
         }
     };
