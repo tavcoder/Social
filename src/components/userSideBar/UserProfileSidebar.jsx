@@ -39,7 +39,7 @@ export default function UserProfileSidebar() {
                 <NavLink to={`timeline/${targetUserId}`}>
                     <UserBadge user={profile.user} />
                 </NavLink>
-                {!isOwnProfile && <FollowButton />}
+                {!isOwnProfile && <FollowButton targetUserId={targetUserId} />}
                 {countersLoading ? (
                     <div>Loading stats...</div>
                 ) : countersError ? (

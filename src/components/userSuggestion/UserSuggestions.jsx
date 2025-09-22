@@ -1,17 +1,17 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 // Componente para sugerencias de usuarios a seguir - Props: ninguna
 import { AuthContext } from "@/context";
-import { useUsers } from "@/hooks/users";
-import {UserFollowWrapper,UserList} from "@/components/common";
+import { useUsers } from "@/hooks/userConnections";
+import { UserList } from "@/components/common";
 
 export default function UserSuggestions() {
     const { user: authUser } = useContext(AuthContext);
     const myUserId = authUser?.id;
 
     // Esperamos a que authUser exista antes de cargar los usuarios
-    const { unfollowedUsers = [], followingIds = [], loading, error } = useUsers(myUserId);
+    const { unfollowedUsers = [], loading, error } = useUsers(myUserId);
+   
 
-    const [selectedUserId, setSelectedUserId] = useState(null);
 
     if (!authUser) return <p>Cargando usuario...</p>;
     if (loading && unfollowedUsers.length === 0) return <p>Cargando usuarios...</p>;
@@ -22,15 +22,7 @@ export default function UserSuggestions() {
         <UserList
             users={unfollowedUsers}
             getSubText={(user) => user.nick}
-            RowComponent={(props) => (
-                <UserFollowWrapper
-                    key={props.user._id}
-                    {...props}
-                    isFollowing={followingIds.includes(props.user._id)}
-                    onSelect={() => setSelectedUserId(props.user._id)}
-                    selected={selectedUserId === props.user._id}
-                />
-            )}
+            showFollowButton={true}
         />
     );
 }

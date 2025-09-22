@@ -1043,3 +1043,11 @@ h1 {
 .post__button .icon {
   margin-right: 4px;
 }
+
+/* User row with follow button */
+.user-row-with-follow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

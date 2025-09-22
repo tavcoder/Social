@@ -61,18 +61,23 @@ export function callApi(method, endpoint, data) {
         ...(!isPublicRoute && token && { Authorization: token }),
     };
 
-    return fetch(`${API_BASE_URL}/${endpoint}`, {
+    const fullUrl = `${API_BASE_URL}/${endpoint}`;
+    console.log(`API Call: ${method} ${fullUrl}`, data ? { data } : '');
+
+    return fetch(fullUrl, {
         method,
         headers,
         body: JSON.stringify(data),
     }).then(async (res) => {
         if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            console.error(`API ${method} Error ${res.status} (${endpoint}):`, errorData);
+            console.error(`API ${method} Error ${res.status} (${fullUrl}):`, errorData);
             throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
         }
+        console.log(`API ${method} Success (${fullUrl})`);
         return res.json();
     }).catch((error) => {
+        console.error(`API ${method} Failed (${fullUrl}):`, error);
         if (error.message.includes('fetch')) {
             console.error('Network error in callApi:', error);
             throw new Error('Connection error. Check your internet.');

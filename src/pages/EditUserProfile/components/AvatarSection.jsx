@@ -45,7 +45,6 @@ const AvatarSection = forwardRef(({ form, onImageUpdate }, ref) => {
 
     const handleAvatarAction = async (file, successMessage) => {
         try {
-            console.log("Sending upload request...");
             const data = await uploadFileHook(async (fileToUpload) => {
                 const uploadData = await uploadFile("user/upload", fileToUpload);
                 if (uploadData.status !== "success") {

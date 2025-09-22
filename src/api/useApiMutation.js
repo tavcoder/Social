@@ -2,7 +2,27 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { callApi } from "@/api/apiHelper";
 import { mutationEndpointsMap, mutationMethodMap, mutationSelectMap } from "@/api/mutationMaps";
 
-// Hook genérico con optimistic update
+/**
+ * Custom hook for API mutations with optimistic updates.
+ *
+ * This hook wraps React Query's useMutation to provide a standardized way to perform
+ * API mutations with automatic optimistic updates for supported operations. It handles
+ * endpoint resolution, method selection, response transformation, and cache invalidation.
+ *
+ * @param {string} mutationKey - The key identifying the mutation type (e.g., "follow", "createPublication")
+ * @param {Array} queryKeyToUpdate - The query key array to invalidate and optimistically update
+ * @returns {Object} React Query mutation object with additional properties:
+ *   - mutate: Function to trigger the mutation
+ *   - isPending: Boolean indicating if the mutation is in progress
+ *   - isError: Boolean indicating if the mutation failed
+ *   - error: Error object if the mutation failed
+ *   - data: Response data from successful mutation
+ *   - reset: Function to reset the mutation state
+ *
+ * @example
+ * const followMutation = useApiMutation("follow", ["following", userId]);
+ * followMutation.mutate({ followed: targetUserId });
+ */
 export default function useApiMutation(mutationKey, queryKeyToUpdate) {
     const queryClient = useQueryClient();
 

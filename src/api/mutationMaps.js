@@ -14,8 +14,8 @@ export const mutationEndpointsMap = {
     removeComment: ({ id, commentId }) => `publication/${id}/comment/${commentId}`,
 
     // FOLLOW
-    follow: () => 'follow',
-    unfollow: ({ targetUserId }) => `unfollow/${targetUserId}`,
+    follow: () => 'follow/follow',
+    unfollow: ({ targetUserId }) => `follow/unfollow/${targetUserId}`,
 };
 
 export const mutationMethodMap = {

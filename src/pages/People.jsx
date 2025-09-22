@@ -9,10 +9,9 @@
  * Includes search functionality and follow/unfollow actions.
  */
 import { useParams } from "react-router";
-import { useUsers } from "@/hooks/users";
-import { SearchBox, UserFollowWrapper } from "@/components/common";
-import { UserList } from "@/components/common";
+import { useUsers } from "@/hooks/userConnections";
 import { usePeopleLists } from "@/hooks/users";
+import { SearchBox, UserList } from "@/components/common";
 import "../styles/People.css";
 
 /**
@@ -29,13 +28,14 @@ function People() {
         users,
         followers,
         following,
-        followingIds,
         loading,
         error,
         hasMore,
         loadMore
     } = useUsers(userId, 1);
-
+    
+    console.log("following:", following);
+    console.log("followers:", followers);
     // Process data to determine which list to display and search placeholder
     const { listToDisplay, placeholder } = usePeopleLists(
         type,
@@ -48,7 +48,6 @@ function People() {
     // Loading and error states
     if (loading && users.length === 0) return <p className="people__loading">Cargando usuarios...</p>;
     if (error) return <p className="people__error">Error al cargar usuarios.</p>;
-
     return (
         <div className="people-page">
             {/* Searchable user list with follow/unfollow functionality */}
@@ -63,13 +62,8 @@ function People() {
                         users={listToDisplay.map(item => item.user || item)}
                         // Display nickname as secondary text
                         getSubText={(user) => user.nick}
-                        // Wrap each user row with follow/unfollow functionality
-                        RowComponent={(props) => (
-                            <UserFollowWrapper
-                                {...props}
-                                isFollowing={followingIds}
-                            />
-                        )}
+                        // Display user row with follow button
+                        showFollowButton={true}
                     />
                 )}
             </SearchBox>
