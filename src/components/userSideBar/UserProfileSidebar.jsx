@@ -2,7 +2,7 @@ import { NavLink, useParams } from "react-router";
 // Componente para la barra lateral del perfil de usuario con stats y seguidores - Props: ninguna
 import { PencilLine } from "phosphor-react";
 import { useContext } from "react";
-import { AuthContext } from "@/context";
+import { AuthContext} from "@/context";
 import { useApiQuery } from "@/api";
 import { UserBadge, FollowButton, ActionButton } from "@/components/common";
 import { ProfileStats, UserFollowedBy } from "@/components/userSideBar";
@@ -39,7 +39,9 @@ export default function UserProfileSidebar() {
                 <NavLink to={`timeline/${targetUserId}`}>
                     <UserBadge user={profile.user} />
                 </NavLink>
-                {!isOwnProfile && <FollowButton targetUserId={targetUserId} />}
+                  {!isOwnProfile && (
+                     <FollowButton targetUserId={targetUserId} />
+                 )}
                 {countersLoading ? (
                     <div>Loading stats...</div>
                 ) : countersError ? (
