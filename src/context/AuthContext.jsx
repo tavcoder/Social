@@ -27,23 +27,19 @@ export function AuthProvider(props) {
     // Initialize token from localStorage
     const [token, setToken] = useState(() => {
         const storedToken = localStorage.getItem("token");
-        console.log("AuthContext: Initializing token from localStorage", storedToken ? "present" : "null");
         return storedToken;
     });
     const isAuthenticated = !!token;
 
     // Listen for token changes in localStorage
     useEffect(() => {
-        console.log("AuthContext: Setting up event listeners for token changes");
         const handleStorageChange = (e) => {
             if (e.key === 'token') {
-                console.log("AuthContext: Storage event for token, updating to", e.newValue ? "present" : "null");
                 setToken(e.newValue);
             }
         };
         const handleTokenChange = () => {
             const newToken = localStorage.getItem("token");
-            console.log("AuthContext: Custom tokenChange event, updating token to", newToken ? "present" : "null");
             setToken(newToken);
         };
         window.addEventListener('storage', handleStorageChange);
@@ -73,7 +69,6 @@ export function AuthProvider(props) {
         }
     }, [user]);
 
-    console.log("AuthContext: Rendering with user", user);
     // Provide context value with user data and auth state
     return (
         <AuthContext value={{

@@ -62,7 +62,6 @@ export function callApi(method, endpoint, data) {
     };
 
     const fullUrl = `${API_BASE_URL}/${endpoint}`;
-    console.log(`API Call: ${method} ${fullUrl}`, data ? { data } : '');
 
     return fetch(fullUrl, {
         method,
@@ -74,7 +73,6 @@ export function callApi(method, endpoint, data) {
             console.error(`API ${method} Error ${res.status} (${fullUrl}):`, errorData);
             throw new Error(errorData.message || `Error ${res.status}: ${res.statusText}`);
         }
-        console.log(`API ${method} Success (${fullUrl})`);
         return res.json();
     }).catch((error) => {
         console.error(`API ${method} Failed (${fullUrl}):`, error);

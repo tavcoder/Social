@@ -1,5 +1,5 @@
-import {UserRow,FollowButton } from "@/components/common";
-  
+import { UserRow, FollowButton } from "@/components/common";
+
 /**
  * UserList component for displaying a list of users.
  *
@@ -27,7 +27,10 @@ export default function UserList({ users, getSubText, showFollowButton = false }
                 return (
                     <div key={user._id} className="user-row-with-follow">
                         <UserRow user={user} subText={subText} />
-                        {showFollowButton && <FollowButton  user={user} targetUserId={user._id} />}
+                        {showFollowButton && (
+                            <FollowButton targetUserId={user._id} />
+
+                        )}
                     </div>
                 );
             })}
@@ -35,4 +38,3 @@ export default function UserList({ users, getSubText, showFollowButton = false }
     );
 }
 
-   
