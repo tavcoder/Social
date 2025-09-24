@@ -10,7 +10,7 @@ import { useFollow } from "@/hooks/useFollow";
 export default function FollowButton({ targetUserId }) {
   const { isFollowing, follow, unfollow, loading } = useFollow({ targetUserId });
 
-  return (
+    return (
     <>
        {isFollowing ? (
         <button

@@ -5,10 +5,9 @@ import { useUsers } from "@/hooks/userConnections";
 import { UserList } from "@/components/common";
 
 export default function UserSuggestions() {
+    // Sacar todo esto a un hook?
     const { user: authUser } = useContext(AuthContext);
-    const myUserId = authUser?.id;
-
-    // Esperamos a que authUser exista antes de cargar los usuarios
+    const myUserId = authUser?._id;
     const { unfollowedUsers = [], loading, error } = useUsers(myUserId);
    
 
