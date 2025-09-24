@@ -1,4 +1,5 @@
 
+// Componente para mostrar un indicador de carga (spinner) - Props: ninguna
 export default function Spinner() {
     return (
         <div style={{ display: "flex", justifyContent: "center", padding: "1rem" }}>

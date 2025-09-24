@@ -1,3 +1,4 @@
+// Componente para mostrar el estado online de un usuario y la última vez visto - Props: userId (string)
 // components/OnlineStatus.jsx
 import { useOnlineStatus } from "@/hooks/users";
 

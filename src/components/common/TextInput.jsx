@@ -1,9 +1,25 @@
 import { Smiley } from "phosphor-react";
-import { useProfile } from "@/hooks/users";
+import { useContext } from "react";
+import { AuthContext } from "@/context";
 import {Avatar} from "@/components/common";
-
-export default function TextInput({ value, onChange, onSend, placeholder, disabled }) {
-    const { authUser, authUserProfile } = useProfile();
+/**
+ * TextInput component
+ *
+ * A reusable text input component with user avatar, emoji button, and a send button.  
+ * Supports pressing Enter to trigger sending. Can be disabled entirely or just disable the send button.
+ *
+ * @component
+ * @param {Object} props
+ * @param {string} props.value - Current text value of the input
+ * @param {function} props.onChange - Callback triggered when the input value changes
+ * @param {function} props.onSend - Callback triggered when the send button is clicked or Enter is pressed
+ * @param {string} props.placeholder - Placeholder text for the input
+ * @param {boolean} [props.disabled=false] - Optional flag to disable the entire input
+ * @param {boolean} [props.sendDisabled=false] - Optional flag to disable only the send button
+  */
+ 
+export default function TextInput({ value, onChange, onSend, placeholder, disabled, sendDisabled }) {
+    const { user } = useContext(AuthContext);
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
@@ -11,14 +27,14 @@ export default function TextInput({ value, onChange, onSend, placeholder, disabl
         }
     };
 
-    const isSendDisabled = disabled || !value.trim();
+    const isSendDisabled = disabled || sendDisabled;
     return (
         <div className="text__input__container">
             <Avatar
-                src={authUserProfile?.user?.image}
-                alt={authUser?.name}
+                src={user?.image}
+                alt={user?.name}
                 size={30}
-                userId={authUser.id}
+                userId={user?._id}
             />
 
 

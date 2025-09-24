@@ -1,13 +1,19 @@
-// src/components/common/SearchBox.jsx
 import { useSearch } from "@/hooks/users";
 import { SearchInput } from "@/components/common";
 
 /**
- * SearchBox
- * @param {Array} items - Lista de items a filtrar
- * @param {Array} keys - Campos de cada item a filtrar (ej: ["name", "title"])
- * @param {String} placeholder - Texto del input
- * @param {Function} children - Render prop para renderizar items filtrados
+ * SearchBox component
+ *
+ * A reusable search box that filters a list of items based on specified keys 
+ * and displays the filtered results. Can optionally use a render prop (`children`)
+ * to customize how each item is rendered.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Array} props.items - Array of items to filter
+ * @param {Array} props.keys - Keys in each item to filter by (e.g., ["name", "title"])
+ * @param {string} [props.placeholder="Buscar..."] - Placeholder text for the input
+ * @param {function} [props.children] - Optional render prop function that receives filtered items
  */
 export const SearchBox = ({ items = [], keys = [], placeholder = "Buscar...", children }) => {
     const { search, setSearch, filteredItems } = useSearch();
@@ -28,3 +34,4 @@ export const SearchBox = ({ items = [], keys = [], placeholder = "Buscar...", ch
         </div>
     );
 };
+     

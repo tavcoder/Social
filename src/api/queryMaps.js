@@ -22,7 +22,7 @@ export const queryEndpointsMap = {
 
 export const querySelectMap = {
     // USER
-    profile: (res) => res,                        // Devuelve info del perfil
+    profile: (res) => ({ user: res.user, following: res.following }), // Devuelve user y following
     counters: (res) => res,                       // Devuelve contadores del usuario
     allUsersData: (res) => res.users || [],       // Devuelve lista de usuarios
     listUsers: (res) => res.users || [],          // Devuelve lista de usuarios

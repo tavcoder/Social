@@ -1,4 +1,5 @@
 import { Heart, ChatCircle } from "phosphor-react";
+// Componente para la fila de acciones de un post (like, comment, delete) - Props: post (object), onCommentToggle (function)
 import { useToggleLike } from "@/hooks/social";
 import { ActionButton, RemoveButton } from "@/components/common";
 

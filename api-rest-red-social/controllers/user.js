@@ -24,11 +24,13 @@ const pruebaUser = (req, res) => {
 
 // Regristro de usuarios
 const register = (req, res) => {
+    console.log("Register request received with params:", req.body);
     // Recoger datos de la peticion
     let params = req.body;
 
     // Comprobar que me llegan bien (+ validacion)
-    if (!params.name || !params.surName || !params.email || !params.password || !params.nick) {
+    if (!params.name || !params.surname || !params.email || !params.password || !params.nick) {
+        console.log("Missing required fields");
         return res.status(400).json({
             status: "error",
             message: "Faltan datos por enviar",
@@ -275,9 +277,13 @@ const update = (req, res) => {
 }
 
 const upload = (req, res) => {
+    console.log("Upload request received");
+    console.log("User:", req.user);
+    console.log("File:", req.file);
 
     // Recoger el fichero de imagen y comprobar que existe
     if (!req.file) {
+        console.log("No file received");
         return res.status(404).send({
             status: "error",
             message: "Petición no incluye la imagen"
@@ -306,14 +312,17 @@ const upload = (req, res) => {
     }
 
     // Si si es correcta, guardar imagen en bbdd
+    console.log("Updating user with filename:", req.file.filename);
     User.findOneAndUpdate({ _id: req.user.id }, { image: req.file.filename }, { new: true }, (error, userUpdated) => {
         if (error || !userUpdated) {
+            console.log("Database update error:", error);
             return res.status(500).send({
                 status: "error",
                 message: "Error en la subida del avatar"
             })
         }
 
+        console.log("User updated successfully:", userUpdated);
         // Devolver respuesta
         return res.status(200).send({
             status: "success",
@@ -387,6 +396,7 @@ const getUsers = async (req, res) => {
     try {
         const users = await User.find()
             .select('-password') // Excluir contraseña
+            .sort('_id') // Orden consistente para paginación
             .skip((page - 1) * itemsPerPage)
             .limit(itemsPerPage);
 

@@ -1,3 +1,4 @@
+// Componente para mostrar imágenes de posts con carga lazy y fallback - Props: file (string), alt (string, opcional)
 // src/components/post/PostImage.jsx
 import { useState } from "react";
 

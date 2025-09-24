@@ -1,14 +1,22 @@
-// src/components/Home.jsx
-import { useContext } from "react";
-import { AuthContext } from "@/context";
-import { PostList, NewPostForm  } from "@/components/post";
+/**
+ * Home Page Component
+ *
+ * Main landing page that displays the social feed.
+ * Shows the new post form and the list of posts from followed users.
+ */
+import { PostList, NewPostForm } from "@/components/post";
 
+/**
+ * Home component - Main social feed page
+ *
+ * @returns {JSX.Element} The home page with post creation form and post list
+ */
 function Home() {
-    const { user } = useContext(AuthContext);
-
     return (
         <section>
+            {/* Form to create new posts */}
             <NewPostForm />
+            {/* List of posts from followed users */}
             <PostList />
         </section>
     );

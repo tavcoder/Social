@@ -1,8 +1,16 @@
-// src/hooks/useToggleLike.js
+/**
+ * Custom hook for toggling likes on posts.
+ *
+ * Manages optimistic updates for like/unlike actions using React Query.
+ * Checks if user has liked a post and handles the toggle mutation.
+ *
+ * @returns {Object} isUserLiked function, handleLikeToggle function, isLoading state.
+ */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import { callApi } from "@/api/apiHelper";
 import { AuthContext } from "@/context";
+import { mutationEndpointsMap } from "@/api/mutationMaps";
 
 export function useToggleLike() {
     const { user: authUser } = useContext(AuthContext);
@@ -17,7 +25,8 @@ export function useToggleLike() {
     // Mutación de toggle like
     const toggleLikeMutation = useMutation({
         mutationFn: async (publicationId) => {
-            return await callApi("POST", `publication/${publicationId}/like`);
+            const { method, endpoint } = mutationEndpointsMap.toggleLike(publicationId);
+            return await callApi(method, endpoint);
         },
         onMutate: async (publicationId) => {
             await queryClient.cancelQueries(["publication", publicationId]);

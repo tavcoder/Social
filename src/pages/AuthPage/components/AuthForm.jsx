@@ -1,4 +1,5 @@
 //Interfaz visual que muetsra el formulario de autenticación
+// Componente para el formulario de autenticación (login y registro de usuarios) - Props: mode (string, opcional, default "login")
 //usa la lógica del useAuthForm
 import { useAuthForm } from "@/hooks/auth";
 
@@ -15,14 +16,14 @@ function AuthForm({ mode = "login" }) {
 
     return (
         <form onSubmit={handleSubmit} className="auth-form" autoComplete="on">
-            <h2>{isLogin ? "Iniciar sesión" : "Registrarse"}</h2>
+            <h2>{isLogin ? "Login" : "Register"}</h2>
 
             {!isLogin && (
                 <>
                     <input
                         type="text"
                         name="name"
-                        placeholder="Nombre"
+                        placeholder="Name"
                         value={formData.name || ""}
                         onChange={(e) => updateField("name", e.target.value)}
                         required
@@ -31,10 +32,10 @@ function AuthForm({ mode = "login" }) {
 
                     <input
                         type="text"
-                        name="surName"
-                        placeholder="Apellido"
-                        value={formData.surName || ""}
-                        onChange={(e) => updateField("surName", e.target.value)}
+                        name="surname"
+                        placeholder="Surname"
+                        value={formData.surname || ""}
+                        onChange={(e) => updateField("surname", e.target.value)}
                         required
                         autoComplete="family-name"
                     />
@@ -54,7 +55,7 @@ function AuthForm({ mode = "login" }) {
             <input
                 type="email"
                 name="email"
-                placeholder="Correo electrónico"
+                placeholder="Email"
                 value={formData.email || ""}
                 onChange={(e) => updateField("email", e.target.value)}
                 required
@@ -64,7 +65,7 @@ function AuthForm({ mode = "login" }) {
             <input
                 type="password"
                 name="password"
-                placeholder="Contraseña"
+                placeholder="Password"
                 value={formData.password || ""}
                 onChange={(e) => updateField("password", e.target.value)}
                 required
@@ -74,12 +75,12 @@ function AuthForm({ mode = "login" }) {
             {error && <p className="error">{error}</p>}
 
             <button type="submit">
-                {isLogin ? "Entrar" : "Crear cuenta"}
+                {isLogin ? "Login" : "Create account"}
             </button>
 
             {isLogin && (
                 <>
-                    <p>O entra con:</p>
+                    <p>Or login with:</p>
                     <button type="button" onClick={loginWithGoogle}>Google</button>
                 </>
             )}

@@ -8,5 +8,6 @@ export * from "./SearchInput";
 export { default as Spinner } from "./Spinner";
 export { default as TextInput } from "./TextInput";
 export { default as UserBadge } from "./UserBadge";
-export { default as UserFollowWrapper } from "./UserFollowWrapper";
+
 export { default as UserRow } from "./UserRow";
+export { default as UserList } from "./UserList";

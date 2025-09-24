@@ -1,18 +1,17 @@
 // hooks/useTopFollowers.js
-import { useFollowers } from "@/hooks/users"
+import useInfiniteApiQuery from "@/api/useInfiniteApiQuery";
 
 export function useTopFollowers(userId, limit = 3) {
-    const {
-        users: followers,
-        total: totalFollowers,
-        loading,
-        error,
-    } = useFollowers(userId);
+    const query = useInfiniteApiQuery("followers", [userId, 1], { enabled: !!userId });
+    const followers = query.data?.pages.flatMap(p =>
+        (p.data?.follows ?? []).map(follow => follow.user).filter(Boolean)
+    ) || [];
+    const totalFollowers = query.data?.pages[0]?.data?.total || 0;
 
     return {
         topFollowers: followers.slice(0, limit),
         totalFollowers,
-        loading,
-        error,
+        loading: query.isLoading,
+        error: query.isError,
     };
 }

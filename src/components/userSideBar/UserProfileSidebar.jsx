@@ -1,29 +1,32 @@
 import { NavLink, useParams } from "react-router";
+// Componente para la barra lateral del perfil de usuario con stats y seguidores - Props: ninguna
 import { PencilLine } from "phosphor-react";
+import { useContext } from "react";
+import { AuthContext} from "@/context";
 import { useApiQuery } from "@/api";
-import { useProfile } from "@/hooks/users";
 import { UserBadge, FollowButton, ActionButton } from "@/components/common";
-import { ProfileStats, UserFollowedBy } from "@/components/user";
+import { ProfileStats, UserFollowedBy } from "@/components/userSideBar";
 
 export default function UserProfileSidebar() {
     const { userId: paramUserId } = useParams();
-    const { authUser } = useProfile();
+    const { user: authUser } = useContext(AuthContext);
     // si no hay userId en la URL, toma el del usuario autenticado
-    const targetUserId = paramUserId || authUser?.id;
+    const targetUserId = paramUserId || authUser?._id;
+    const isOwnProfile = authUser?._id === targetUserId;
 
     const { data: profile, isLoading } = useApiQuery("profile", targetUserId, {
         enabled: !!targetUserId, // evita que haga query sin id
     });
-    const { data: counters } = useApiQuery("counters", targetUserId, {
+    const { data: counters, isLoading: countersLoading, isError: countersError } = useApiQuery("counters", targetUserId, {
         enabled: !!targetUserId, // evita que haga query sin id
     });
 
-    if (isLoading) return <div>Cargando perfil...</div>;
-    if (!profile) return <div>Error al cargar el perfil.</div>;
+    if (isLoading) return <div>Loading profile...</div>;
+     if (!profile || !profile.user) return <div>Error loading profile.</div>;
 
     return (
         <div className="user__profile__sidebar card card--hover">
-            {authUser?.id === targetUserId && (
+            {isOwnProfile && (
                 <NavLink to="editprofile">
                     <ActionButton
                         icon={<PencilLine size={15} weight="regular" />}
@@ -36,11 +39,19 @@ export default function UserProfileSidebar() {
                 <NavLink to={`timeline/${targetUserId}`}>
                     <UserBadge user={profile.user} />
                 </NavLink>
-                {authUser?.id !== targetUserId && <FollowButton />}
-                <ProfileStats counters={counters} userId={targetUserId} />
+                  {!isOwnProfile && (
+                     <FollowButton targetUserId={targetUserId} />
+                 )}
+                {countersLoading ? (
+                    <div>Loading stats...</div>
+                ) : countersError ? (
+                    <div>Error loading stats</div>
+                ) : (
+                    <ProfileStats counters={counters} userId={targetUserId} />
+                )}
                 <UserFollowedBy
-                    following={profile.user.following}
-                    user={profile.user}
+                    following={profile.following}
+                    user={profile.user || {}}
                 />
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import { PrivateRoute } from "@/components/navigation";
+import { PrivateRoute } from "@/pages/MainLayout/components";
 import { AuthPage, MainLayout, Home, Timeline, EditUserProfile, People } from "@/pages";
 
 function App() {

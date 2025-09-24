@@ -1,14 +1,20 @@
+import { useContext } from "react";
 import { format } from "date-fns";
-import { UserRow} from "@/components/common";
-import { PostImage, PostActionRow, CommentsItem} from "@/components/post";
-import { useProfile } from "@/hooks/users";
+import { AuthContext } from "@/context";
 import { useComments } from "@/hooks/social";
+import { PostImage, PostActionRow, CommentsItem} from "@/components/post";
+import { UserRow} from "@/components/common";
+
+// Componente para mostrar un item de post con imagen, acciones y comentarios - Props: post (object)
 
 function PostItem({ post }) {
     const { showComments, handleCommentToggle } = useComments();
-    const { authUser } = useProfile();
+    const { user: authUser } = useContext(AuthContext);
     const myUserName = authUser?.name;
     const formattedDate = format(new Date(post.created_at), "d MMM 'at' H:mm");
+
+
+
     return (
         <div className="post__item card">
             <UserRow
@@ -26,6 +32,6 @@ function PostItem({ post }) {
             )}
         </div>
     );
-}
+} 
 
 export default PostItem;

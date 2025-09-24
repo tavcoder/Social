@@ -1,4 +1,5 @@
 import { useState} from "react";
+// Componente para agregar comentarios a un post - Props: postId (string)
 import { TextInput} from "@/components/common";
 import { useApiMutation } from "@/api";
 

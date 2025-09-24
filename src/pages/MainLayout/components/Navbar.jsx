@@ -1,12 +1,15 @@
-import { useId } from "react";
+import { useId, useContext } from "react";
+// Componente para la barra de navegación principal con enlaces y avatar - Props: ninguna
 import { NavLink, useNavigate } from "react-router";
 import { BellSimple } from "phosphor-react";
-import { useProfile } from "@/hooks/users";
-import { Avatar} from "@/components/common";
+import { AuthContext } from "@/context";
+import { Avatar } from "@/components/common";
+import { useAuthActions } from "@/hooks/auth";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { authUser, authUserProfile } = useProfile();
+  const { user } = useContext(AuthContext);
+  const { logout } = useAuthActions();
   const id = useId(); // Genera un ID único para este componente
 
   const handleLogout = () => {
@@ -43,10 +46,10 @@ function Navbar() {
       {/* Usuario */}
       <div className="navbar__user">
         <Avatar
-          src={authUserProfile?.user?.image}
-          alt={authUser?.name}
+          src={user?.image}
+          alt={user?.name}
+          userId={user?._id}
           size={30}
-          userId={authUser.id}
         />
         <BellSimple className="navbar__icon" size={15} weight="regular" />
       </div>

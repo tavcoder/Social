@@ -16,13 +16,13 @@ const validate = (params) => {
     }
 
     // Validación del apellido
-    if (validator.isEmpty(params.surName || "")) {
+    if (validator.isEmpty(params.surname || "")) {
         errors.push("El apellido no puede estar vacío.");
     } else {
-        if (!validator.isLength(params.surName, { min: 3 })) {
+        if (!validator.isLength(params.surname, { min: 3 })) {
             errors.push("El apellido debe tener al menos 3 caracteres.");
         }
-        if (!validator.isAlpha(params.surName, "es-ES")) {
+        if (!validator.isAlpha(params.surname, "es-ES")) {
             errors.push("El apellido solo debe contener letras.");
         }
     }
