@@ -77,7 +77,8 @@ const EditUserProfile = () => {
                 clearFile();
             } catch (error) {
                 console.error("Error uploading avatar:", error);
-                setMessage("There was an error uploading the avatar ❌");
+                const errorMessage = error.response?.data?.message || "There was an error uploading the avatar ❌";
+                setMessage(errorMessage);
             }
         }
     };
@@ -108,7 +109,8 @@ const EditUserProfile = () => {
             }
         } catch (error) {
             console.error("Error updating profile:", error);
-            setMessage("There was an error connecting to the server ❌");
+            const errorMessage = error.response?.data?.message || "There was an error connecting to the server ❌";
+            setMessage(errorMessage);
         }
     };
 
