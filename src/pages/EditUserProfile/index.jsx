@@ -9,6 +9,7 @@ import { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router";
 import { GeneralTab, SecurityTab } from "./components";
 import { AuthContext } from "@/context";
+import { useApiMutation } from "@/api";
 
 /**
  * EditUserProfile component - Profile editing interface with tabs
@@ -16,7 +17,7 @@ import { AuthContext } from "@/context";
  * @returns {JSX.Element} Profile editing page with general and security tabs
  */
 const EditUserProfile = () => {
-    const { user } = useContext(AuthContext);
+    const { user: authUser, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
     // UI state
@@ -26,6 +27,9 @@ const EditUserProfile = () => {
     // Refs to communicate with tab components
     const generalTabRef = useRef();
     const securityTabRef = useRef();
+
+    // Mutation for updating user profile
+    const updateUserMutation = useApiMutation("updateUser");
 
     /**
      * Handle form submission for profile updates
@@ -43,23 +47,13 @@ const EditUserProfile = () => {
         const formData = { ...generalData, ...securityData };
 
         try {
-            const token = localStorage.getItem("token");
-            // Update profile data via API
-            const res = await fetch("http://localhost:3900/api/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": token
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await res.json();
+            // Update profile data via API mutation
+            const data = await updateUserMutation.mutateAsync(formData);
 
             if (data.status === "success") {
                 setMessage("Profile updated successfully 🎉");
-                // Update localStorage with new user data
-                localStorage.setItem("user", JSON.stringify(data.user));
+                // Update context with new user data (context handles localStorage)
+                setUser(data.user);
             } else {
                 setMessage("Error: " + data.message);
             }
@@ -95,18 +89,19 @@ const EditUserProfile = () => {
             {/* Main form with conditional tab content */}
             <form onSubmit={handleSubmit} className="form-grid">
                 {/* General tab: profile info and avatar */}
-                {activeTab === "general" && <GeneralTab ref={generalTabRef} initialData={user} className="generalTab" />}
+                {activeTab === "general" && <GeneralTab ref={generalTabRef} initialData={authUser} className="generalTab" />}
 
                 {/* Security tab: email and password */}
-                {activeTab === "security" && <SecurityTab ref={securityTabRef} initialData={user} />}
+                {activeTab === "security" && <SecurityTab ref={securityTabRef} initialData={authUser} />}
 
                 {/* Form action buttons */}
                 <div className="form-actions">
                     <button
                         type="submit"
                         className="save-button"
+                        disabled={updateUserMutation.isLoading}
                     >
-                        Save
+                        {updateUserMutation.isLoading ? "Saving..." : "Save"}
                     </button>
                     <button
                         type="button"

@@ -1,14 +1,16 @@
-import { useEffect, useState, useImperativeHandle, forwardRef } from "react";
+import { useEffect, useState, useImperativeHandle, forwardRef, useContext } from "react";
 import { uploadFile } from "@/api";
 import { useFileUpload } from "@/hooks/common";
 import { Avatar } from "@/components/common";
+import { AuthContext } from "@/context";
 
 const AvatarSection = forwardRef(({ form, onImageUpdate }, ref) => {
+    const { setUser } = useContext(AuthContext);
     const [message, setMessage] = useState("");
     const [defaultImage, setDefaultImage] = useState(null);
     const [isDelete, setIsDelete] = useState(false);
 
-    const { file: avatarFile, previewUrl, isLoading: fileLoading, selectFile, clearFile, uploadFile: uploadFileHook } = useFileUpload();
+    const { file: avatarFile, previewUrl, selectFile, clearFile, uploadFile: uploadFileHook } = useFileUpload();
 
     // Load default image
     useEffect(() => {
@@ -54,7 +56,7 @@ const AvatarSection = forwardRef(({ form, onImageUpdate }, ref) => {
             });
 
             setMessage(successMessage);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            setUser(data.user);
             onImageUpdate(data.user.image);
         } catch (error) {
             console.error("Error uploading avatar:", error);
