@@ -62,45 +62,57 @@ const EditUserProfile = () => {
         });
     };
 
-    // Handle avatar upload
-    const handleAvatarUpload = async () => {
-        if (avatarFile) {
-            try {
-                await uploadFileHook(async (fileToUpload) => {
-                    const uploadData = await uploadFile("user/upload", fileToUpload);
-                    if (uploadData.status !== "success") {
-                        throw new Error(uploadData.message || "Error uploading avatar");
-                    }
-                    return uploadData;
-                });
-                setUser({ ...authUser, image: avatarFile.name }); // Update context with new image
-                clearFile();
-            } catch (error) {
-                console.error("Error uploading avatar:", error);
-                const errorMessage = error.response?.data?.message || "There was an error uploading the avatar ❌";
-                setMessage(errorMessage);
-            }
-        }
-    };
+      // Handle avatar upload
+  const handleAvatarUpload = async () => {
+    if (avatarFile) {
+      try {
+        const uploadData = await uploadFileHook(async (fileToUpload) => {
+          const response = await uploadFile("user/upload", fileToUpload);
+          if (response.status !== "success") {
+            throw new Error(response.message || "Error uploading avatar");
+          }
+          return response;
+        });
 
-    // Handle avatar delete
-    const handleDeleteAvatar = async () => {
-        try {
-            const data = await updateUserMutation.mutateAsync({ image: "default.png" });
-            if (data.status === "success") {
-                setUser(data.user);
-                clearFile();
-                setMessage("Avatar deleted successfully 🎉");
-            } else {
-                setMessage("Error: " + data.message);
-            }
-        } catch (error) {
-            console.error("Error deleting avatar:", error);
-            const errorMessage = error.response?.data?.message || "There was an error deleting the avatar ❌";
-            setMessage(errorMessage);
+        if (uploadData?.user) {
+          setUser(uploadData.user);
         }
-    };
+        clearFile();
+      } catch (error) {
+        console.error("Error uploading avatar:", error);
+        const errorMessage =
+          error.response?.data?.message || "There was an error uploading the avatar ❌";
+        setMessage(errorMessage);
+      }
+    }
+  };
+      // Handle avatar delete
+  const handleDeleteAvatar = async () => {
+    try {
+      // Fetch the default avatar image
+      const defaultImageResponse = await fetch('http://localhost:3900/api/user/avatar/default.png');
+      if (!defaultImageResponse.ok) {
+        throw new Error('Failed to fetch default avatar');
+      }
+      const defaultBlob = await defaultImageResponse.blob();
 
+      // Upload the default avatar via /upload
+      const response = await uploadFile("user/upload", defaultBlob);
+      if (response.status !== "success") {
+        throw new Error(response.message || "Error deleting avatar");
+      }
+
+      // Update user context with the new user data
+      setUser(response.user);
+      clearFile();
+      setMessage("Avatar deleted successfully 🎉");
+    } catch (error) {
+      console.error("Error deleting avatar:", error);
+      const errorMessage =
+        error.response?.data?.message || error.message || "There was an error deleting the avatar ❌";
+      setMessage(errorMessage);
+    }
+  };
     /**
      * Handle form submission for profile updates
      */
