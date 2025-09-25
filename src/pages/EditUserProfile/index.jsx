@@ -125,7 +125,7 @@ const EditUserProfile = () => {
             {message && <p className="status-message">{message}</p>}
 
             {/* Main form */}
-            <form onSubmit={handleSubmit} className="form-grid">
+            <form onSubmit={handleSubmit} className="form-grid" style={{ opacity: updateUserMutation.isLoading ? 0.6 : 1, pointerEvents: updateUserMutation.isLoading ? 'none' : 'auto' }}>
                 {/* Avatar section */}
                 <div className="avatar-section">
                     <Avatar
