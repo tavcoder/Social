@@ -83,6 +83,24 @@ const EditUserProfile = () => {
         }
     };
 
+    // Handle avatar delete
+    const handleDeleteAvatar = async () => {
+        try {
+            const data = await updateUserMutation.mutateAsync({ image: "default.png" });
+            if (data.status === "success") {
+                setUser(data.user);
+                clearFile();
+                setMessage("Avatar deleted successfully 🎉");
+            } else {
+                setMessage("Error: " + data.message);
+            }
+        } catch (error) {
+            console.error("Error deleting avatar:", error);
+            const errorMessage = error.response?.data?.message || "There was an error deleting the avatar ❌";
+            setMessage(errorMessage);
+        }
+    };
+
     /**
      * Handle form submission for profile updates
      */
@@ -144,6 +162,16 @@ const EditUserProfile = () => {
                         <label htmlFor="avatar-upload" className="btn btn--level1">
                             Select Avatar
                         </label>
+                        {authUser?.image && authUser.image !== "default.png" && (
+                            <button
+                                type="button"
+                                onClick={handleDeleteAvatar}
+                                disabled={updateUserMutation.isLoading}
+                                className="btn btn--level3"
+                            >
+                                Delete Avatar
+                            </button>
+                        )}
                     </div>
                 </div>
 
