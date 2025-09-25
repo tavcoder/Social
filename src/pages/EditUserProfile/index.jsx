@@ -7,9 +7,9 @@
  */
 import { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router";
-import { GeneralTab, SecurityTab } from "./components";
-import { AuthContext } from "@/context";
 import { useApiMutation } from "@/api";
+import { AuthContext } from "@/context";
+import { GeneralTab, SecurityTab } from "./components";
 
 /**
  * EditUserProfile component - Profile editing interface with tabs
@@ -19,7 +19,7 @@ import { useApiMutation } from "@/api";
 const EditUserProfile = () => {
     const { user: authUser, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
-
+console.log(authUser);
     // UI state
     const [message, setMessage] = useState("");
     const [activeTab, setActiveTab] = useState("general");
@@ -30,6 +30,9 @@ const EditUserProfile = () => {
 
     // Mutation for updating user profile
     const updateUserMutation = useApiMutation("updateUser");
+
+    // Store initial user data for comparison
+    const initialUser = useRef(authUser);
 
     /**
      * Handle form submission for profile updates
@@ -51,9 +54,13 @@ const EditUserProfile = () => {
             const data = await updateUserMutation.mutateAsync(formData);
 
             if (data.status === "success") {
-                setMessage("Profile updated successfully 🎉");
+                const changedFields = getChangedFields(initialUser.current, data.user);
+                const successMessage = generateSuccessMessage(changedFields);
+                setMessage(successMessage);
                 // Update context with new user data (context handles localStorage)
                 setUser(data.user);
+                // Update initialUser for future comparisons
+                initialUser.current = data.user;
             } else {
                 setMessage("Error: " + data.message);
             }
@@ -115,5 +122,25 @@ const EditUserProfile = () => {
         </div>
     );
 };
+
+// Helper functions for success messages
+const fieldLabels = {
+    name: 'first name',
+    surname: 'last name',
+    nick: 'nickname',
+    bio: 'bio',
+    email: 'email address'
+};
+
+function getChangedFields(oldUser, newUser) {
+    const fields = ['name', 'surname', 'nick', 'bio', 'email'];
+    return fields.filter(field => oldUser?.[field] !== newUser?.[field]);
+}
+
+function generateSuccessMessage(changedFields) {
+    if (changedFields.length === 0) return "Profile updated successfully 🎉";
+    const messages = changedFields.map(field => `Your ${fieldLabels[field]} was successfully updated.`);
+    return messages.join(' ') + ' 🎉';
+}
 
 export default EditUserProfile;
