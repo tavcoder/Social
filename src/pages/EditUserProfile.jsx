@@ -6,6 +6,7 @@
  */
 import { useState, useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { useApiMutation, uploadFile } from "@/api";
 import { useFileUpload } from "@/hooks/common";
 import { AuthContext } from "@/context";
@@ -24,8 +25,7 @@ const EditUserProfile = () => {
     email: "",
   });
 
-  // UI state
-  const [message, setMessage] = useState("");
+
 
   // Avatar upload state
   const {
@@ -78,14 +78,14 @@ const EditUserProfile = () => {
         const blob = await response.blob();
         fileToUse = new File([blob], "default.png", { type: response.headers.get('content-type') || 'image/png' });
       } catch (error) {
-        setMessage("Error fetching default avatar: " + error.message);
+        toast.error("Error fetching default avatar: " + error.message);
         return;
       }
     } else if (fileOrUrl instanceof File) {
       // Handle File (for upload)
       fileToUse = fileOrUrl;
     } else {
-      setMessage("Invalid file or URL provided");
+      toast.error("Invalid file or URL provided");
       return;
     }
 
@@ -118,10 +118,10 @@ const EditUserProfile = () => {
         // Clear file only for user uploads (not reset)
         if (fileOrUrl instanceof File) clearFile();
 
-        setMessage(fileOrUrl instanceof File ? "Avatar uploaded successfully 🎉" : "Avatar deleted successfully 🎉");
+        toast.success(fileOrUrl instanceof File ? "Avatar uploaded successfully 🎉" : "Avatar deleted successfully 🎉");
       } catch (error) {
         const errorMessage = error.response?.data?.message || error.message || "There was an error with the avatar ❌";
-        setMessage(errorMessage);
+        toast.error(errorMessage);
       }
     }
   };
@@ -142,20 +142,20 @@ const EditUserProfile = () => {
       const data = await updateUserMutation.mutateAsync(form);
 
       if (data.status === "success") {
-        const changedFields = getChangedFields(initialUser.current, data.user);
-        const successMessage = generateSuccessMessage(changedFields);
-        setMessage(successMessage);
+                const changedFields = getChangedFields(initialUser.current, data.user);
+                const successMessage = generateSuccessMessage(changedFields);
+                toast.success(successMessage);
         setUser(data.user);
         initialUser.current = data.user;
       } else {
-        setMessage("Error: " + data.message);
+            toast.error("Error: " + data.message);
       }
     } catch (error) {
       console.error("Error updating profile:", error);
       const errorMessage =
         error.response?.data?.message ||
         "There was an error connecting to the server ❌";
-      setMessage(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -170,8 +170,7 @@ const EditUserProfile = () => {
     <div className="profile-form-container card">
       <h2 className="form-title">Edit Profile</h2>
 
-      {/* Status messages for user feedback */}
-      {message && <p className="status-message">{message}</p>}
+
 
       {/* Main form */}
       <form
