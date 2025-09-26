@@ -1082,3 +1082,50 @@ h1 {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* React Toastify Custom Styles */
+.Toastify__toast {
+  font-family: 'Roboto', sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: #fff;
+  border-left: 4px solid #388E3C;
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #f44336, #e57373);
+  color: #fff;
+  border-left: 4px solid #D32F2F;
+}
+
+.Toastify__toast--warning {
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  color: #fff;
+  border-left: 4px solid #F57C00;
+}
+
+.Toastify__toast--info {
+  background: linear-gradient(135deg, #2196F3, #64B5F6);
+  color: #fff;
+  border-left: 4px solid #1976D2;
+}
+
+.Toastify__progress-bar {
+  background: rgba(255, 255, 255, 0.7);
+  height: 3px;
+}
+
+.Toastify__close-button {
+  color: #fff;
+  opacity: 0.8;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+}
