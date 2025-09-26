@@ -91,16 +91,28 @@ const EditUserProfile = () => {
 
     if (fileToUse) {
       try {
-        const uploadData = await uploadFileHook(async (fileToUpload) => {
-          const response = await uploadFile("user/upload", fileToUpload);
-          if (response.status !== "success") {
-            throw new Error(response.message || "Error uploading avatar");
-          }
-          return response;
-        });
+        let uploadResult;
 
-        if (uploadData?.user) {
-          setUser(uploadData.user);
+        if (fileOrUrl instanceof File) {
+          // Use hook for user uploads
+          uploadResult = await uploadFileHook(async (fileToUpload) => {
+            const response = await uploadFile("user/upload", fileToUpload);
+            if (response.status !== "success") {
+              throw new Error(response.message || "Error uploading avatar");
+            }
+            return response;
+          });
+        } else {
+          // Direct call for reset (bypass hook)
+          const response = await uploadFile("user/upload", fileToUse);
+          if (response.status !== "success") {
+            throw new Error(response.message || "Error resetting avatar");
+          }
+          uploadResult = response;
+        }
+
+        if (uploadResult?.user) {
+          setUser(uploadResult.user);
         }
 
         // Clear file only for user uploads (not reset)
