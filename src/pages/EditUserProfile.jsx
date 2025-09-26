@@ -62,9 +62,29 @@ const EditUserProfile = () => {
         });
     };
 
-      // Handle avatar upload
-  const handleAvatarUpload = async () => {
-    if (avatarFile) {
+      // Handle avatar upload or reset
+  const handleAvatarUpload = async (fileOrUrl) => {
+    let fileToUse;
+
+    if (typeof fileOrUrl === 'string') {
+      // Handle URL (for reset to default)
+      try {
+        const response = await fetch(fileOrUrl);
+        if (!response.ok) throw new Error('Failed to fetch default avatar');
+        fileToUse = await response.blob();
+      } catch (error) {
+        setMessage("Error fetching default avatar: " + error.message);
+        return;
+      }
+    } else if (fileOrUrl instanceof File) {
+      // Handle File (for upload)
+      fileToUse = fileOrUrl;
+    } else {
+      setMessage("Invalid file or URL provided");
+      return;
+    }
+
+    if (fileToUse) {
       try {
         const uploadData = await uploadFileHook(async (fileToUpload) => {
           const response = await uploadFile("user/upload", fileToUpload);
@@ -77,40 +97,15 @@ const EditUserProfile = () => {
         if (uploadData?.user) {
           setUser(uploadData.user);
         }
-        clearFile();
+
+        // Clear file only for user uploads (not reset)
+        if (fileOrUrl instanceof File) clearFile();
+
+        setMessage(fileOrUrl instanceof File ? "Avatar uploaded successfully 🎉" : "Avatar deleted successfully 🎉");
       } catch (error) {
-        console.error("Error uploading avatar:", error);
-        const errorMessage =
-          error.response?.data?.message || "There was an error uploading the avatar ❌";
+        const errorMessage = error.response?.data?.message || error.message || "There was an error with the avatar ❌";
         setMessage(errorMessage);
       }
-    }
-  };
-      // Handle avatar delete
-  const handleDeleteAvatar = async () => {
-    try {
-      // Fetch the default avatar image
-      const defaultImageResponse = await fetch('http://localhost:3900/api/user/avatar/default.png');
-      if (!defaultImageResponse.ok) {
-        throw new Error('Failed to fetch default avatar');
-      }
-      const defaultBlob = await defaultImageResponse.blob();
-
-      // Upload the default avatar via /upload
-      const response = await uploadFile("user/upload", defaultBlob);
-      if (response.status !== "success") {
-        throw new Error(response.message || "Error deleting avatar");
-      }
-
-      // Update user context with the new user data
-      setUser(response.user);
-      clearFile();
-      setMessage("Avatar deleted successfully 🎉");
-    } catch (error) {
-      console.error("Error deleting avatar:", error);
-      const errorMessage =
-        error.response?.data?.message || error.message || "There was an error deleting the avatar ❌";
-      setMessage(errorMessage);
     }
   };
     /**
@@ -120,7 +115,9 @@ const EditUserProfile = () => {
         e.preventDefault();
 
         // Upload avatar first
-        await handleAvatarUpload();
+        if (avatarFile) {
+            await handleAvatarUpload(avatarFile);
+        }
 
         try {
             // Update profile data via API mutation
@@ -177,7 +174,7 @@ const EditUserProfile = () => {
                         {authUser?.image && authUser.image !== "default.png" && (
                             <button
                                 type="button"
-                                onClick={handleDeleteAvatar}
+                                onClick={() => handleAvatarUpload("http://localhost:3900/api/user/avatar/default.png")}
                                 disabled={updateUserMutation.isLoading}
                                 className="btn btn--level3"
                             >
