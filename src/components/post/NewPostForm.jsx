@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Image } from "phosphor-react";
+import { toast } from "react-toastify";
 import { useApiMutation, uploadFile } from "@/api";
 import { useFileUpload } from "@/hooks/common";
 import { useContentValidation } from "@/hooks/validations";
@@ -8,8 +9,6 @@ import { TextInput } from "@/components/common";
 
 function NewPostForm() {
     const [text, setText] = useState("");
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(null);
 
     const { file, previewUrl, isLoading: fileLoading, selectFile, clearFile, uploadFile: uploadFileHook } = useFileUpload();
     const createPublicationMutation = useApiMutation("createPublication");
@@ -18,13 +17,10 @@ function NewPostForm() {
     const { errors, validateField } = useContentValidation({ text, file }, 'post');
 
     const handleSend = async () => {
-        setError(null);
-        setSuccess(null);
-
         // Validate
         const isValid = validateField('text');
         if (!isValid) {
-            setError(errors.text);
+            toast.error(errors.text);
             return;
         }
 
@@ -33,7 +29,7 @@ function NewPostForm() {
             const response = await createPublicationMutation.mutateAsync({ text });
 
             if (!response?._id) {
-                throw new Error("Error creando la publicación");
+                throw new Error("Error creating the publication");
             }
 
             // 2. Si hay archivo, subirlo usando el hook
@@ -41,17 +37,17 @@ function NewPostForm() {
                 await uploadFileHook(async (fileToUpload) => {
                     const uploadData = await uploadFile(`publication/upload/${response._id}`, fileToUpload);
                     if (uploadData.status !== "success") {
-                        throw new Error(uploadData.message || "Error subiendo archivo");
+                        throw new Error(uploadData.message || "Error uploading file");
                     }
                     return uploadData;
                 });
             }
 
-            setSuccess("¡Post creado exitosamente!");
+            toast.success("Post created successfully!");
             setText("");
             clearFile();
         } catch (err) {
-            setError(err.message || "Error desconocido");
+            toast.error(err.message || "Unknown error");
         }
     };
 
@@ -88,9 +84,6 @@ function NewPostForm() {
                     />
                 </div>
             )}
-
-            {error && <p className="error">{error}</p>}
-            {success && <p className="success">{success}</p>}
         </div>
     );
 }
