@@ -19,7 +19,7 @@ import { useOnlineStatus } from "@/hooks/users";
  *
  */
 
-export default function Avatar({ src, alt, size = 40, userId }) {
+export default function Avatar({ src, alt, size = 40, userId, onClick }) {
   const navigate = useNavigate();
   const { isOnline } = useOnlineStatus(userId);
   const [imageError, setImageError] = useState(false);
@@ -30,8 +30,12 @@ export default function Avatar({ src, alt, size = 40, userId }) {
   }, [src]);
 
   const handleClick = () => {
-    // Navega a la ruta del usuario pasando su id
-    navigate(`/feed/timeline/${userId}`);
+    if (onClick) {
+      onClick();
+    } else if (userId) {
+      // Navega a la ruta del usuario pasando su id
+      navigate(`/feed/timeline/${userId}`);
+    }
   };
 
   const handleImageError = () => {

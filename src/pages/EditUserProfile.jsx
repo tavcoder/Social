@@ -166,6 +166,11 @@ const EditUserProfile = () => {
       ? `http://localhost:3900/api/user/avatar/${authUser.image}`
       : "");
 
+  // Handle avatar click to open file selector
+  const handleAvatarClick = () => {
+    document.getElementById('avatar-upload').click();
+  };
+
   return (
     <div className="profile-form-container card">
       <h2 className="form-title">Edit Profile</h2>
@@ -183,7 +188,7 @@ const EditUserProfile = () => {
       >
         {/* Avatar section */}
         <div className="avatar-section">
-          <Avatar src={avatarSrc} alt={form.name} size={60} />
+          <Avatar src={avatarSrc} alt={form.name} size={60} onClick={handleAvatarClick} />
           <div className="avatar-buttons">
             <input
               type="file"
