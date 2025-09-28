@@ -5,18 +5,18 @@ export function useContentValidation(formData, type = 'post') {
   const [errors, setErrors] = useState({});
 
   const validateField = useCallback((field, value = formData[field]) => {
-    let error = null;
+    let fieldErrors = [];
 
     if (field === 'text') {
       if (type === 'post') {
-        error = fieldValidators.post(value);
+        fieldErrors = fieldValidators.post(value);
       } else if (type === 'comment') {
-        error = fieldValidators.comment(value);
+        fieldErrors = fieldValidators.comment(value);
       }
     }
 
-    setErrors(prev => ({ ...prev, [field]: error }));
-    return !error;
+    setErrors(prev => ({ ...prev, [field]: fieldErrors }));
+    return fieldErrors.length === 0;
   }, [formData, type]);
 
   const validateAll = useCallback(() => {

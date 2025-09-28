@@ -5,31 +5,31 @@ export function useUserValidation(formData, includePassword = false) {
   const [errors, setErrors] = useState({});
 
   const validateField = useCallback((field, value = formData[field]) => {
-    let error = null;
+    let fieldErrors = [];
 
     switch (field) {
       case 'name':
       case 'surname':
-        error = fieldValidators.nameOrSurname(value);
+        fieldErrors = fieldValidators.nameOrSurname(value);
         break;
       case 'nick':
-        error = fieldValidators.nick(value);
+        fieldErrors = fieldValidators.nick(value);
         break;
       case 'email':
-        error = fieldValidators.email(value);
+        fieldErrors = fieldValidators.email(value);
         break;
       case 'password':
         if (includePassword) {
-          error = fieldValidators.password(value);
+          fieldErrors = fieldValidators.password(value);
         }
         break;
       case 'bio':
-        error = fieldValidators.bio(value);
+        fieldErrors = fieldValidators.bio(value);
         break;
     }
 
-    setErrors(prev => ({ ...prev, [field]: error }));
-    return !error;
+    setErrors(prev => ({ ...prev, [field]: fieldErrors }));
+    return fieldErrors.length === 0;
   }, [formData, includePassword]);
 
   const validateAll = useCallback(() => {
