@@ -10,6 +10,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuthActions } from "@/hooks/auth";
+import { useUserValidation } from "@/hooks/validations";
 
 export function useAuthForm(mode = "login") {
     const {
@@ -31,6 +32,9 @@ export function useAuthForm(mode = "login") {
 
     const navigate = useNavigate();
 
+    const includePassword = mode === 'register';
+    const { errors: validationErrors, validateAll } = useUserValidation(formData, includePassword);
+
     const updateField = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
@@ -38,38 +42,11 @@ export function useAuthForm(mode = "login") {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Frontend validation
-        const errors = [];
-        if (mode === "register") {
-            const nameRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
-            const nickRegex = /^[a-zA-Z0-9_]+$/;
-
-            if (!formData.name || !nameRegex.test(formData.name.trim())) {
-                errors.push("Name should only contain letters and spaces.");
-            }
-            if (!formData.surname || !nameRegex.test(formData.surname.trim())) {
-                errors.push("Surname should only contain letters and spaces.");
-            }
-            if (!formData.nick || !nickRegex.test(formData.nick.trim())) {
-                errors.push("Nick should only contain letters, numbers and underscores.");
-            }
-            if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                errors.push("Email has an invalid format.");
-            }
-            if (!formData.password || formData.password.length < 6) {
-                errors.push("Password must be at least 6 characters long.");
-            }
-        } else if (mode === "login") {
-            if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-                errors.push("Email has an invalid format.");
-            }
-            if (!formData.password || formData.password.length < 1) {
-                errors.push("Password is required.");
-            }
-        }
-
-        if (errors.length > 0) {
-            setError(errors.join("\n"));
+        // Validate all fields
+        const { isValid } = validateAll();
+        if (!isValid) {
+            const errorMessages = Object.values(validationErrors).flat();
+            setError(errorMessages.join("\n"));
             return;
         }
 

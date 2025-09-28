@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Image } from "phosphor-react";
 import { useApiMutation, uploadFile } from "@/api";
 import { useFileUpload } from "@/hooks/common";
+import { useContentValidation } from "@/hooks/validations";
 import { TextInput } from "@/components/common";
 
 
@@ -14,12 +15,16 @@ function NewPostForm() {
     const createPublicationMutation = useApiMutation("createPublication");
     const loading = createPublicationMutation.isLoading || fileLoading;
 
+    const { errors, validateField } = useContentValidation({ text, file }, 'post');
+
     const handleSend = async () => {
         setError(null);
         setSuccess(null);
 
-        if (!text && !file) {
-            setError("Debes escribir algo o subir una foto.");
+        // Validate
+        const isValid = validateField('text');
+        if (!isValid) {
+            setError(errors.text);
             return;
         }
 

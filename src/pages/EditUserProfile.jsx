@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useApiMutation, uploadFile } from "@/api";
 import { useFileUpload } from "@/hooks/common";
+import { useUserValidation } from "@/hooks/validations";
 import { AuthContext } from "@/context";
 import { Avatar } from "@/components/common";
 
@@ -39,6 +40,8 @@ const EditUserProfile = () => {
   // Mutation for updating user profile
   const updateUserMutation = useApiMutation("updateUser");
 
+  const { errors, validateField, validateAll, clearErrors } = useUserValidation(form, false);
+
   // Store initial user data for comparison
   const initialUser = useRef(authUser);
 
@@ -57,10 +60,13 @@ const EditUserProfile = () => {
 
   // Handle form input changes
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    // Validate field on change
+    validateField(name, value);
   };
 
   /**
@@ -127,10 +133,17 @@ const EditUserProfile = () => {
   };
 
   /**
-   * Handle form submission for profile updates
-   */
+    * Handle form submission for profile updates
+    */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate all fields
+    const { isValid } = validateAll();
+    if (!isValid) {
+      toast.error("Please fix the validation errors before submitting");
+      return;
+    }
 
     // Upload avatar first if a new file was selected
     if (avatarFile) {
@@ -147,6 +160,7 @@ const EditUserProfile = () => {
                 toast.success(successMessage);
         setUser(data.user);
         initialUser.current = data.user;
+        clearErrors(); // Clear validation errors on success
       } else {
             toast.error("Error: " + data.message);
       }
@@ -219,8 +233,9 @@ const EditUserProfile = () => {
               placeholder="First Name"
               value={form.name}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.name ? 'error' : ''}`}
             />
+            {errors.name && <p className="error-message">{errors.name.join(', ')}</p>}
           </div>
           <div className="form-group">
             <label htmlFor="surname">Last Name</label>
@@ -231,8 +246,9 @@ const EditUserProfile = () => {
               placeholder="Last Name"
               value={form.surname}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.surname ? 'error' : ''}`}
             />
+            {errors.surname && <p className="error-message">{errors.surname.join(', ')}</p>}
           </div>
           <div className="form-group">
             <label htmlFor="nick">Nickname</label>
@@ -243,8 +259,9 @@ const EditUserProfile = () => {
               placeholder="Nickname"
               value={form.nick}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.nick ? 'error' : ''}`}
             />
+            {errors.nick && <p className="error-message">{errors.nick.join(', ')}</p>}
           </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -255,8 +272,9 @@ const EditUserProfile = () => {
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.email ? 'error' : ''}`}
             />
+            {errors.email && <p className="error-message">{errors.email.join(', ')}</p>}
           </div>
           <div className="form-group">
             <label htmlFor="bio">Bio</label>
@@ -266,8 +284,9 @@ const EditUserProfile = () => {
               placeholder="Bio"
               value={form.bio}
               onChange={handleChange}
-              className="form-input"
+              className={`form-input ${errors.bio ? 'error' : ''}`}
             />
+            {errors.bio && <p className="error-message">{errors.bio.join(', ')}</p>}
           </div>
         </div>
 
