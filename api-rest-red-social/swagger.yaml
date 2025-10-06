@@ -99,25 +99,55 @@ components:
         followed:
           $ref: '#/components/schemas/User'
 
-    Publication:
-      type: object
-      properties:
-        _id:
-          type: string
-          example: "6512abcd3456ef7890abcde1"
-        text:
-          type: string
-          example: "Mi primera publicación"
-        file:
-          type: string
-          nullable: true
-          example: "imagen.jpg"
-        user:
-          $ref: '#/components/schemas/User'
-        created_at:
-          type: string
-          format: date-time
-          example: "2025-08-04T12:34:56Z"
+     Publication:
+       type: object
+       properties:
+         _id:
+           type: string
+           example: "6512abcd3456ef7890abcde1"
+         text:
+           type: string
+           example: "Mi primera publicación"
+         file:
+           type: string
+           nullable: true
+           example: "imagen.jpg"
+         user:
+           $ref: '#/components/schemas/User'
+         created_at:
+           type: string
+           format: date-time
+           example: "2025-08-04T12:34:56Z"
+
+     Comment:
+       type: object
+       properties:
+         _id:
+           type: string
+           example: "6523cdef4567gh8901bcdef2"
+         text:
+           type: string
+           example: "Este es un comentario"
+         user:
+           type: object
+           properties:
+             name:
+               type: string
+               example: "Tania"
+             surname:
+               type: string
+               example: "Arteaga"
+             nick:
+               type: string
+               example: "taniaa"
+             image:
+               type: string
+               nullable: true
+               example: "avatar.jpg"
+         created_at:
+           type: string
+           format: date-time
+           example: "2025-08-04T12:35:00Z"
 
 security:
   - BearerAuth: []
@@ -283,7 +313,7 @@ paths:
         '500':
           description: Error del servidor
 
-  /follow/save:
+   /follow/follow:
     post:
       summary: Seguir a un usuario
       tags:
@@ -640,8 +670,68 @@ paths:
                     $ref: '#/components/schemas/Publication'
       '401':
         description: No autorizado (token inválido o no proporcionado)
-      '500':
-        description: Error interno del servidor
+       '500':
+         description: Error interno del servidor
+
+   /user/avatar/{file}:
+     get:
+       summary: Obtener avatar de usuario
+       tags:
+         - Users
+       parameters:
+         - name: file
+           in: path
+           description: Nombre del archivo de avatar
+           required: true
+           schema:
+             type: string
+       responses:
+         '200':
+           description: Archivo de avatar
+           content:
+             application/octet-stream:
+               schema:
+                 type: string
+                 format: binary
+         '404':
+           description: Archivo no encontrado
+
+   /user/counters/{id}:
+     get:
+       summary: Obtener estadísticas de usuario
+       tags:
+         - Users
+       security:
+         - BearerAuth: []
+       parameters:
+         - name: id
+           in: path
+           description: ID del usuario (opcional, si no se proporciona usa el usuario autenticado)
+           required: false
+           schema:
+             type: string
+       responses:
+         '200':
+           description: Estadísticas obtenidas
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   userId:
+                     type: string
+                     example: "650f4e3ac3b4f456789abcd1"
+                   following:
+                     type: integer
+                     example: 10
+                   followed:
+                     type: integer
+                     example: 5
+                   publications:
+                     type: integer
+                     example: 20
+         '404':
+           description: Usuario no encontrado
 
 
   /publication/upload/{id}:
@@ -706,9 +796,151 @@ paths:
               schema:
                 type: string
                 format: binary
-        '404':
-          description: Archivo no encontrado
-/user/list/{page}:
+         '404':
+           description: Archivo no encontrado
+
+   /publication/{id}/like:
+     post:
+       summary: Dar o quitar like en publicación
+       tags:
+         - Publications
+       security:
+         - BearerAuth: []
+       parameters:
+         - name: id
+           in: path
+           description: ID de la publicación
+           required: true
+           schema:
+             type: string
+       responses:
+         '200':
+           description: Like toggled
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   status:
+                     type: string
+                     example: success
+                   likesCount:
+                     type: integer
+                     example: 15
+         '404':
+           description: Publicación no encontrada
+
+   /publication/{id}/comments:
+     get:
+       summary: Listar comentarios de publicación
+       tags:
+         - Publications
+       security:
+         - BearerAuth: []
+       parameters:
+         - name: id
+           in: path
+           description: ID de la publicación
+           required: true
+           schema:
+             type: string
+       responses:
+         '200':
+           description: Comentarios obtenidos
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   status:
+                     type: string
+                     example: success
+                   comments:
+                     type: array
+                     items:
+                       $ref: '#/components/schemas/Comment'
+
+   /publication/{id}/comment:
+     post:
+       summary: Agregar comentario a publicación
+       tags:
+         - Publications
+       security:
+         - BearerAuth: []
+       parameters:
+         - name: id
+           in: path
+           description: ID de la publicación
+           required: true
+           schema:
+             type: string
+       requestBody:
+         required: true
+         content:
+           application/json:
+             schema:
+               type: object
+               required:
+                 - text
+               properties:
+                 text:
+                   type: string
+                   example: "Este es un comentario"
+       responses:
+         '200':
+           description: Comentario agregado
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   status:
+                     type: string
+                     example: success
+                   comment:
+                     $ref: '#/components/schemas/Comment'
+         '400':
+           description: Texto faltante
+
+   /publication/{id}/comment/{commentId}:
+     delete:
+       summary: Eliminar comentario
+       tags:
+         - Publications
+       security:
+         - BearerAuth: []
+       parameters:
+         - name: id
+           in: path
+           description: ID de la publicación
+           required: true
+           schema:
+             type: string
+         - name: commentId
+           in: path
+           description: ID del comentario
+           required: true
+           schema:
+             type: string
+       responses:
+         '200':
+           description: Comentario eliminado
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   status:
+                     type: string
+                     example: success
+                   publication:
+                     $ref: '#/components/schemas/Publication'
+         '403':
+           description: No autorizado para eliminar
+         '404':
+           description: Comentario o publicación no encontrada
+
+ /user/list/{page}:
   get:
     summary: Listar todos los usuarios
     description: Devuelve una lista paginada de usuarios registrados (excluyendo la contraseña).
